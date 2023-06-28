@@ -1,7 +1,6 @@
 
 export const cards = [
   {
-    api_id: 1,
     images: [
       "https://www.tripyhotellounge.xyz/wp-content/uploads/2022/10/Fukazawa050.jpg",
       "https://s3-ap-northeast-1.amazonaws.com/thegate/2021/02/10/12/16/55/Korankei.jpg",
@@ -30,7 +29,6 @@ export const cards = [
     ],
   },
   {
-    api_id: 6,
     images: [
       "https://cdn-news.asoview.com/production/note/05a9e06f-f4c9-4632-a1e5-94d55e4ab29a.jpeg",
     ],
@@ -56,7 +54,6 @@ export const cards = [
     ],
   },
   {
-    api_id: 42,
     images: [
       "https://anniversarys-mag.jp/img/p/pixta_44462056_M.jpg?w=730",
     ],
@@ -82,7 +79,6 @@ export const cards = [
     ],
   },
   {
-    api_id: 78,
     images: [
       "https://travel.rakuten.co.jp/mytrip/sites/mytrip/files/styles/1cal_image/public/2022-10/News-202210-laguna-01-2.jpg?itok=mHYN0LnN",
     ],
@@ -107,7 +103,6 @@ export const cards = [
     ],
   },
   {
-    api_id: 108,
     images: [
       "https://www.aichi-now.jp/upload/spot_images/13a8fa1f15248f16d149b3059f62be21.jpg",
     ],

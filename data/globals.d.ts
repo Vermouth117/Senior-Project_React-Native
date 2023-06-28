@@ -14,8 +14,8 @@ export interface Spot {
 }
 
 export interface Cards {
-  api_id: number;
   images: string[] | string;
+  // images: string[];
   title: string;
   postCode: string;
   address: string;

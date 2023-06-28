@@ -1,118 +1,75 @@
 
-import {StyleSheet} from 'react-native';
+import {Dimensions, StyleSheet} from 'react-native';
 
 export const styles = StyleSheet.create({
-  //NOTE container
   container: {
-    flex: 1,
-    justifyContent: 'space-between',
+    // flex: 1,
+    // justifyContent: 'space-between',
   },
   good: {
     top: 25,
-    fontSize: 30,
-  },
-  //NOTE main
-  header: {
-    marginTop: 20,
-    marginLeft: 40,
+    left: 30,
+    fontSize: 30, 
   },
   zanteitaisaku: {
-    flex: 1,
-    height: '80%',
-    alignItems: 'center',
-    justifyContent: 'center',
-    top: 200,
+    top: 340,
+    left: 100,
   },
-  //NOTE icon
-
   scrollView: {
-    flex: 1,
-  },
-  iconConteiner: {
-    flex: 1,
-  },
-  iconsWrapper: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    paddingVertical: '5%',
-    paddingHorizontal: '7.5%',
-    justifyContent: 'flex-start',
+    // flex: 1,
+    justifyContent: 'space-between',
+    // backgroundColor: 'blue',
+    top: 50,
+    flexDirection: 'row',  // 列方向に配置するためにflexDirectionを追加
+    flexWrap: 'wrap',  // 要素を自動的に折り返すためにflexWrapを追加
+    paddingHorizontal: 28,
   },
   iconWrapper: {
-    top: -150,
-    width: '40%',
-    justifyContent: 'center',
-    alignItems: 'center',
-    flexDirection: 'column',
-    position: 'relative',
+    // width: '50%',  // 幅を50%に設定して2列にする
+    // justifyContent: 'center',
+    // alignItems: 'center',
+    // textAlign: 'center',
+    // flexDirection: 'column',
+    // position: 'relative',
   },
   number: {
-    zIndex: 4,
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: 35,
-    minWidth: 30,
+    zIndex: 1,
+    textAlign: 'center',
+    height: 30,
+    width: 30,
     fontSize: 20,
     color: 'white',
-    fontWeight: '700',
-    backgroundColor: 'red',
-    borderRadius: 17,
-    padding: 5,
+    fontWeight: '600',
+    backgroundColor: "rgb(255, 100, 100)",
+    borderRadius: 15,
+    paddingTop: 3,
     position: 'absolute',
     top: 0,
-    left: -30,
+    left: 130,
     overflow: 'hidden',
+  },
+  spotContainer: {
+    alignItems: 'center',
   },
   imageWrapper: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: 110,
-    width: 110,
-    borderWidth: 1,
-    borderColor: 'rgb(200, 200, 200)',
-    borderRadius: 100,
-    overflow: 'hidden',
+    borderWidth: 3,
+    borderColor: 'white',
+    borderRadius: 15,
+    marginBottom: 10,
     shadowColor: '#000',
     shadowOffset: {
-      width: 30,
-      height: 30,
+      width: 0,
+      height: 1,
     },
-    shadowOpacity: 0.45,
-    shadowRadius: 0,
-    elevation: 60,
+    shadowOpacity: 0.3,
   },
   photo: {
-    height: 110,
-    width: 110,
-    resizeMode: 'cover',
-    borderRadius: 100,
+    height: 150,
+    width: 150,
+    borderRadius: 15,
+    // resizeMode: 'cover',
   },
   name: {
-    fontWeight: '700',
-    marginTop: '3%',
-  },
-  //NOTE footer
-  footer: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    fontSize: 32,
-    padding: 10,
-    position: 'relative',
-    bottom: 0,
-    backgroundColor: 'white',
-    borderTopWidth: 1,
-    borderTopColor: 'rgb(230, 230, 230)',
-    width: '100%',
-    zIndex: 2,
-    height: 70,
-    color: 'rgb(130, 130, 130)',
-  },
-  footerIcon: {
-    fontSize: 30,
-  },
-  footerUp: {
-    color: 'rgb(150, 150, 150)',
+    marginBottom: 25,
   },
 });

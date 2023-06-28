@@ -1,14 +1,6 @@
 
 import { StatusBar } from "expo-status-bar";
-import {
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-  FlatList,
-  Image,
-  SafeAreaView,
-  Dimensions,
+import { StyleSheet, Text, TouchableOpacity, View, FlatList, Image, SafeAreaView, Dimensions, ScrollView
 } from "react-native";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
@@ -20,79 +12,36 @@ import AntDesign from "react-native-vector-icons/AntDesign";
 import Swiper from "react-native-swiper"; // npm install react-native-swiper が必要
 
 import { cards } from "../data/cards"; // ダミーデータ
-import { Cards } from "../data/globals";
+import { Dispatch, SetStateAction, memo } from "react";
 
 const ScreenWidth = Dimensions.get("window").width;
 
-export default function Detail() {
-  // const { detail } = route.params;
-  // const index = parseInt(decodeURIComponent(detail));
-  // const navigation = useNavigation();
+type Props = {
+  setPage: Dispatch<SetStateAction<string>>,
+  index: number,
+}
 
-  // const localStorageControl = useCallback(() => {
-  //   const savedCardList = localStorage.getItem("cardList");
-  //   const restoredCardList = savedCardList ? JSON.parse(savedCardList) : null;
-  //   if (
-  //     !restoredCardList ||
-  //     JSON.stringify(restoredCardList) === JSON.stringify([])
-  //   ) {
-  //     const filterArr = cards.filter((card) => card !== cards[index]);
-  //     localStorage.setItem("cardList", JSON.stringify(filterArr));
-  //   } else {
-  //     const filterArr = restoredCardList.filter(
-  //       (card: Cards) => card !== restoredCardList[index]
-  //     );
-  //     localStorage.setItem("cardList", JSON.stringify(filterArr));
-  //   }
-  // }, []);
-
-  // const handleClickDislike = useCallback((index) => {
-  //   console.log("dislike", cards[index]);
-  //   localStorageControl();
-  // }, []);
-
-  // const handleClickLike = useCallback(async (index) => {
-  //   console.log("like", cards[index]);
-  //   localStorageControl();
-
-  //   const postObj = {
-  //     ...cards[index],
-  //     images: JSON.stringify(cards[index].images),
-  //     publicTransport: JSON.stringify(cards[index].publicTransport),
-  //     car: JSON.stringify(cards[index].car),
-  //   };
-
-  //   const postData = await fetch(`${SERVER_URL}/api/favorites`, {
-  //     method: "POST",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify({ user_id: 1, ...postObj }),
-  //   }).then((data) => data.json());
-  //   console.log(postData);
-  // }, []);
+const Detail: React.FC<Props> = memo(({ setPage, index }) => {
   return (
     <View style={styles.container}>
-      <SafeAreaView>
-        <TouchableOpacity>
-          <View style={styles.backButton}>
-            <EvilIcons name="chevron-left" style={styles.backIcon} />
-          </View>
-        </TouchableOpacity>
-      </SafeAreaView>
+      <ScrollView>
 
-      <View style={styles.main}>
-        {/* <View>
-          <MySwiper images={cards[index].images} style={styles.cardPhoto} />
-        </View> */}
+      {/* <SafeAreaView> */}
+        <TouchableOpacity style={styles.backButton} onPress={() => setPage("home")}>
+          <EvilIcons name="chevron-left" style={styles.backIcon} />
+        </TouchableOpacity>
+      {/* </SafeAreaView> */}
+
+      {/* <View style={styles.main}> */}
+
         <View style={styles.cardPhoto}>
           <Swiper showsButtons={false}>
-            {cards[0].images.map((item, index) => (
+            {cards[index].images.map((item, index) => (
               <View key={index}>
                 <Image
                   style={{
                     width: ScreenWidth,
-                    height: 220,
+                    height: 350,
                   }}
                   source={{ uri: item }}
                 />
@@ -102,87 +51,90 @@ export default function Detail() {
         </View>
 
         <View style={styles.description}>
-          <Text style={styles.title}>{cards[0].title}</Text>
 
-          <Text>
-            <Feather name="map-pin" style={styles.icon} />
-            所在地
-          </Text>
-          <View>
-            <Text>{`〒${cards[0].postCode}`}</Text>
-            {/* <Text>
-              <a
-                href={`https://www.google.co.jp/maps/search/${cards[0].title}`}
-              >
-                {cards[0].address}
-              </a>
-            </Text> */}
+          <Text style={styles.title}>{cards[index].title}</Text>
+
+          <View style={styles.addressContainer}>
+            <Text>
+              <Feather name="map-pin" style={styles.icon} />
+              所在地
+            </Text>
+            <Text>{`〒${cards[index].postCode}`}</Text>
           </View>
 
-          <Text>
-            <FontAwesome name="money" style={styles.icon} />
-            料金
-          </Text>
-          <Text>{cards[0].price}</Text>
+          <View style={styles.descriptionContainer}>
+            <Text>
+              <FontAwesome name="money" style={styles.icon} />
+              料金
+            </Text>
+            <Text>{cards[index].price}</Text>
+          </View>
 
-          <Text>
-            <MaterialCommunityIcons name="alarm" style={styles.icon} />
-            営業日・時間
-          </Text>
-          <Text>{cards[0].business}</Text>
+          <View style={styles.descriptionContainer}>
+            <Text>
+              <MaterialCommunityIcons name="alarm" style={styles.icon} />
+              営業日・時間
+            </Text>
+            <Text>{cards[index].business}</Text>
+          </View>
 
-          <Text>
-            <MaterialCommunityIcons name="phone" style={styles.icon} />
-            電話番号
-          </Text>
-          <Text>{cards[0].phoneNumber}</Text>
+          <View style={styles.descriptionContainer}>
+            <Text>
+              <MaterialCommunityIcons name="phone" style={styles.icon} />
+              電話番号
+            </Text>
+            <Text>{cards[index].phoneNumber}</Text>
+          </View>
 
-          <Text>
-            <FontAwesome5 name="parking" style={styles.icon} />
-            駐車場
-          </Text>
-          <Text>{cards[0].parking}</Text>
+          <View style={styles.descriptionContainer}>
+            <Text>
+              <FontAwesome5 name="parking" style={styles.icon} />
+              駐車場
+            </Text>
+            <Text>{cards[index].parking}</Text>
+          </View>
 
-          <Text>
-            <FontAwesome5 name="toilet" style={styles.icon} />
-            トイレ
-          </Text>
-          <Text>{cards[0].toilet}</Text>
+          <View style={styles.descriptionContainer}>
+            <Text>
+              <FontAwesome5 name="toilet" style={styles.icon} />
+              トイレ
+            </Text>
+            <Text>{cards[index].toilet}</Text>
+          </View>
 
-          <Text>
-            <Ionicons name="information-circle-outline" style={styles.icon} />
-            定休日
-          </Text>
-          <Text>{cards[0].closed}</Text>
+          <View style={styles.descriptionContainer}>
+            <Text>
+              <Ionicons name="information-circle-outline" style={styles.icon} />
+              定休日
+            </Text>
+            <Text>{cards[index].closed}</Text>
+          </View>
 
-          <Text>
-            <FontAwesome5 name="train" style={styles.icon} />
-            公共交通機関でのアクセス
-          </Text>
-          <FlatList
-            data={cards[0].publicTransport}
-            renderItem={({ item }) => <Text>{item}</Text>}
-          />
+          <View style={styles.descriptionContainer}>
+            <Text>
+              <FontAwesome5 name="train" style={styles.icon} />
+              公共交通機関でのアクセス
+            </Text>
+            <FlatList
+              data={cards[index].publicTransport}
+              renderItem={({ item }) => <Text>{item}</Text>}
+            />
+          </View>
 
-          <Text>
-            <MaterialCommunityIcons name="car" style={styles.icon} />
-            車でのアクセス
-          </Text>
-          <FlatList
-            data={cards[0].car}
-            renderItem={({ item }) => <Text>{item}</Text>}
-          />
-          {/* <View>
-            <ul>
-              {cards[0].car.map((root, index) => (
-                <li key={index}>{root}</li>
-              ))}
-            </ul>
-          </View> */}
+          <View style={styles.descriptionContainer}>
+            <Text>
+              <MaterialCommunityIcons name="car" style={styles.icon} />
+              車でのアクセス
+            </Text>
+            <FlatList
+              data={cards[index].car}
+              renderItem={({ item }) => <Text>{item}</Text>}
+            />
+          </View>
         </View>
-      </View>
+      {/* </View> */}
 
-      <View>
+      <View style={styles.footer}>
         <TouchableOpacity>
           <View style={styles.dislikeButton}>
             <AntDesign name="dislike2" style={styles.dislikeIcon} />
@@ -196,9 +148,10 @@ export default function Detail() {
         </TouchableOpacity>
       </View>
       <StatusBar style="auto" />
+    </ScrollView>
     </View>
   );
-}
+});
 
 const styles = StyleSheet.create({
   container: {
@@ -206,23 +159,47 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
   },
   backButton: {
-    // バックボタンのスタイルを指定する
+    position: 'absolute',
+    top: 60,
+    left: 30,
+    height: 38,
+    width: 38,
+    zIndex: 1,
+    backgroundColor: 'white',
+    borderRadius: 20,
   },
   backIcon: {
-    // バックアイコンのスタイルを指定する
+    fontSize: 45,
+    left: -3,
+    color: 'rgb(100, 100, 100)',
   },
   main: {
-    flex: 1,
+    // flex: 1,
   },
   cardPhoto: {
-    flexDirection: "row",
-    height: 270,
+    // flexDirection: "row",
+    height: 350,
   },
-  description: {},
+  description: {
+    // flex: 1,
+    padding: 20,
+  },
   title: {
-    // タイトルのスタイルを指定する
+    fontSize: 28,
+  },
+  addressContainer: {
+    paddingVertical: 10,
+    marginTop: 10,
+    borderTopWidth: 1,
+    borderColor: 'rgb(230, 230, 230)',
+  },
+  descriptionContainer: {
+    paddingVertical: 10,
+    borderTopWidth: 1,
+    borderColor: 'rgb(230, 230, 230)',
   },
   footer: {
+    zIndex: 1,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
@@ -240,5 +217,9 @@ const styles = StyleSheet.create({
   likeIcon: {
     // ライクアイコンのスタイルを指定する
   },
-  icon: {},
+  icon: {
+
+  },
 });
+
+export default Detail;

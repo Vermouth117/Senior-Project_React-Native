@@ -1,28 +1,16 @@
-import {
-  StyleSheet,
-  View,
-  Text,
-  Image,
-  FlatList,
-  ScrollView,
+
+import { Dispatch, SetStateAction, memo, useEffect, useState } from "react";
+import { StyleSheet, View, Text, Image, FlatList, ScrollView,
 } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import Footer from "../../Footer";
+import { Prefecture } from "../../../data/globals";
 
-// import { IoIosArrowBack } from "react-icons/io";
-// import Link from "next/link";
-// import SERVER_URL from "@/serverfile";
-// import { Spot } from "@/globals";
-// import "./page.css";
-// import Footer from "@/components/Footer";
+type Props = {
+  setPage: Dispatch<SetStateAction<string>>;
+  prefecture: string;
+}
 
-export default function spot() {
-  //   params,
-  // }: {
-  //   params: { prefecture: string };
-  // }): JSX.Element {
-  //   const prefecture = decodeURIComponent(params.prefecture);
-  //   const [spotData, setSpotData] = useState<any>([]);
+const Spot: React.FC<Props> = memo(({ setPage, prefecture }) => {
 
   const dammyData = [
     {
@@ -66,37 +54,22 @@ export default function spot() {
     },
   ];
 
-  // useEffect(() => {
-  //   async function fetchData() {
-  //     // いいねスポットデータをfetch
-  //     const res = await fetch(
-  //       `http://localhost:3000/api/favorites/${prefecture}`
-  //     )
-  //       // const res: T = await fetch(`http://localhost:3000/api/favorites/${prefecture}`)
-  //       .then(
-  //         (
-  //           res // これローカルでいけるやつ
-  //         ) => res.json()
-  //       );
-  //     console.log("res", res);
-  //     setSpotData(res);
-  //   }
-  //   fetchData();
-  //   // setSpotData(dammyData);
-  // }, []);
+  const SERVER_URL = 'https://soranomix-api-server.onrender.com';
 
-  // const spots = spotData.map((dataObj: any) => (
-  //   <View key={dataObj.id} style={styles.spotWrapper}>
-  //     <View style={styles.imageWrapper}>
-  //       <Image source={{ uri: dataObj.imgSrc }} style={styles.photo} />
-  //     </View>
-  //     <Text style={styles.price}>¥{dataObj.price}</Text>
-  //     <Text style={styles.name}>{dataObj.name}</Text>
-  //     <Text style={styles.access}>{dataObj.access}</Text>
-  //   </View>
-  // ));
-  const renderSpotItem = ({ item }) => (
-    <View style={styles.spotWrapper}>
+  const [spotsData, setSpotsData] = useState<any>([]);
+
+  useEffect(() => {
+    (async () => {
+      const res = await fetch(`${SERVER_URL}/api/favorites/${prefecture}`).then(data =>
+        data.json(),
+      );
+      console.log('res', res);
+      setSpotsData(res);
+    })();
+  }, []);
+
+  const renderSpotItem = ( item: { id: number; name: any; imgSrc: any; price: any; access: any; } ) => (
+    <View style={styles.spotWrapper} key={item.id}>
       <View style={styles.imageWrapper}>
         <Image source={{ uri: item.imgSrc }} style={styles.photo} />
       </View>
@@ -108,27 +81,20 @@ export default function spot() {
 
   return (
     <>
-      {/* <header>
-        <Ionicons
-          name="ios-arrow-back"
-          size={48}
-          onPress={() => navigation.goBack()}
-        />
-        <Text>{prefecture}</Text>
-      </header> */}
       <View style={styles.header}>
         <Ionicons
           name="ios-arrow-back"
           size={40}
-          onPress={() => navigation.goBack()}
+          onPress={() => setPage("favorite")}
         />
         <Text style={styles.title}>愛知県</Text>
       </View>
       <ScrollView>
         <View style={styles.main}>
           <FlatList
-            data={dammyData}
-            renderItem={renderSpotItem}
+            // data={dammyData}
+            data={spotsData}
+            renderItem={({ item }) => renderSpotItem(item)}
             keyExtractor={(item) => item.id.toString()}
             numColumns={2} // 2列で表示する
             style={styles.wrapper}
@@ -136,10 +102,9 @@ export default function spot() {
           />
         </View>
       </ScrollView>
-      <Footer />
     </>
   );
-}
+});
 
 const styles = StyleSheet.create({
   header: {
@@ -180,10 +145,13 @@ const styles = StyleSheet.create({
     // flexDirection: "column",
     // borderStyle: "solid",
     borderWidth: 1,
-    borderColor: "rgb(30, 30, 30)",
+    borderColor: "white",
     borderRadius: 15,
     overflow: "hidden",
     position: "relative",
+    shadowColor: '#000',
+    shadowOpacity: 0.3,
+    // backgroundColor: 'blue',
     // textAlign: "center",
   },
   price: {
@@ -205,9 +173,9 @@ const styles = StyleSheet.create({
   imageWrapper: {
     height: 150,
     width: "100%",
-    borderStyle: "solid",
-    borderWidth: 1,
-    borderColor: "rgb(200, 200, 200)",
+    // borderStyle: "solid",
+    // borderWidth: 1,
+    // borderColor: "rgb(200, 200, 200)",
     overflow: "hidden",
   },
   photo: {
@@ -237,3 +205,5 @@ const styles = StyleSheet.create({
     // whiteSpace: "nowrap",
   },
 });
+
+export default Spot;
