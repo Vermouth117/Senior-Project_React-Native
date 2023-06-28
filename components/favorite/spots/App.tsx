@@ -1,5 +1,11 @@
-
-import { StyleSheet, View, Text, Image } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Text,
+  Image,
+  FlatList,
+  ScrollView,
+} from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import Footer from "../../Footer";
 
@@ -89,21 +95,16 @@ export default function spot() {
   //     <Text style={styles.access}>{dataObj.access}</Text>
   //   </View>
   // ));
-  const spots: JSX.Element[] = [];
-
-  dammyData.forEach((dataObj: any) => {
-    let spot = (
-      <View key={dataObj.id} style={styles.spotWrapper}>
-        <View style={styles.imageWrapper}>
-          <Image source={{ uri: dataObj.imgSrc }} style={styles.photo} />
-        </View>
-        <Text style={styles.price}>¥{dataObj.price}</Text>
-        <Text style={styles.name}>{dataObj.name}</Text>
-        <Text style={styles.access}>{dataObj.access}</Text>
+  const renderSpotItem = ({ item }) => (
+    <View style={styles.spotWrapper}>
+      <View style={styles.imageWrapper}>
+        <Image source={{ uri: item.imgSrc }} style={styles.photo} />
       </View>
-    );
-    spots.push(spot);
-  });
+      <Text style={styles.price}>¥{item.price}</Text>
+      <Text style={styles.name}>{item.name}</Text>
+      <Text style={styles.access}>{item.access}</Text>
+    </View>
+  );
 
   return (
     <>
@@ -115,12 +116,26 @@ export default function spot() {
         />
         <Text>{prefecture}</Text>
       </header> */}
-      <Text style={styles.title}>愛知県</Text>
-      {/* <ScrollView> */}
-      <View style={styles.main}>
-        <View style={styles.wrapper}>{spots}</View>
+      <View style={styles.header}>
+        <Ionicons
+          name="ios-arrow-back"
+          size={40}
+          onPress={() => navigation.goBack()}
+        />
+        <Text style={styles.title}>愛知県</Text>
       </View>
-      {/* </ScrollView> */}
+      <ScrollView>
+        <View style={styles.main}>
+          <FlatList
+            data={dammyData}
+            renderItem={renderSpotItem}
+            keyExtractor={(item) => item.id.toString()}
+            numColumns={2} // 2列で表示する
+            style={styles.wrapper}
+            columnWrapperStyle={styles.columnWrapper} // 列のラッパーのスタイル
+          />
+        </View>
+      </ScrollView>
       <Footer />
     </>
   );
@@ -128,36 +143,45 @@ export default function spot() {
 
 const styles = StyleSheet.create({
   header: {
-    // display: "flex",
-    marginTop: 50,
+    flexDirection: "row",
+    paddingLeft: 20,
+    // display: "flex"
+    marginTop: 80,
   },
   title: {
+    paddingLeft: 20, //矢印と愛知県の間を設ける
+    paddingTop: 3, //矢印と愛知県の文字位置調整
     fontSize: 30,
-    textAlign: "center",
+    fontWeight: "bold",
   },
   main: {
-    marginTop: 120,
+    flex: 1,
+    justifyContent: "center",
     // marginBottom: "3em",
   },
   wrapper: {
-    display: "flex",
-    flexWrap: "wrap",
-    gap: 10,
-    paddingHorizontal: 40,
-    justifyContent: "flex-start",
+    // display: "flex",
+    // flexWrap: "wrap",
     // flexDirection: "row",
+    paddingVertical: 10, // 上下のパディング
+    paddingHorizontal: 20, // 左右のパディング
+  },
+  columnWrapper: {
+    justifyContent: "space-between",
   },
   //各スポットのWrap
   spotWrapper: {
-    display: "flex",
+    flex: 1, //1つのアイテムの横幅大きくなる
+    margin: 5, // アイテム間のマージン
+    // display: "flex",
     height: 200,
-    width: "50%",
+    // width: "40%",
     // alignItems: "center",
-    flexDirection: "column",
+    // flexDirection: "column",
     // borderStyle: "solid",
     borderWidth: 1,
     borderColor: "rgb(30, 30, 30)",
-    borderRadius: 10,
+    borderRadius: 15,
     overflow: "hidden",
     position: "relative",
     // textAlign: "center",
