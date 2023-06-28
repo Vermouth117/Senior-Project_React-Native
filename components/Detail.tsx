@@ -16,7 +16,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import Feather from "react-native-vector-icons/Feather";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import AntDesign from "react-native-vector-icons/AntDesign";
-import Swiper from "react-native-swiper";
+import Swiper from "react-native-swiper"; // npm install react-native-swiper が必要
 
 import { cards } from "../data/cards"; // ダミーデータ
 import { Cards } from "../data/globals";
