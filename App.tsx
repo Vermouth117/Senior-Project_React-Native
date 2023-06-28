@@ -6,6 +6,8 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import Footer from './components/Footer';
 import TinderSwipe from './components/TinderSwipe';
 
+import Appp from './components/favorite/App';
+
 const photos = [
   { id: "1", uri: "https://www.tripyhotellounge.xyz/wp-content/uploads/2022/10/Fukazawa050.jpg" },
   { id: "2", uri: "https://anniversarys-mag.jp/img/p/pixta_44462056_M.jpg?w=730" },
@@ -18,7 +20,7 @@ const App = () => {
   return (
     <View style={styles.container}>
 
-      <View style={styles.header}>
+      {/* <View style={styles.header}>
         <Icon name="search-outline" style={styles.headerIcon} />
         <TextInput placeholder="キーワード検索" style={styles.headerTextInput} />
         <Icon name="menu-outline" style={styles.headerIcon} />
@@ -31,7 +33,9 @@ const App = () => {
         ))}
       </View>
 
-      <Footer />
+      <Footer /> */}
+
+      <Appp />
 
       <StatusBar style="auto" />
     </View>

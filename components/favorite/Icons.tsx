@@ -37,7 +37,7 @@ export default function Icons({favoriteData}: Props): JSX.Element {
   return (
     <ScrollView style={styles.scrollView}>
       <View style={styles.iconsWrapper}>{icons}</View>
-      <Text>aaaaa</Text>
+      {/* <Text>aaaaa</Text> */}
     </ScrollView>
   );
 }

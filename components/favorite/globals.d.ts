@@ -1,3 +1,4 @@
+
 export interface Prefecture {
   name: string;
   imgSrc: string;
