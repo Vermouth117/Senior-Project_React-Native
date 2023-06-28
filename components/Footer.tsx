@@ -1,17 +1,26 @@
 
-import { StyleSheet, View } from 'react-native';
+import { memo } from 'react';
+import { StyleSheet, View,  TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-const Footer = () => {
+const Footer = memo(() => {
   return (
     <View style={styles.footer}>
-      <Icon name="home-outline" style={styles.footerIcon} />
-      <Icon name="notifications-outline" style={styles.footerIcon} />
-      <Icon name="thumbs-up-outline" style={styles.footerIcon} />
-      <Icon name="person-outline" style={styles.footerIcon} />
+      <TouchableOpacity onPress={() => {}}>
+        <Icon name="home-outline" style={styles.footerIcon} />
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => {}}>
+        <Icon name="notifications-outline" style={styles.footerIcon} />
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => {}}>
+        <Icon name="thumbs-up-outline" style={styles.footerIcon} />
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => {}}>
+        <Icon name="person-outline" style={styles.footerIcon} />
+      </TouchableOpacity>
     </View>
   );
-};
+});
 
 const styles = StyleSheet.create({
   footer: {

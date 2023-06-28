@@ -8,7 +8,7 @@ import {
   FlatList,
 } from 'react-native';
 // import {useNavigation} from '@react-navigation/native';
-import {Prefecture} from './globals';
+import {Prefecture} from '../../data/globals';
 import {styles} from './styles';
 
 type Props = {favoriteData: Array<Prefecture>};

@@ -1,6 +1,6 @@
 
-import React, { memo, useRef, useState } from 'react';
-import { StyleSheet, Text, View, Dimensions, Image, Animated, PanResponder } from 'react-native';
+import React, { memo, useRef } from 'react';
+import { StyleSheet, Dimensions, Image, Animated, PanResponder } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 const SCREEN_HEIGHT = Dimensions.get('window').height;

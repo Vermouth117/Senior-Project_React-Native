@@ -1,17 +1,12 @@
-'use client';
+
 import React, {useState, useEffect} from 'react';
 import {View, Text} from 'react-native';
 import Icons from './Icons';
 import {styles} from './styles';
 
-import {Prefecture} from './globals';
-import Footer from './Footer';
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
+import {Prefecture} from '../../data/globals';
+import Footer from '../../components/Footer';
+
 const SERVER_URL = 'https://soranomix.onrender.com';
 
 function App(): JSX.Element {

@@ -7,7 +7,8 @@ import Footer from './components/Footer';
 import TinderSwipe from './components/TinderSwipe';
 
 import Appp from './components/favorite/App';
-import Apppp from './components/App';
+import Apppp from './components/favorite/spots/App';
+import Detail from './components/Detail';
 
 const photos = [
   { id: "1", uri: "https://www.tripyhotellounge.xyz/wp-content/uploads/2022/10/Fukazawa050.jpg" },
@@ -36,7 +37,11 @@ const App = () => {
 
       <Footer /> */}
 
+      {/* <Appp /> */}
+
       <Apppp />
+
+      {/* <Detail /> */}
 
       <StatusBar style="auto" />
     </View>
