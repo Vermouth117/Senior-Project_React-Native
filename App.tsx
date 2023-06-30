@@ -3,6 +3,11 @@ import { Dimensions, StyleSheet, Text, TextInput, View } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import { useState } from "react";
 import { withAuthenticator } from "aws-amplify-react-native";
+import { Amplify, Auth } from "aws-amplify";
+import awsconfig from "./src/aws-exports";
+
+Auth.configure(awsconfig);
+Amplify.configure(awsconfig);
 
 import Footer from "./components/Footer";
 import TinderSwipe from "./components/TinderSwipe";
