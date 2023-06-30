@@ -1,16 +1,17 @@
 
 import { StatusBar } from 'expo-status-bar';
+import { memo, useState } from 'react';
 import { Dimensions, StyleSheet, Text, TextInput, View } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { useState } from 'react';
 
+import TinderSwipe from './components/home/TinderSwipe';
+import Favorites from './components/favorites/Page';
 import Footer from './components/Footer';
-import TinderSwipe from './components/TinderSwipe';
-
-import Appp from './components/favorite/App';
-import Apppp from './components/favorite/spots/App';
-
 import { cards } from './data/cards';
+import Map from './components/map/Map';
+
+const SCREEN_HEIGHT = Dimensions.get('window').height;
+const SCREEN_WIDTH = Dimensions.get('window').width;
 
 const App = () => {
 
@@ -25,7 +26,6 @@ const App = () => {
             <Icon name="search-outline" style={styles.headerIcon} />
             <TextInput placeholder="キーワード検索" style={styles.headerTextInput} />
             <Icon name="menu-outline" style={styles.headerIcon} />
-
           </View>
           <View style={styles.main}>
             <Text style={styles.mainText}>おすすめ終了！</Text>
@@ -36,8 +36,12 @@ const App = () => {
         </View>
       }
 
-      {page === "favorite" &&
-        <Appp />
+      {page === "notice" &&
+        <Map />
+      }
+
+      {page === "favorites" &&
+        <Favorites />
       }
 
       <Footer setPage={setPage} />
@@ -49,7 +53,7 @@ const App = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     backgroundColor: 'white',
   },
   header: {
@@ -59,7 +63,6 @@ const styles = StyleSheet.create({
     margin: 10,
     padding: 10,
     top: 50,
-    // zIndex: 2,
     borderRadius: 30,
     shadowColor: 'rgb(200, 200, 200)',
     shadowOffset: {
@@ -77,6 +80,9 @@ const styles = StyleSheet.create({
   },
   main: {
     position: 'absolute',
+    height: SCREEN_HEIGHT + 30,
+    width: SCREEN_WIDTH,
+    paddingBottom: 100,
   },
   mainText: {
     position: 'absolute',

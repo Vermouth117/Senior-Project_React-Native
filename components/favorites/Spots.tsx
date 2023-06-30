@@ -3,14 +3,14 @@ import { Dispatch, SetStateAction, memo, useEffect, useState } from "react";
 import { StyleSheet, View, Text, Image, FlatList, ScrollView,
 } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import { Prefecture } from "../../../data/globals";
+import { Prefecture } from "../../data/globals";
 
 type Props = {
   setPage: Dispatch<SetStateAction<string>>;
   prefecture: string;
 }
 
-const Spot: React.FC<Props> = memo(({ setPage, prefecture }) => {
+const Spot: React.FC<Props> = ({ setPage, prefecture }) => {
 
   const dammyData = [
     {
@@ -89,22 +89,20 @@ const Spot: React.FC<Props> = memo(({ setPage, prefecture }) => {
         />
         <Text style={styles.title}>愛知県</Text>
       </View>
-      <ScrollView>
-        <View style={styles.main}>
-          <FlatList
-            // data={dammyData}
-            data={spotsData}
-            renderItem={({ item }) => renderSpotItem(item)}
-            keyExtractor={(item) => item.id.toString()}
-            numColumns={2} // 2列で表示する
-            style={styles.wrapper}
-            columnWrapperStyle={styles.columnWrapper} // 列のラッパーのスタイル
-          />
-        </View>
-      </ScrollView>
+      <View style={styles.main}>
+        <FlatList
+          // data={dammyData}
+          data={spotsData}
+          renderItem={({ item }) => renderSpotItem(item)}
+          keyExtractor={(item) => item.id.toString()}
+          numColumns={2} // 2列で表示する
+          style={styles.wrapper}
+          columnWrapperStyle={styles.columnWrapper} // 列のラッパーのスタイル
+        />
+      </View>
     </>
   );
-});
+};
 
 const styles = StyleSheet.create({
   header: {

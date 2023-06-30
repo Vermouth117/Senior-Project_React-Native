@@ -1,11 +1,11 @@
 
 import React, {useState, useEffect} from 'react';
-import {View, Text, SafeAreaView} from 'react-native';
+import {View, Text, SafeAreaView, ScrollView} from 'react-native';
 import Icons from './Icons';
 import {styles} from './styles';
 
 import {Prefecture} from '../../data/globals';
-import Spots from './spots/App';
+import Spots from './Spots';
 
 const SERVER_URL = 'https://soranomix-api-server.onrender.com';
 
@@ -28,7 +28,7 @@ function App(): JSX.Element {
   }, []);
 
   return (
-    <View>
+    <ScrollView>
     {page === "spots" && <Spots setPage={setPage} prefecture={prefecture} />}
     {page === "favorite" &&
       <SafeAreaView style={styles.container}>
@@ -42,7 +42,7 @@ function App(): JSX.Element {
         )}
       </SafeAreaView>
     }
-    </View>
+    </ScrollView>
   );
 }
 

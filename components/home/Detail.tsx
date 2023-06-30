@@ -11,7 +11,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import Swiper from "react-native-swiper"; // npm install react-native-swiper が必要
 
-import { cards } from "../data/cards"; // ダミーデータ
+import { cards } from "../../data/cards"; // ダミーデータ
 import { Dispatch, SetStateAction, memo } from "react";
 
 const ScreenWidth = Dimensions.get("window").width;
@@ -24,7 +24,6 @@ type Props = {
 const Detail: React.FC<Props> = memo(({ setPage, index }) => {
   return (
     <View style={styles.container}>
-      <ScrollView>
 
       {/* <SafeAreaView> */}
         <TouchableOpacity style={styles.backButton} onPress={() => setPage("home")}>
@@ -32,7 +31,7 @@ const Detail: React.FC<Props> = memo(({ setPage, index }) => {
         </TouchableOpacity>
       {/* </SafeAreaView> */}
 
-      {/* <View style={styles.main}> */}
+      <View style={styles.main}>
 
         <View style={styles.cardPhoto}>
           <Swiper showsButtons={false}>
@@ -132,7 +131,7 @@ const Detail: React.FC<Props> = memo(({ setPage, index }) => {
             />
           </View>
         </View>
-      {/* </View> */}
+      </View>
 
       <View style={styles.footer}>
         <TouchableOpacity>
@@ -148,7 +147,6 @@ const Detail: React.FC<Props> = memo(({ setPage, index }) => {
         </TouchableOpacity>
       </View>
       <StatusBar style="auto" />
-    </ScrollView>
     </View>
   );
 });
@@ -158,6 +156,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "white",
   },
+
   backButton: {
     position: 'absolute',
     top: 60,
@@ -174,7 +173,7 @@ const styles = StyleSheet.create({
     color: 'rgb(100, 100, 100)',
   },
   main: {
-    // flex: 1,
+    flex: 1,
   },
   cardPhoto: {
     // flexDirection: "row",

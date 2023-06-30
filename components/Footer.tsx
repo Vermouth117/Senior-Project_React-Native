@@ -13,10 +13,10 @@ const Footer: React.FC<Props> = memo(({ setPage }) => {
       <TouchableOpacity onPress={() => setPage("home")}>
         <Icon name="home-outline" style={styles.footerIcon} />
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => {}}>
+      <TouchableOpacity onPress={() => setPage("notice")}>
         <Icon name="notifications-outline" style={styles.footerIcon} />
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => setPage("favorite")}>
+      <TouchableOpacity onPress={() => setPage("favorites")}>
         <Icon name="thumbs-up-outline" style={styles.footerIcon} />
       </TouchableOpacity>
       <TouchableOpacity onPress={() => {}}>
@@ -37,7 +37,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     position: 'absolute',
     bottom: 0,
-    // zIndex: 2,
     borderTopWidth: 1,
     borderTopColor: 'rgb(230, 230, 230)',
   },
