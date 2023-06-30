@@ -1,8 +1,26 @@
 import { StatusBar } from "expo-status-bar";
-import { Dimensions, StyleSheet, Text, TextInput, View } from "react-native";
+
+/**
+ * リアクトネイティブで使うタグ
+ */
+import {
+  Dimensions,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+  Button,
+} from "react-native";
+/**
+ * ベクターアイコンライブラリ
+ */
 import Icon from "react-native-vector-icons/Ionicons";
 import { useState } from "react";
-import { withAuthenticator } from "aws-amplify-react-native";
+import {
+  Authenticator,
+  useAuthenticator,
+  useTheme,
+} from "@aws-amplify/ui-react-native";
 import { Amplify, Auth } from "aws-amplify";
 import awsconfig from "./src/aws-exports";
 
@@ -17,7 +35,7 @@ import Apppp from "./components/favorite/spots/App";
 
 import { cards } from "./data/cards";
 
-const App = () => {
+const App1 = () => {
   const [page, setPage] = useState("home");
 
   return (
@@ -88,4 +106,115 @@ const styles = StyleSheet.create({
   },
 });
 
-export default withAuthenticator(App);
+// export default withAuthenticator(App);
+
+//FIXME cognitoゾーン
+
+const MyAppHeader = () => {
+  const {
+    tokens: { space, fontSizes },
+  } = useTheme();
+  return (
+    <View>
+      <Text style={{ fontSize: fontSizes.xxxl, padding: space.xl }}>
+        とき旅
+      </Text>
+    </View>
+  );
+};
+
+function SignOutButton() {
+  const { signOut } = useAuthenticator();
+  return <Button onPress={signOut} title="Sign Out" />;
+}
+
+function App(user: any) {
+  const MyAppHeader = () => {
+    const {
+      tokens: { space, fontSizes },
+    } = useTheme();
+    return (
+      <View>
+        <Text style={{ fontSize: fontSizes.xxxl, padding: space.xl }}>
+          My Header
+        </Text>
+      </View>
+    );
+  };
+  return (
+    <Authenticator.Provider>
+      <Authenticator
+        components={{
+          //NOTEサインアップフィールド
+          SignUp: ({ fields, ...props }) => (
+            <Authenticator.SignUp
+              {...props}
+              fields={[
+                {
+                  name: "username",
+                  label: "ユーザーネーム",
+                  type: "default",
+                  placeholder: "ユーザーネームを入力してください",
+                },
+                {
+                  name: "nickname",
+                  label: "ニックネーム",
+                  type: "default",
+                  placeholder: "アプリでのニックネームを入力してください",
+                },
+                {
+                  name: "password",
+                  label: "パスワード",
+                  type: "default",
+                  placeholder: "8文字以上のパスワードを入力してください",
+                  secureTextEntry: true,
+                },
+                {
+                  name: "email",
+                  label: "email",
+                  type: "default",
+                  placeholder: "メールアドレスを入力してください",
+                },
+              ]}
+            />
+          ),
+          //NOTEサインインフィールド
+          SignIn: ({ fields, ...props }) => (
+            <Authenticator.SignIn
+              {...props}
+              fields={[
+                {
+                  name: "username",
+                  label: "ユーザーネーム",
+                  type: "default",
+                  placeholder: "ユーザーネーム",
+                },
+
+                {
+                  name: "password",
+                  label: "パスワード",
+                  type: "default",
+                  placeholder: "パスワード",
+                  secureTextEntry: true,
+                },
+              ]}
+            />
+          ),
+        }}
+        //コンポーネンツend
+        Header={MyAppHeader}
+      >
+        <View style={style.container}>
+          <App1 />
+          <SignOutButton />
+        </View>
+      </Authenticator>
+    </Authenticator.Provider>
+  );
+}
+
+const style = StyleSheet.create({
+  container: { flex: 1, alignItems: "center", justifyContent: "center" },
+});
+
+export default App;
