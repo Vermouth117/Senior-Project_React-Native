@@ -8,13 +8,13 @@ import EvilIcons from "react-native-vector-icons/EvilIcons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import Feather from "react-native-vector-icons/Feather";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import AntDesign from "react-native-vector-icons/AntDesign";
 import Swiper from "react-native-swiper"; // npm install react-native-swiper が必要
 
 import { cards } from "../../data/cards"; // ダミーデータ
 import { Dispatch, SetStateAction, memo } from "react";
 
 const ScreenWidth = Dimensions.get("window").width;
+const ScreenHeight = Dimensions.get("window").height;
 
 type Props = {
   setPage: Dispatch<SetStateAction<string>>,
@@ -23,7 +23,7 @@ type Props = {
 
 const Detail: React.FC<Props> = memo(({ setPage, index }) => {
   return (
-    <View style={styles.container}>
+    <ScrollView style={{ zIndex: 1 }}>
 
       {/* <SafeAreaView> */}
         <TouchableOpacity style={styles.backButton} onPress={() => setPage("home")}>
@@ -132,31 +132,12 @@ const Detail: React.FC<Props> = memo(({ setPage, index }) => {
           </View>
         </View>
       </View>
-
-      <View style={styles.footer}>
-        <TouchableOpacity>
-          <View style={styles.dislikeButton}>
-            <AntDesign name="dislike2" style={styles.dislikeIcon} />
-          </View>
-        </TouchableOpacity>
-
-        <TouchableOpacity>
-          <View style={styles.likeButton}>
-            <AntDesign name="like2" style={styles.likeIcon} />
-          </View>
-        </TouchableOpacity>
-      </View>
       <StatusBar style="auto" />
-    </View>
+    </ScrollView>
   );
 });
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "white",
-  },
-
   backButton: {
     position: 'absolute',
     top: 60,
@@ -173,15 +154,15 @@ const styles = StyleSheet.create({
     color: 'rgb(100, 100, 100)',
   },
   main: {
-    flex: 1,
+
   },
   cardPhoto: {
     // flexDirection: "row",
     height: 350,
   },
   description: {
-    // flex: 1,
     padding: 20,
+    backgroundColor: 'white',
   },
   title: {
     fontSize: 28,
@@ -196,25 +177,6 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderTopWidth: 1,
     borderColor: 'rgb(230, 230, 230)',
-  },
-  footer: {
-    zIndex: 1,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: 16,
-  },
-  dislikeButton: {
-    // ディスライクボタンのスタイルを指定する
-  },
-  dislikeIcon: {
-    // ディスライクアイコンのスタイルを指定する
-  },
-  likeButton: {
-    // ライクボタンのスタイルを指定する
-  },
-  likeIcon: {
-    // ライクアイコンのスタイルを指定する
   },
   icon: {
 

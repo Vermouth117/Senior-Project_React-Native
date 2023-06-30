@@ -80,31 +80,7 @@ export const cards = [
   },
   {
     images: [
-      "https://travel.rakuten.co.jp/mytrip/sites/mytrip/files/styles/1cal_image/public/2022-10/News-202210-laguna-01-2.jpg?itok=mHYN0LnN",
-    ],
-    title: "ラグーナ蒲郡",
-    postCode: "443-0014",
-    prefecture: "愛知県",
-    address: "愛知県蒲郡市海陽町2丁目3-1",
-    price: 2250,
-    business: "10:00～18:00",
-    phoneNumber: "0570-097117",
-    parking: "有料・ラグナシア駐車場（乗用車1000台）1台1000円",
-    toilet: "あり",
-    closed: "なし",
-    access: "車",
-    publicTransport: [
-      "名古屋～〈快速〉蒲郡（約40分）蒲郡駅より無料シャトルバス運行中!約15分",
-      "浜松～〈普通〉豊橋（約35分）～〈普通〉三河大塚（約15分）※三河大塚駅より路線バス、約10分 ●バス停「ラグーナ 蒲郡」 大人150円 子供80円 ※三河大塚駅より徒歩、約20分",
-    ],
-    car: [
-      "東名高速道路音羽蒲郡ICよりオレンジロード・247号中央バイパスを経由し、以降直進。 音羽蒲郡IC ～ラグーナテンボス 約20分",
-      "東名高速道路豊川ICより、国道151号線を経由し、以降道路標識に順じて。 豊川IC ～ラグーナテンボス 約35分",
-    ],
-  },
-  {
-    images: [
-      "https://www.aichi-now.jp/upload/spot_images/13a8fa1f15248f16d149b3059f62be21.jpg",
+      "https://inuyama.gr.jp/wordpress/wp-content/uploads/2016/01/1-1024x683.png",
     ],
     title: "犬山城下町",
     postCode: "484-0081",
@@ -126,6 +102,30 @@ export const cards = [
       "名神高速「小牧IC」から約25分",
       "名古屋高速「小牧北IC」から約25分",
       "中央道「小牧東IC」から約25分",
+    ],
+  },
+  {
+    images: [
+      "https://travel.rakuten.co.jp/mytrip/sites/mytrip/files/styles/1cal_image/public/2022-10/News-202210-laguna-01-2.jpg?itok=mHYN0LnN",
+    ],
+    title: "ラグーナ蒲郡",
+    postCode: "443-0014",
+    prefecture: "愛知県",
+    address: "愛知県蒲郡市海陽町2丁目3-1",
+    price: 2250,
+    business: "10:00～18:00",
+    phoneNumber: "0570-097117",
+    parking: "有料・ラグナシア駐車場（乗用車1000台）1台1000円",
+    toilet: "あり",
+    closed: "なし",
+    access: "車",
+    publicTransport: [
+      "名古屋～〈快速〉蒲郡（約40分）蒲郡駅より無料シャトルバス運行中!約15分",
+      "浜松～〈普通〉豊橋（約35分）～〈普通〉三河大塚（約15分）※三河大塚駅より路線バス、約10分 ●バス停「ラグーナ 蒲郡」 大人150円 子供80円 ※三河大塚駅より徒歩、約20分",
+    ],
+    car: [
+      "東名高速道路音羽蒲郡ICよりオレンジロード・247号中央バイパスを経由し、以降直進。 音羽蒲郡IC ～ラグーナテンボス 約20分",
+      "東名高速道路豊川ICより、国道151号線を経由し、以降道路標識に順じて。 豊川IC ～ラグーナテンボス 約35分",
     ],
   },
 ];

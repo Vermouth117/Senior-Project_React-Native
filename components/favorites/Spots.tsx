@@ -1,8 +1,8 @@
 
 import { Dispatch, SetStateAction, memo, useEffect, useState } from "react";
-import { StyleSheet, View, Text, Image, FlatList, ScrollView,
+import { StyleSheet, View, Text, Image, FlatList, ScrollView, SafeAreaView,
 } from "react-native";
-import Ionicons from "react-native-vector-icons/Ionicons";
+import EvilIcons from "react-native-vector-icons/EvilIcons";
 import { Prefecture } from "../../data/globals";
 
 type Props = {
@@ -45,10 +45,18 @@ const Spot: React.FC<Props> = ({ setPage, prefecture }) => {
       access: "車",
     },
     {
+      id: 79,
+      name: "ラグーナ蒲郡",
+      imgSrc:
+        "https://travel.rakuten.co.jp/mytrip/sites/mytrip/files/styles/1cal_image/public/2022-10/News-202210-laguna-01-2.jpg?itok=mHYN0LnN",
+      price: 0,
+      access: "車",
+    },
+    {
       id: 108,
       name: "犬山城下町",
       imgSrc:
-        "https://www.aichi-now.jp/upload/spot_images/13a8fa1f15248f16d149b3059f62be21.jpg",
+        "https://inuyama.gr.jp/wordpress/wp-content/uploads/2016/01/1-1024x683.png",
       price: 0,
       access: "車",
     },
@@ -80,42 +88,48 @@ const Spot: React.FC<Props> = ({ setPage, prefecture }) => {
   );
 
   return (
-    <>
-      <View style={styles.header}>
-        <Ionicons
-          name="ios-arrow-back"
-          size={40}
-          onPress={() => setPage("favorite")}
-        />
-        <Text style={styles.title}>愛知県</Text>
+    <View>
+      <SafeAreaView>
+          <View style={styles.header}>
+            <EvilIcons
+              name="chevron-left"
+              size={40}
+              onPress={() => setPage("favorites")}
+              />
+            <Text style={styles.title}>愛知県</Text>
+          </View>
+        <ScrollView>
+          <View style={styles.main}>
+            <FlatList
+              data={dammyData}
+              // data={spotsData}
+              renderItem={({ item }) => renderSpotItem(item)}
+              keyExtractor={(item) => item.id.toString()}
+              numColumns={2} // 2列で表示する
+              style={styles.wrapper}
+              columnWrapperStyle={styles.columnWrapper} // 列のラッパーのスタイル
+            />
+          </View>
+        </ScrollView>
+      </SafeAreaView>
+      <View>
+        <Text>asdf</Text>
       </View>
-      <View style={styles.main}>
-        <FlatList
-          // data={dammyData}
-          data={spotsData}
-          renderItem={({ item }) => renderSpotItem(item)}
-          keyExtractor={(item) => item.id.toString()}
-          numColumns={2} // 2列で表示する
-          style={styles.wrapper}
-          columnWrapperStyle={styles.columnWrapper} // 列のラッパーのスタイル
-        />
-      </View>
-    </>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
-    paddingLeft: 20,
-    // display: "flex"
-    marginTop: 80,
+    top: 25,
+    left: 30,
+    fontSize: 30, 
+    backgroundColor: 'white',
+    marginBottom: 30,
   },
   title: {
-    paddingLeft: 20, //矢印と愛知県の間を設ける
-    paddingTop: 3, //矢印と愛知県の文字位置調整
     fontSize: 30,
-    fontWeight: "bold",
   },
   main: {
     flex: 1,

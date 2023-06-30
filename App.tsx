@@ -1,6 +1,6 @@
 
 import { StatusBar } from 'expo-status-bar';
-import { memo, useState } from 'react';
+import { Dispatch, SetStateAction, createContext, memo, useState } from 'react';
 import { Dimensions, StyleSheet, Text, TextInput, View } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
@@ -9,47 +9,71 @@ import Favorites from './components/favorites/Page';
 import Footer from './components/Footer';
 import { cards } from './data/cards';
 import Map from './components/map/Map';
+import Detail from './components/home/Detail';
+import Spots from './components/favorites/Spots';
 
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
-const App = () => {
+type Props = [
+  page: string,
+  setPage: Dispatch<SetStateAction<string>>,
+  prefecture: string,
+  setPrefecture: Dispatch<SetStateAction<string>>,
+]
+
+export const MyContext = createContext<Props>([ "", () => {}, "", () => {} ]);
+
+const App = memo(() => {
 
   const [page, setPage] = useState("home");
+  const [index, setIndex] = useState(0);
+  const [prefecture, setPrefecture] = useState("");
 
   return (
     <View style={styles.container}>
-
-      {page === "home" &&
-        <View>
-          <View style={styles.header}>
-            <Icon name="search-outline" style={styles.headerIcon} />
-            <TextInput placeholder="キーワード検索" style={styles.headerTextInput} />
-            <Icon name="menu-outline" style={styles.headerIcon} />
+      <MyContext.Provider value={[page, setPage, prefecture, setPrefecture]}>
+        {page === "home" &&
+          <View>
+            <View style={styles.header}>
+              <Icon name="search-outline" style={styles.headerIcon} />
+              <TextInput placeholder="キーワード検索" style={styles.headerTextInput} />
+              <Icon name="menu-outline" style={styles.headerIcon} />
+            </View>
+            <View style={styles.main}>
+              <Text style={styles.mainText}>おすすめ終了！</Text>
+              {cards.map((card, index) => (
+                <TinderSwipe key={index} index={index} card={card} setPage={setPage} setIndex={setIndex} />
+              ))}
+            </View>
           </View>
-          <View style={styles.main}>
-            <Text style={styles.mainText}>おすすめ終了！</Text>
-            {cards.map((card, index) => (
-              <TinderSwipe key={index} index={index} card={card} />
-            ))}
-          </View>
-        </View>
-      }
+        }
 
-      {page === "notice" &&
-        <Map />
-      }
+        {page === "detail" &&
+          <Detail setPage={setPage} index={index} />
+        }
 
-      {page === "favorites" &&
-        <Favorites />
-      }
+        {page === "notice" &&
+          <Map />
+        }
 
-      <Footer setPage={setPage} />
+        {page === "favorites" &&
+          <Favorites />
+        }
 
-      <StatusBar style="auto" />
+        {page === "spots" &&
+          <Spots setPage={setPage} prefecture={prefecture} />
+        }
+
+        {page !== "detail" && page !== "spots" &&
+          <Footer setPage={setPage} />
+        }
+
+        <StatusBar style="auto" />
+      </MyContext.Provider>
     </View>
   );
-};
+});
 
 const styles = StyleSheet.create({
   container: {
@@ -70,6 +94,7 @@ const styles = StyleSheet.create({
       height: 1,
     },
     shadowOpacity: 0.5,
+    zIndex: 1,
   },
   headerIcon: {
     fontSize: 30,
@@ -80,14 +105,14 @@ const styles = StyleSheet.create({
   },
   main: {
     position: 'absolute',
-    height: SCREEN_HEIGHT + 30,
+    height: SCREEN_HEIGHT,
     width: SCREEN_WIDTH,
     paddingBottom: 100,
   },
   mainText: {
     position: 'absolute',
     marginTop: Dimensions.get('window').height / 2,
-    marginHorizontal: 150,
+    marginHorizontal: 140,
   },
 });
 

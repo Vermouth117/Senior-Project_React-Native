@@ -1,5 +1,5 @@
 
-import React, { memo, useRef, useState } from 'react';
+import React, { Dispatch, SetStateAction, memo, useRef, useState } from 'react';
 import { StyleSheet, Dimensions, Image, Animated, PanResponder, View, TouchableWithoutFeedback, Text, ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
@@ -13,11 +13,13 @@ const SCREEN_WIDTH = Dimensions.get('window').width;
 type Props = {
   index: number;
   card: Cards;
+  setPage: Dispatch<SetStateAction<string>>;
+  setIndex: Dispatch<SetStateAction<number>>;
 };
 
 const SERVER_URL = "https://soranomix-api-server.onrender.com";
 
-const TinderSwipe: React.FC<Props> = memo(({ index, card }) => {
+const TinderSwipe: React.FC<Props> = memo(({ index, card, setPage, setIndex }) => {
 
   const position = useRef(new Animated.ValueXY()).current;
 
@@ -71,16 +73,16 @@ const TinderSwipe: React.FC<Props> = memo(({ index, card }) => {
     })
   ).current;
 
-  const [page, setPage] = useState("home");
+  // const [page, setPage] = useState("home");
 
   return (
     <View>
-      {page === "detail" &&
+      {/* {page === "detail" &&
         <ScrollView>
           <Detail setPage={setPage} index={index} />
         </ScrollView>
       }
-      {page === "home" &&
+      {page === "home" && */}
         <Animated.View
           {...panResponder.panHandlers}
           key={index}
@@ -163,7 +165,7 @@ const TinderSwipe: React.FC<Props> = memo(({ index, card }) => {
                 source={{ uri: uri }}
               />
             )}
-            <TouchableWithoutFeedback onPressOut={() => setPage("detail")}>
+            <TouchableWithoutFeedback onPressOut={() => { setPage("detail"); setIndex(index) }}>
               <View style={styles.cardDetailContainer}>
                 <View style={styles.cardTextContainer}>
                   <Text style={styles.cardText} >{card.title}</Text>
@@ -181,7 +183,7 @@ const TinderSwipe: React.FC<Props> = memo(({ index, card }) => {
             </TouchableWithoutFeedback>
           </View>
         </Animated.View>
-      }
+      {/* } */}
     </View>
   );
 });
