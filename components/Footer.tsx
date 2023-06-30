@@ -1,26 +1,144 @@
-
-import { Dispatch, SetStateAction, memo } from 'react';
-import { StyleSheet, View,  TouchableOpacity } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
+import { Dispatch, SetStateAction, memo, useState } from "react";
+import { StyleSheet, View, TouchableOpacity, Text } from "react-native";
+import Icon from "react-native-vector-icons/Ionicons";
 
 type Props = {
   setPage: Dispatch<SetStateAction<string>>;
-}
+};
 
 const Footer: React.FC<Props> = memo(({ setPage }) => {
+  const [selectedIcon, setSelectedIcon] = useState("home");
+  const handleIconPress = (page: string) => {
+    setSelectedIcon(page);
+    setPage(page);
+  };
+
   return (
     <View style={styles.footer}>
-      <TouchableOpacity onPress={() => setPage("home")}>
-        <Icon name="home-outline" style={styles.footerIcon} />
+      {/* ホームボタン */}
+      <TouchableOpacity
+        onPress={() => handleIconPress("home")}
+        style={styles.iconContainer}
+      >
+        <Icon
+          name="home-outline"
+          style={[
+            styles.footerIcon,
+            {
+              color: selectedIcon === "home" ? "#9e1b1b" : "rgb(130, 130, 130)",
+            },
+          ]}
+        />
+        <Text
+          style={[
+            styles.text,
+            {
+              color: selectedIcon === "home" ? "#9e1b1b" : "rgb(130, 130, 130)",
+            },
+          ]}
+        >
+          ホーム
+        </Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => setPage("notice")}>
-        <Icon name="notifications-outline" style={styles.footerIcon} />
+
+      {/* お知らせボタン */}
+      <TouchableOpacity onPress={() => {}} style={styles.iconContainer}>
+        <Icon
+          name="notifications-outline"
+          style={[
+            styles.footerIcon,
+            {
+              color: selectedIcon === "" ? "#9e1b1b" : "rgb(130, 130, 130)",
+            },
+          ]}
+        />
+        <Text
+          style={[
+            styles.text,
+            {
+              color: selectedIcon === "" ? "#9e1b1b" : "rgb(130, 130, 130)",
+            },
+          ]}
+        >
+          お知らせ
+        </Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => setPage("favorites")}>
-        <Icon name="thumbs-up-outline" style={styles.footerIcon} />
+
+      {/* 地図ボタン */}
+      <TouchableOpacity
+        onPress={() => handleIconPress("map")}
+        style={styles.iconContainer}
+      >
+        <Icon
+          name="location-outline"
+          style={[
+            styles.footerIcon,
+            {
+              color: selectedIcon === "map" ? "#9e1b1b" : "rgb(130, 130, 130)",
+            },
+          ]}
+        />
+        <Text
+          style={[
+            styles.text,
+            {
+              color: selectedIcon === "map" ? "#9e1b1b" : "rgb(130, 130, 130)",
+            },
+          ]}
+        >
+          地図
+        </Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => {}}>
-        <Icon name="person-outline" style={styles.footerIcon} />
+
+      {/* お気に入りボタン */}
+      <TouchableOpacity
+        onPress={() => handleIconPress("favorites")}
+        style={styles.iconContainer}
+      >
+        <Icon
+          name="thumbs-up-outline"
+          style={[
+            styles.footerIcon,
+            {
+              color:
+                selectedIcon === "favorites" ? "#9e1b1b" : "rgb(130, 130, 130)",
+            },
+          ]}
+        />
+        <Text
+          style={[
+            styles.text,
+            {
+              color:
+                selectedIcon === "favorites" ? "#9e1b1b" : "rgb(130, 130, 130)",
+            },
+          ]}
+        >
+          お気に入り
+        </Text>
+      </TouchableOpacity>
+
+      {/* マイページボタン */}
+      <TouchableOpacity onPress={() => {}} style={styles.iconContainer}>
+        <Icon
+          name="person-outline"
+          style={[
+            styles.footerIcon,
+            {
+              color: selectedIcon === "" ? "#9e1b1b" : "rgb(130, 130, 130)",
+            },
+          ]}
+        />
+        <Text
+          style={[
+            styles.text,
+            {
+              color: selectedIcon === "" ? "#9e1b1b" : "rgb(130, 130, 130)",
+            },
+          ]}
+        >
+          マイページ
+        </Text>
       </TouchableOpacity>
     </View>
   );
@@ -28,21 +146,29 @@ const Footer: React.FC<Props> = memo(({ setPage }) => {
 
 const styles = StyleSheet.create({
   footer: {
-    flexDirection: 'row',
-    width: '100%',
-    backgroundColor: 'white',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    width: "100%",
+    backgroundColor: "rgb(255, 255, 255)",
+    justifyContent: "space-between",
     paddingVertical: 10,
-    paddingBottom: 35,
+    paddingBottom: 27,
     paddingHorizontal: 20,
-    position: 'absolute',
+    position: "absolute",
     bottom: 0,
     borderTopWidth: 1,
-    borderTopColor: 'rgb(230, 230, 230)',
+    borderTopColor: "rgb(230, 230, 230)",
+  },
+  iconContainer: {
+    flexDirection: "column",
+    alignItems: "center",
+    width: 60,
   },
   footerIcon: {
-    fontSize: 35,
-    color: 'rgb(130, 130, 130)',
+    fontSize: 30,
+  },
+  text: {
+    fontSize: 12,
+    color: "black",
   },
 });
 
