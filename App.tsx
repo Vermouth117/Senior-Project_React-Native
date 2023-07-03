@@ -16,8 +16,8 @@ import { Prefecture } from './data/globals';
 
 import * as Notifications from 'expo-notifications';
 
-// import Storage from 'react-native-storage';
-// import AsyncStorage from '@react-native-community/async-storage';
+import Storage from 'react-native-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -41,17 +41,19 @@ export const MyContext = createContext<Props>(["", () => {}, "", () => {}]);
 
 const SERVER_URL = 'https://soranomix-api-server.onrender.com';
 
-// //ストレージの作成
-// const storage: Storage = new Storage({
-//   // 最大容量
-//   size: 1000,
-//   // バックエンドにAsyncStorageを使う
-//   storageBackend: AsyncStorage,
-//   // キャッシュ期限(null=期限なし)
-//   defaultExpires: null,
-//   // メモリにキャッシュするかどうか
-//   enableCache: true,
-// })
+//ストレージの作成
+const storage: Storage = new Storage({
+  // 最大容量
+  size: 1000,
+  // バックエンドにAsyncStorageを使う
+  storageBackend: AsyncStorage,
+  // キャッシュ期限(null=期限なし)
+  defaultExpires: null,
+  // メモリにキャッシュするかどうか
+  enableCache: true,
+  // 初期化時にデータを同期するためのオプション
+  sync: {},
+})
 
 const App = memo(() => {
 
@@ -59,8 +61,18 @@ const App = memo(() => {
     requestPermissionsAsync();
     Notifications.setBadgeCountAsync(0);
 
+  // データを保存する
+  storage.save({
+    key: 'dataKey', // データのキー（一意の値）
+    data: {
+      name: 'John',
+      age: 30,
+    },
+    expires: 1000 * 3600, // 有効期限を指定する場合（ミリ秒）
+  });
+
     // storage
-    // .load({key: 'someKey'})
+    // .load({key: 'dataKey'})
     // .then(res => console.log(res))
     // .catch(err => console.warn(err))
 

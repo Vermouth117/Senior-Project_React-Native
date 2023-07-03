@@ -6,23 +6,22 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { cards } from '../../data/cards';
 import { Cards } from '../../data/globals';
 
-// import Storage from 'react-native-storage';
-// import AsyncStorage from '@react-native-community/async-storage';
 import Storage from 'react-native-storage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-
 //ストレージの作成
-// const storage: Storage = new Storage({
-//     // 最大容量
-//     size: 1000,
-//     // バックエンドにAsyncStorageを使う
-//     storageBackend: AsyncStorage,
-//     // キャッシュ期限(null=期限なし)
-//     defaultExpires: null,
-//     // メモリにキャッシュするかどうか
-//     enableCache: true,
-// })
+const storage: Storage = new Storage({
+  // 最大容量
+  size: 1000,
+  // バックエンドにAsyncStorageを使う
+  storageBackend: AsyncStorage,
+  // キャッシュ期限(null=期限なし)
+  defaultExpires: null,
+  // メモリにキャッシュするかどうか
+  enableCache: true,
+  // 初期化時にデータを同期するためのオプション
+  sync: {},
+})
 
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 const SCREEN_WIDTH = Dimensions.get('window').width;
@@ -77,10 +76,10 @@ const TinderSwipe: React.FC<Props> = memo(({ index, card, setPage, setIndex, sch
 
             scheduleNotificationAsync();
 
-            // storage
-            // .load({key: 'someKey'})
-            // .then(res => console.log(res))
-            // .catch(err => console.warn(err))
+            storage
+            .load({key: 'dataKey'})
+            .then(res => console.log(res))
+            .catch(err => console.warn(err))
 
             // // ストレージに保存
             // storage.save({
