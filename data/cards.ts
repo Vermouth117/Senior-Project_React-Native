@@ -80,7 +80,7 @@ export const cards = [
   },
   {
     images: [
-      "https://inuyama.gr.jp/wordpress/wp-content/uploads/2016/01/1-1024x683.png",
+      "https://aichinavi.jp/upload/spot_images/a0a09a7407e66f560e2483b27911a820.jpg",
     ],
     title: "犬山城下町",
     postCode: "484-0081",

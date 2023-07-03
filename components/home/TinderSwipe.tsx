@@ -1,9 +1,8 @@
 
-import React, { Dispatch, SetStateAction, memo, useRef, useState } from 'react';
-import { StyleSheet, Dimensions, Image, Animated, PanResponder, View, TouchableWithoutFeedback, Text, ScrollView } from 'react-native';
+import React, { Dispatch, SetStateAction, memo, useRef } from 'react';
+import { StyleSheet, Dimensions, Image, Animated, PanResponder, View, TouchableWithoutFeedback, Text } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-import Detail from './Detail';
 import { cards } from '../../data/cards';
 import { Cards } from '../../data/globals';
 
@@ -73,117 +72,108 @@ const TinderSwipe: React.FC<Props> = memo(({ index, card, setPage, setIndex }) =
     })
   ).current;
 
-  // const [page, setPage] = useState("home");
-
   return (
     <View>
-      {/* {page === "detail" &&
-        <ScrollView>
-          <Detail setPage={setPage} index={index} />
-        </ScrollView>
-      }
-      {page === "home" && */}
+      <Animated.View
+        {...panResponder.panHandlers}
+        key={index}
+        style={[
+          { transform: [
+            ...position.getTranslateTransform(),
+            {
+              rotate: position.x.interpolate({
+                inputRange: [-SCREEN_WIDTH / 2, 0, SCREEN_WIDTH / 2],
+                outputRange: ['-10deg', '0deg', '10deg'],
+                extrapolate: 'clamp',
+              }),
+            },
+            ] },
+          styles.cardContainer,
+        ]}
+      >
         <Animated.View
-          {...panResponder.panHandlers}
-          key={index}
-          style={[
-            { transform: [
-              ...position.getTranslateTransform(),
-              {
-                rotate: position.x.interpolate({
-                  inputRange: [-SCREEN_WIDTH / 2, 0, SCREEN_WIDTH / 2],
-                  outputRange: ['-10deg', '0deg', '10deg'],
-                  extrapolate: 'clamp',
-                }),
-              },
-              ] },
-            styles.cardContainer,
-          ]}
+          style={{
+            transform: [{ rotate: "30deg" }],
+            position: "absolute",
+            top: 40,
+            right: 40,
+            zIndex: 1000,
+            opacity: position.x.interpolate({
+              inputRange: [-SCREEN_WIDTH / 2, 0, SCREEN_WIDTH / 2],
+              outputRange: [1, 0, 0],
+              extrapolate: 'clamp',
+            }),
+          }}
         >
-          <Animated.View
+          <Icon name="arrow-undo-outline"
             style={{
-              transform: [{ rotate: "30deg" }],
-              position: "absolute",
-              top: 40,
-              right: 40,
-              zIndex: 1000,
-              opacity: position.x.interpolate({
-                inputRange: [-SCREEN_WIDTH / 2, 0, SCREEN_WIDTH / 2],
-                outputRange: [1, 0, 0],
-                extrapolate: 'clamp',
-              }),
+              backgroundColor: "#9e1b1b",
+              color: "white",
+              borderRadius: 28,
+              fontSize: 35,
+              padding: 10,
+              overflow: "hidden",
             }}
-          >
-            <Icon name="arrow-undo-outline"
-              style={{
-                backgroundColor: "rgb(200, 70, 130)",
-                color: "white",
-                borderRadius: 28,
-                fontSize: 35,
-                padding: 10,
-                overflow: "hidden",
-              }}
-            />
-          </Animated.View>
-          <Animated.View
-            style={{
-              transform: [{ rotate: "-30deg" }],
-              position: "absolute",
-              top: 40,
-              left: 40,
-              zIndex: 1000,
-              opacity: position.x.interpolate({
-                inputRange: [-SCREEN_WIDTH / 2, 0, SCREEN_WIDTH / 2],
-                outputRange: [0, 0, 1],
-                extrapolate: 'clamp',
-              }),
-            }}
-          >
-            <Icon name="thumbs-up-outline"
-              style={{
-                backgroundColor: "rgb(70, 100, 200)",
-                color: "white",
-                borderRadius: 28,
-                fontSize: 35,
-                padding: 10,
-                overflow: "hidden",
-              }}
-            />
-          </Animated.View>
-          <View style={{ flex: 1 }}>
-            {typeof card.images === "string"
-            ? JSON.parse(card.images).map((uri: string, index: number) =>
-              <Image
-                key={index}
-                style={styles.cardImage}
-                source={{ uri: uri }}
-              />)
-            : card.images.map((uri: string, index: number) =>
-              <Image
-                key={index}
-                style={styles.cardImage}
-                source={{ uri: uri }}
-              />
-            )}
-            <TouchableWithoutFeedback onPressOut={() => { setPage("detail"); setIndex(index) }}>
-              <View style={styles.cardDetailContainer}>
-                <View style={styles.cardTextContainer}>
-                  <Text style={styles.cardText} >{card.title}</Text>
-                </View>
-                <View style={styles.cardTextTokimekiContainer}>
-                  <Text style={styles.cardTextAddressTitle}>
-                    <Icon name="location-outline" style={styles.cardTextAddressTitle}/>
-                    所在地
-                  </Text>
-                  <Text style={styles.cardTextPostCode}>{`〒${card.postCode}`}</Text>
-                  <Text style={styles.cardTextAddress}>{card.address}</Text>
-                  <Text style={styles.cardTextTokimeki}>ときめきキャッチフレーズ！？</Text>
-                </View>
-              </View>
-            </TouchableWithoutFeedback>
-          </View>
+          />
         </Animated.View>
-      {/* } */}
+        <Animated.View
+          style={{
+            transform: [{ rotate: "-30deg" }],
+            position: "absolute",
+            top: 40,
+            left: 40,
+            zIndex: 1000,
+            opacity: position.x.interpolate({
+              inputRange: [-SCREEN_WIDTH / 2, 0, SCREEN_WIDTH / 2],
+              outputRange: [0, 0, 1],
+              extrapolate: 'clamp',
+            }),
+          }}
+        >
+          <Icon name="thumbs-up-outline"
+            style={{
+              backgroundColor: "rgb(70, 100, 200)",
+              color: "white",
+              borderRadius: 28,
+              fontSize: 35,
+              padding: 10,
+              overflow: "hidden",
+            }}
+          />
+        </Animated.View>
+        <View style={{ flex: 1 }}>
+          {typeof card.images === "string"
+          ? JSON.parse(card.images).map((uri: string, index: number) =>
+            <Image
+              key={index}
+              style={styles.cardImage}
+              source={{ uri: uri }}
+            />)
+          : card.images.map((uri: string, index: number) =>
+            <Image
+              key={index}
+              style={styles.cardImage}
+              source={{ uri: uri }}
+            />
+          )}
+          <TouchableWithoutFeedback onPressOut={() => { setPage("detail"); setIndex(index) }}>
+            <View style={styles.cardDetailContainer}>
+              <View style={styles.cardTextContainer}>
+                <Text style={styles.cardText} >{card.title}</Text>
+              </View>
+              <View style={styles.cardTextTokimekiContainer}>
+                <Text style={styles.cardTextAddressTitle}>
+                  <Icon name="location-outline" style={styles.cardTextAddressTitle}/>
+                  所在地
+                </Text>
+                <Text style={styles.cardTextPostCode}>{`〒${card.postCode}`}</Text>
+                <Text style={styles.cardTextAddress}>{card.address}</Text>
+                <Text style={styles.cardTextTokimeki}>大人も子供も楽しめる、〇〇が美味しい、入場料無料、朝も夜も楽しめる、駅近、駐車場無料、映えスポット、カップルにおすすめ、ペットOK、〇〇通り・施設近く、食べ歩きOK、コスパ最高、ちょっと贅沢、記念日デート、〇〇が綺麗、アニメテレビに登場</Text>
+              </View>
+            </View>
+          </TouchableWithoutFeedback>
+        </View>
+      </Animated.View>
     </View>
   );
 });
@@ -210,7 +200,8 @@ const styles = StyleSheet.create({
   },
   cardDetailContainer: {
     height: 250,
-    padding: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 15,
     backgroundColor: 'white',
     borderBottomEndRadius: 20,
     borderBottomStartRadius: 20,
@@ -239,7 +230,7 @@ const styles = StyleSheet.create({
   cardTextAddress: {
     fontSize: 20,
     paddingLeft: 5,
-    paddingBottom: 35,
+    paddingBottom: 5,
     color: 'rgb(100, 100, 100)',
   },
   cardTextTokimeki: {

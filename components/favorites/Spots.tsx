@@ -1,16 +1,17 @@
 
 import { Dispatch, SetStateAction, memo, useEffect, useState } from "react";
-import { StyleSheet, View, Text, Image, FlatList, ScrollView, SafeAreaView,
-} from "react-native";
+import { StyleSheet, View, Text, Image, FlatList, SafeAreaView, TouchableOpacity } from "react-native";
 import EvilIcons from "react-native-vector-icons/EvilIcons";
-import { Prefecture } from "../../data/globals";
+
+import { cards } from "../../data/cards";   // ダミーデータ
 
 type Props = {
   setPage: Dispatch<SetStateAction<string>>;
   prefecture: string;
+  setIndex: Dispatch<SetStateAction<number>>;
 }
 
-const Spot: React.FC<Props> = ({ setPage, prefecture }) => {
+const Spot: React.FC<Props> = memo(({ setPage, prefecture, setIndex }) => {
 
   const dammyData = [
     {
@@ -56,7 +57,30 @@ const Spot: React.FC<Props> = ({ setPage, prefecture }) => {
       id: 108,
       name: "犬山城下町",
       imgSrc:
-        "https://inuyama.gr.jp/wordpress/wp-content/uploads/2016/01/1-1024x683.png",
+        "https://aichinavi.jp/upload/spot_images/a0a09a7407e66f560e2483b27911a820.jpg",
+      price: 0,
+      access: "車",
+    },
+    {
+      id: 2,
+      name: "香嵐渓",
+      imgSrc:
+        "https://www.tourismtoyota.jp/upload/rspots/large/10950727826278429f9021f.jpg",
+      price: 500,
+      access: "車",
+    },
+    {
+      id: 7,
+      name: "名古屋城",
+      imgSrc:
+        "https://cdn-news.asoview.com/production/note/05a9e06f-f4c9-4632-a1e5-94d55e4ab29a.jpeg",
+      price: 0,
+      access: "電車",
+    },
+    {
+      id: 43,
+      name: "刈谷ハイウェイオアシス",
+      imgSrc: "https://anniversarys-mag.jp/img/p/pixta_44462056_M.jpg?w=730",
       price: 0,
       access: "車",
     },
@@ -64,98 +88,88 @@ const Spot: React.FC<Props> = ({ setPage, prefecture }) => {
 
   const SERVER_URL = 'https://soranomix-api-server.onrender.com';
 
-  const [spotsData, setSpotsData] = useState<any>([]);
+  const [spotsData, setSpotsData] = useState([]);
 
   useEffect(() => {
     (async () => {
-      const res = await fetch(`${SERVER_URL}/api/favorites/${prefecture}`).then(data =>
-        data.json(),
-      );
+      const res = await fetch(`${SERVER_URL}/api/favorites/${prefecture}`).then(data => data.json());
       console.log('res', res);
       setSpotsData(res);
     })();
   }, []);
 
-  const renderSpotItem = ( item: { id: number; name: any; imgSrc: any; price: any; access: any; } ) => (
-    <View style={styles.spotWrapper} key={item.id}>
+  const renderSpotItem = ( item: { id: number; name: string; imgSrc: string; price: number; access: string; } ) => (
+    <TouchableOpacity
+      style={styles.spotWrapper}
+      key={item.id}
+      onPress={() => {
+        setPage("visited");
+        const selectIndex = cards.findIndex((spotObj) => spotObj.title === item.name);
+        setIndex(selectIndex);
+      }}
+    >
       <View style={styles.imageWrapper}>
         <Image source={{ uri: item.imgSrc }} style={styles.photo} />
       </View>
       <Text style={styles.price}>¥{item.price}</Text>
       <Text style={styles.name}>{item.name}</Text>
       <Text style={styles.access}>{item.access}</Text>
-    </View>
+    </TouchableOpacity>
   );
 
   return (
     <View>
-      <SafeAreaView>
-          <View style={styles.header}>
-            <EvilIcons
-              name="chevron-left"
-              size={40}
-              onPress={() => setPage("favorites")}
-              />
-            <Text style={styles.title}>愛知県</Text>
-          </View>
-        <ScrollView>
-          <View style={styles.main}>
-            <FlatList
-              data={dammyData}
-              // data={spotsData}
-              renderItem={({ item }) => renderSpotItem(item)}
-              keyExtractor={(item) => item.id.toString()}
-              numColumns={2} // 2列で表示する
-              style={styles.wrapper}
-              columnWrapperStyle={styles.columnWrapper} // 列のラッパーのスタイル
-            />
-          </View>
-        </ScrollView>
-      </SafeAreaView>
-      <View>
-        <Text>asdf</Text>
+      <View style={styles.header}>
+        <EvilIcons
+          name="chevron-left"
+          size={40}
+          onPress={() => setPage("favorites")}
+          />
+        <Text style={styles.title}>愛知県</Text>
       </View>
+      <SafeAreaView style={styles.main}>
+        <FlatList
+          data={dammyData}
+          // data={spotsData}
+          renderItem={({ item }) => renderSpotItem(item)}
+          keyExtractor={(item) => item.id.toString()}
+          numColumns={2}   // 2列で表示する
+          style={styles.wrapper}
+          columnWrapperStyle={styles.columnWrapper}
+        />
+      </SafeAreaView>
     </View>
   );
-};
+});
 
 const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
-    top: 25,
-    left: 30,
+    width: '100%',
+    paddingTop: 80,
+    paddingLeft: 20,
+    paddingBottom: 10,
     fontSize: 30, 
     backgroundColor: 'white',
-    marginBottom: 30,
+    position: 'absolute',
+    zIndex: 1,
   },
   title: {
     fontSize: 30,
   },
   main: {
-    flex: 1,
-    justifyContent: "center",
-    // marginBottom: "3em",
+    marginTop: 130,
   },
   wrapper: {
-    // display: "flex",
-    // flexWrap: "wrap",
-    // flexDirection: "row",
-    paddingVertical: 10, // 上下のパディング
-    paddingHorizontal: 20, // 左右のパディング
+    paddingHorizontal: 20,
   },
   columnWrapper: {
     justifyContent: "space-between",
   },
-  //各スポットのWrap
   spotWrapper: {
-    flex: 1, //1つのアイテムの横幅大きくなる
-    margin: 5, // アイテム間のマージン
-    // display: "flex",
+    flex: 1,   //1つのアイテムの横幅大きくなる
+    margin: 5,   // アイテム間のマージン
     height: 200,
-    // width: "40%",
-    // alignItems: "center",
-    // flexDirection: "column",
-    // borderStyle: "solid",
     borderWidth: 1,
     borderColor: "white",
     borderRadius: 15,
@@ -163,8 +177,6 @@ const styles = StyleSheet.create({
     position: "relative",
     shadowColor: '#000',
     shadowOpacity: 0.3,
-    // backgroundColor: 'blue',
-    // textAlign: "center",
   },
   price: {
     display: "flex",
@@ -172,49 +184,33 @@ const styles = StyleSheet.create({
     color: "white",
     fontWeight: "700",
     backgroundColor: "rgb(180, 180, 180)",
-    // borderRadius: 10,
     alignItems: "center",
     justifyContent: "center",
-    // padding: 2,
     position: "absolute",
     bottom: 55,
     left: 1,
   },
-
-  //画像だけのWrap
   imageWrapper: {
     height: 150,
     width: "100%",
-    // borderStyle: "solid",
-    // borderWidth: 1,
-    // borderColor: "rgb(200, 200, 200)",
     overflow: "hidden",
   },
   photo: {
     height: "100%",
     width: "100%",
-    // resizeMode: "cover",
   },
   name: {
-    // width: "100%",
     textAlign: "center",
     padding: 5,
     fontWeight: "bold",
-    // marginTop: "1vh",
     overflow: "hidden",
-    // textOverflow: "ellipsis",
-    // whiteSpace: "nowrap",
   },
   access: {
-    //仮
     textAlign: "center",
     width: "100%",
     padding: "0 5%",
     fontWeight: "700",
-    // marginTop: "1vh",
     overflow: "hidden",
-    // textOverflow: "ellipsis",
-    // whiteSpace: "nowrap",
   },
 });
 

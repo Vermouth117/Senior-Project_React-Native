@@ -1,11 +1,10 @@
 
-import React, {useState, useEffect, useContext} from 'react';
-import {View, Text, SafeAreaView, ScrollView} from 'react-native';
-import Icons from './Icons';
-import {styles} from './styles';
+import React, { useState, useEffect, useContext } from 'react';
+import { Text, SafeAreaView, ScrollView } from 'react-native';
 
-import {Prefecture} from '../../data/globals';
-import Spots from './Spots';
+import Icons from './Icons';
+import { styles } from './styles';
+import { Prefecture } from '../../data/globals';
 import { MyContext } from '../../App';
 
 const SERVER_URL = 'https://soranomix-api-server.onrender.com';
@@ -13,15 +12,12 @@ const SERVER_URL = 'https://soranomix-api-server.onrender.com';
 function App(): JSX.Element {
 
   const [favoriteData, setFavoriteData] = useState<any>([]);
-  // const [page, setPage] = useState("favorite");
-  // const [prefecture, setPrefecture] = useState("");
 
   const [page, setPage] = useContext(MyContext);
   const [prefecture, setPrefecture] = useContext(MyContext);
 
   useEffect(() => {
     async function fetchData<T>(): Promise<void> {
-      // 県別いいねデータ取得
       const res: T = await fetch(`${SERVER_URL}/api/favorites`).then(data =>
         data.json(),
       );
@@ -33,8 +29,6 @@ function App(): JSX.Element {
 
   return (
     <ScrollView>
-    {/* {page === "spots" && <Spots setPage={setPage} prefecture={prefecture} />} */}
-    {/* {page === "favorite" && */}
       <SafeAreaView style={styles.container}>
         <Text style={styles.good}>お気に入り</Text>
         {favoriteData.length ? (
@@ -45,9 +39,8 @@ function App(): JSX.Element {
           </Text>
         )}
       </SafeAreaView>
-    {/* } */}
     </ScrollView>
   );
-}
+};
 
 export default App;

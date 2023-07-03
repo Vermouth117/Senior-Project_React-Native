@@ -1,10 +1,9 @@
 
-import {Dimensions, StyleSheet} from 'react-native';
+import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
   container: {
-    // flex: 1,
-    // justifyContent: 'space-between',
+
   },
   good: {
     top: 25,
@@ -16,21 +15,14 @@ export const styles = StyleSheet.create({
     left: 100,
   },
   scrollView: {
-    // flex: 1,
     justifyContent: 'space-between',
-    // backgroundColor: 'blue',
     top: 50,
-    flexDirection: 'row',  // 列方向に配置するためにflexDirectionを追加
-    flexWrap: 'wrap',  // 要素を自動的に折り返すためにflexWrapを追加
+    flexDirection: 'row',
+    flexWrap: 'wrap',   // 要素を自動的に折り返すためにflexWrapを追加
     paddingHorizontal: 28,
   },
   iconWrapper: {
-    // width: '50%',  // 幅を50%に設定して2列にする
-    // justifyContent: 'center',
-    // alignItems: 'center',
-    // textAlign: 'center',
-    // flexDirection: 'column',
-    // position: 'relative',
+
   },
   number: {
     zIndex: 1,
@@ -67,7 +59,6 @@ export const styles = StyleSheet.create({
     height: 150,
     width: 150,
     borderRadius: 15,
-    // resizeMode: 'cover',
   },
   name: {
     marginBottom: 25,

@@ -47,10 +47,10 @@ const Map = memo(() => {
           style={styles.mapStyle}
           // 初期領域を使用してマップをレンダリングする
           initialRegion={{
-            latitude: latitude,    // 緯度
+            latitude: latitude,     // 緯度
             longitude: longitude,   // 軽度
-            latitudeDelta: 0.3,    // 縮尺
-            longitudeDelta: 0.3,   // 縮尺
+            latitudeDelta: 0.3,     // 縮尺
+            longitudeDelta: 0.3,    // 縮尺
           }}
         >
           <Marker

@@ -1,6 +1,7 @@
+
 import React, { Dispatch, SetStateAction, memo } from 'react';
-import { View, Text, Image, TouchableOpacity, ScrollView, 
-} from 'react-native';
+import { View, Text, Image, TouchableOpacity } from 'react-native';
+
 import {Prefecture} from '../../data/globals';
 import {styles} from './styles';
 
@@ -26,9 +27,8 @@ const Icons: React.FC<Props> = memo(({ favoriteData, setPage, setPrefecture }) =
     let icon = (
       <TouchableOpacity
         onPress={() => {
-          // alert(index)
-          setPrefecture(favoriteData[index].name)
-          setPage("spots")
+          setPrefecture(favoriteData[index].name);
+          setPage("spots");
         }}
         key={dataObj.name}
         style={styles.iconWrapper}
@@ -36,7 +36,7 @@ const Icons: React.FC<Props> = memo(({ favoriteData, setPage, setPrefecture }) =
         <Text style={styles.number}>{dataObj.number}</Text>
         <View style={styles.spotContainer}>
           <View style={styles.imageWrapper}>
-            <Image style={styles.photo} source={{uri: dataObj.imgSrc}} alt="" />
+            <Image style={styles.photo} source={{uri: dataObj.imgSrc}} alt={`${dataObj.name}の写真`} />
           </View>
           <Text style={styles.name}>{dataObj.name}</Text>
         </View>

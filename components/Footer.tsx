@@ -1,3 +1,4 @@
+
 import { Dispatch, SetStateAction, memo, useState } from "react";
 import { StyleSheet, View, TouchableOpacity, Text } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
@@ -15,7 +16,6 @@ const Footer: React.FC<Props> = memo(({ setPage }) => {
 
   return (
     <View style={styles.footer}>
-      {/* ホームボタン */}
       <TouchableOpacity
         onPress={() => handleIconPress("home")}
         style={styles.iconContainer}
@@ -152,7 +152,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingVertical: 10,
     paddingBottom: 27,
-    paddingHorizontal: 20,
     position: "absolute",
     bottom: 0,
     borderTopWidth: 1,
