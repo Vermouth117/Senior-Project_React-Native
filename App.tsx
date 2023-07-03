@@ -1,22 +1,21 @@
-import { StatusBar } from "expo-status-bar";
+
 import { Dispatch, SetStateAction, createContext, memo, useEffect, useState } from "react";
 import { Dimensions, StyleSheet, Text, TextInput, View } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
+import * as Notifications from 'expo-notifications';
+import Storage from 'react-native-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
+import { cards } from "./data/cards";
+import { Prefecture } from './data/globals';
 import TinderSwipe from "./components/home/TinderSwipe";
 import Favorites from "./components/favorites/Page";
 import Footer from "./components/Footer";
-import { cards } from "./data/cards";
 import Map from "./components/map/Map";
 import Detail from "./components/home/Detail";
 import Spots from "./components/favorites/Spots";
-import Notice from "./components/Notice";
-import { Prefecture } from './data/globals';
-
-import * as Notifications from 'expo-notifications';
-
-import Storage from 'react-native-storage';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import Notice from "./components/notice/Notice";
+import User from "./components/user/User";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -26,6 +25,7 @@ Notifications.setNotificationHandler({
   }),
 });
 
+const SERVER_URL = 'https://soranomix-api-server.onrender.com';
 const SCREEN_HEIGHT = Dimensions.get("window").height;
 const SCREEN_WIDTH = Dimensions.get("window").width;
 
@@ -38,10 +38,8 @@ type Props = [
 
 export const MyContext = createContext<Props>(["", () => {}, "", () => {}]);
 
-const SERVER_URL = 'https://soranomix-api-server.onrender.com';
-
-//ストレージの作成
-const storage: Storage = new Storage({
+// ストレージの作成
+export const storage: Storage = new Storage({
   // 最大容量
   size: 1000,
   // バックエンドにAsyncStorageを使う
@@ -60,26 +58,13 @@ const App = memo(() => {
     requestPermissionsAsync();
     Notifications.setBadgeCountAsync(0);
 
-  // データを保存する
-  storage.save({
-    key: 'dataKey', // データのキー（一意の値）
-    data: {
-      name: 'John',
-      age: 30,
-    },
-    expires: 1000 * 3600, // 有効期限を指定する場合（ミリ秒）
-  });
-
-    // storage
-    // .load({key: 'dataKey'})
-    // .then(res => console.log(res))
-    // .catch(err => console.warn(err))
-
+    storage.load({key: 'data'})
+    .then(res => console.log("App", res))
+    .catch(err => console.warn("App", err));
   }, []);
 
+  const [noticeCount, setNoticeCount] = useState(115);   // 通知カウント設定
   const [favoriteData, setFavoriteData] = useState<Prefecture[]>([]);
-  // 通知カウント設定
-  const [noticeCount, setNoticeCount] = useState(115);
 
   useEffect(() => {
     (async () => {
@@ -130,9 +115,9 @@ const App = memo(() => {
 
   return (
     <View style={styles.container}>
-      {/* <Notice /> */}
       <MyContext.Provider value={[page, setPage, prefecture, setPrefecture]}>
-        {page === "home" && (
+
+        {page === "home" &&
           <View>
             <View style={styles.header}>
               <Icon name="search-outline" style={styles.headerIcon} />
@@ -158,33 +143,40 @@ const App = memo(() => {
               ))}
             </View>
           </View>
-        )}
+        }
 
-        {page === "detail" && (
+        {page === "detail" &&
           <Detail page={page} setPage={setPage} index={index} />
-        )}
+        }
 
-        {page === "map" && <Map />}
+        {page === "notice" &&
+          <Notice />
+        }
 
-        {page === "favorites" && <Favorites />}
+        {page === "map" &&
+          <Map />
+        }
 
-        {page === "spots" && (
-          <Spots
-            setPage={setPage}
-            prefecture={prefecture}
-            setIndex={setIndex}
-          />
-        )}
+        {page === "favorites" &&
+          <Favorites />
+        }
 
-        {page === "visited" && (
+        {page === "spots" &&
+          <Spots setPage={setPage} prefecture={prefecture} setIndex={setIndex} />
+        }
+
+        {page === "visited" &&
           <Detail page={page} setPage={setPage} index={index} />
-        )}
+        }
 
-        {page !== "detail" && page !== "visited" && (
+        {page === "user" &&
+          <User />
+        }
+
+        {page !== "detail" && page !== "visited" &&
           <Footer page={page} setPage={setPage} />
-        )}
+        }
 
-        <StatusBar style="auto" />
       </MyContext.Provider>
     </View>
   );

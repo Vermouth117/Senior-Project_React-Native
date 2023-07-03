@@ -1,16 +1,9 @@
+
 import { Dispatch, SetStateAction, memo, useEffect, useState } from "react";
-import {
-  StyleSheet,
-  View,
-  Text,
-  Image,
-  FlatList,
-  SafeAreaView,
-  TouchableOpacity,
-} from "react-native";
+import { StyleSheet, View, Text, Image, FlatList, SafeAreaView, TouchableOpacity } from "react-native";
 import EvilIcons from "react-native-vector-icons/EvilIcons";
 
-import { cards } from "../../data/cards"; // ダミーデータ
+import { cards } from "../../data/cards";   // ダミーデータ
 
 type Props = {
   setPage: Dispatch<SetStateAction<string>>;
@@ -98,21 +91,13 @@ const Spot: React.FC<Props> = memo(({ setPage, prefecture, setIndex }) => {
 
   useEffect(() => {
     (async () => {
-      const res = await fetch(`${SERVER_URL}/api/favorites/${prefecture}`).then(
-        (data) => data.json()
-      );
+      const res = await fetch(`${SERVER_URL}/api/favorites/${prefecture}`).then(data => data.json());
       console.log("res", res);
       setSpotsData(res);
     })();
   }, []);
 
-  const renderSpotItem = (item: {
-    id: number;
-    name: string;
-    imgSrc: string;
-    price: number;
-    access: string;
-  }) => (
+  const renderSpotItem = (item: { id: number, name: string, imgSrc: string, price: number, access: string }) => (
     <TouchableOpacity
       style={styles.spotWrapper}
       key={item.id}
@@ -162,9 +147,8 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
     width: "100%",
-    paddingTop: 80,
-    paddingLeft: 20,
-    paddingBottom: 10,
+    paddingTop: 60,
+    paddingLeft: 18,
     fontSize: 30,
     backgroundColor: "white",
     position: "absolute",
@@ -174,7 +158,8 @@ const styles = StyleSheet.create({
     fontSize: 30,
   },
   main: {
-    marginTop: 130,
+    marginTop: 100,
+    marginBottom: 82,
   },
   wrapper: {
     paddingHorizontal: 20,

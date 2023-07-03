@@ -1,21 +1,9 @@
 
 import { StatusBar } from "expo-status-bar";
-import {
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-  FlatList,
-  Image,
-  Dimensions,
-  ScrollView,
-} from "react-native";
-import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
-import FontAwesome from "react-native-vector-icons/FontAwesome";
-import EvilIcons from "react-native-vector-icons/EvilIcons";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import Ionicons from "react-native-vector-icons/Ionicons";
-import Icon from "react-native-vector-icons/Ionicons";
+import { StyleSheet, Text, TouchableOpacity, View, Image, Dimensions, ScrollView } from "react-native";
+import MaterialCommunityIcon from "react-native-vector-icons/MaterialCommunityIcons";
+import EvilIcon from "react-native-vector-icons/EvilIcons";
+import Ionicon from "react-native-vector-icons/Ionicons";
 import Swiper from "react-native-swiper";
 import { Svg, Polygon } from "react-native-svg";
 
@@ -46,24 +34,34 @@ const Detail: React.FC<Props> = memo(({ page, setPage, index }) => {
           page === "detail" ? setPage("home") : setPage("spots");
         }}
       >
-        <EvilIcons name="chevron-left" style={styles.backIcon} />
+        <EvilIcon name="chevron-left" style={styles.backIcon} />
       </TouchableOpacity>
 
       <ScrollView>
-        <View style={styles.main}>
+        <View style={ page === "visited" ? { paddingBottom: 80 } : { paddingBottom: 5 } }>
           {/* 行ったよラベルを表示させる */}
           {showText === true && (
             <View style={styles.window}>
               <Svg width={500} height={500}>
                 <Polygon points="0,150 150,0 150,150" fill="rgb(158, 27, 27)" />
                 <View style={styles.visitedTextContainer}>
-                  <Text style={styles.visitedText}>行ったよ！ </Text>
+                  <Text style={styles.visitedText}>行ったよ！      </Text>
                 </View>
               </Svg>
             </View>
           )}
           <View style={styles.cardPhoto}>
-            <Swiper showsButtons={false}>
+            <Swiper
+            showsButtons={cards[index].images.length !== 1 && true}
+            autoplay={true}
+            activeDotColor={"rgb(158, 27, 27)"}
+            nextButton={
+              <Text style={{ color: 'rgba(255,255,255,0.9)', fontSize: 50 }}>›</Text>
+            }
+            prevButton={
+              <Text style={{ color: 'rgba(255,255,255,0.9)', fontSize: 50 }}>‹</Text>
+            }
+            >
               {cards[index].images.map((item, index) => (
                 <View key={index}>
                   <Image
@@ -83,93 +81,83 @@ const Detail: React.FC<Props> = memo(({ page, setPage, index }) => {
 
             <View style={styles.addressContainer}>
               <Text style={styles.descriptionTitle}>
-                <Icon name="location-outline" style={styles.icon} />
-                所在地
+                <Ionicon name="location-outline" style={styles.icon} />所在地
               </Text>
-              <Text>{`〒${cards[index].postCode}`}</Text>
-              <Text style={styles.descriptionAddress}>
+              <Text style={styles.descriptionPostCode}>{`〒${cards[index].postCode}`}</Text>
+              <Text style={styles.descriptionText}>
                 {cards[index].address}
               </Text>
             </View>
 
             <View style={styles.descriptionContainer}>
               <Text style={styles.descriptionTitle}>
-                <FontAwesome name="money" style={styles.icon} />
-                料金
+                <Ionicon name="cash-outline" style={styles.icon} /> 料金
               </Text>
-              <Text>{cards[index].price}</Text>
+              <Text style={styles.descriptionText}>{`${cards[index].price}円`}</Text>
             </View>
 
             <View style={styles.descriptionContainer}>
               <Text style={styles.descriptionTitle}>
-                <MaterialCommunityIcons name="alarm" style={styles.icon} />
-                営業日・時間
+                <Ionicon name="time-outline" style={styles.icon} /> 営業日･時間
               </Text>
-              <Text>{cards[index].business}</Text>
+              <Text style={styles.descriptionText}>{cards[index].business}</Text>
             </View>
 
             <View style={styles.descriptionContainer}>
               <Text style={styles.descriptionTitle}>
-                <MaterialCommunityIcons name="phone" style={styles.icon} />
-                電話番号
+                <Ionicon name="call-outline" style={styles.icon} /> 電話番号
               </Text>
-              <Text>{cards[index].phoneNumber}</Text>
+              <Text style={styles.descriptionText}>{cards[index].phoneNumber}</Text>
             </View>
 
             <View style={styles.descriptionContainer}>
               <Text style={styles.descriptionTitle}>
-                <FontAwesome5 name="parking" style={styles.icon} />
-                駐車場
+                <MaterialCommunityIcon name="alpha-p-circle-outline" style={styles.icon} /> 駐車場
               </Text>
-              <Text>{cards[index].parking}</Text>
+              <Text style={styles.descriptionTextParking}>{cards[index].parking}</Text>
             </View>
 
             <View style={styles.descriptionContainer}>
               <Text style={styles.descriptionTitle}>
-                <FontAwesome5 name="toilet" style={styles.icon} />
-                トイレ
+                <MaterialCommunityIcon name="human-male-female" style={styles.icon} />トイレ
               </Text>
-              <Text>{cards[index].toilet}</Text>
+              <Text style={styles.descriptionText}>{cards[index].toilet}</Text>
             </View>
 
             <View style={styles.descriptionContainer}>
               <Text style={styles.descriptionTitle}>
-                <Ionicons
+                <Ionicon
                   name="information-circle-outline"
                   style={styles.icon}
-                />
-                定休日
+                /> 定休日
               </Text>
-              <Text>{cards[index].closed}</Text>
+              <Text style={styles.descriptionText}>{cards[index].closed}</Text>
             </View>
 
             <View style={styles.descriptionContainer}>
               <Text style={styles.descriptionTitle}>
-                <FontAwesome5 name="train" style={styles.icon} />
-                公共交通機関でのアクセス
+                <Ionicon name="subway-outline" style={styles.icon} /> 公共交通機関でのアクセス
               </Text>
               {cards[index].publicTransport.map((item, itemIndex) => (
-                <Text key={itemIndex}>{item}</Text>
+                <Text key={itemIndex} style={styles.descriptionTextList}>{item}</Text>
               ))}
             </View>
 
             <View style={styles.descriptionContainer}>
               <Text style={styles.descriptionTitle}>
-                <MaterialCommunityIcons name="car" style={styles.icon} />
-                車でのアクセス
+                <Ionicon name="car-outline" style={styles.icon} /> 車でのアクセス
               </Text>
               {cards[index].car.map((item, itemIndex) => (
-                <Text key={itemIndex}>{item}</Text>
+                <Text key={itemIndex} style={styles.descriptionTextList}>{item}</Text>
               ))}
             </View>
           </View>
         </View>
         <StatusBar style="auto" />
       </ScrollView>
-      <View style={styles.container}>
+          {page === "visited" && (
         <View style={styles.footer}>
           {/* 行ったよボタン */}
-          {page === "visited" && (
             <TouchableOpacity
               style={[styles.button, showText && styles.buttonPressed]}
               onPress={handleButtonPress}
@@ -178,9 +166,8 @@ const Detail: React.FC<Props> = memo(({ page, setPage, index }) => {
                 行ったよ！
               </Text>
             </TouchableOpacity>
-          )}
         </View>
-      </View>
+          )}
     </View>
   );
 });
@@ -202,16 +189,29 @@ const styles = StyleSheet.create({
     top: 1,
     color: "rgb(80, 80, 80)",
   },
-  main: {
-    paddingBottom: 80,
-    flex: 1,
+  window: {
+    position: "absolute",
+    top: 200,
+    left: 250,
+    zIndex: 999,
+  },
+  visitedTextContainer: {
+    position: "absolute",
+    bottom: -100,
+    right: 365,
+    alignItems: "center",
+    transform: [{ rotate: "315deg" }],
+  },
+  visitedText: {
+    color: "white",
+    fontSize: 20,
+    fontWeight: "bold",
   },
   cardPhoto: {
     height: 350,
   },
   description: {
     padding: 20,
-    flex: 1,
   },
   title: {
     fontSize: 28,
@@ -222,18 +222,39 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderColor: "rgb(230, 230, 230)",
   },
+  descriptionTitle: {
+    fontSize: 23,
+    paddingBottom: 5,
+    paddingLeft: 3,
+    color: "rgb(80, 80, 80)",
+  },
+  icon: {
+    fontSize: 23,
+    color: 'rgb(80, 80, 80)',
+  },
+  descriptionPostCode: {
+    paddingLeft: 5,
+    paddingBottom: 3,
+    color: 'rgb(100, 100, 100)',
+  },
+  descriptionText: {
+    fontSize: 20,
+    paddingLeft: 5,
+    color: 'rgb(100, 100, 100)',
+  },
   descriptionContainer: {
-    paddingVertical: 10,
+    paddingVertical: 20,
     borderTopWidth: 1,
     borderColor: "rgb(230, 230, 230)",
   },
-  icon: {},
-  container: {
-    position: "absolute",
-    bottom: 0,
-    width: "100%",
-    zIndex: 9999,
-    flex: 1,
+  descriptionTextParking: {
+    fontSize: 17,
+    paddingLeft: 5,
+    color: 'rgb(100, 100, 100)',
+  },
+  descriptionTextList: {
+    fontSize: 15,
+    color: 'rgb(100, 100, 100)',
   },
   footer: {
     flexDirection: "row",
@@ -259,16 +280,16 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   buttonPressed: {
-    backgroundColor: "rgb(230, 230, 230)",
-    borderWidth: 2,
-    borderColor: "#9e1b1b",
+    backgroundColor: "white",
+    borderWidth: 1,
+    borderColor: "rgba(158, 27, 27, 0.1)",
+    shadowColor: "#9e1b1b",
+    shadowOffset: {
+      width: 0.5,
+      height: 0,
+    },
+    shadowOpacity: 0.5,
   },
-  descriptionTitle: {
-    fontSize: 23,
-    paddingBottom: 8,
-    color: "rgb(80, 80, 80)",
-  },
-  descriptionAddress: {},
   text: {
     fontSize: 13,
     color: "white",
@@ -278,24 +299,6 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: "#9e1b1b",
     fontWeight: "bold",
-  },
-  visitedTextContainer: {
-    position: "absolute",
-    bottom: -100,
-    right: 365,
-    alignItems: "center",
-    transform: [{ rotate: "315deg" }],
-  },
-  visitedText: {
-    color: "white",
-    fontSize: 20,
-    fontWeight: "bold",
-  },
-  window: {
-    position: "absolute",
-    top: 200,
-    left: 250,
-    zIndex: 999,
   },
 });
 

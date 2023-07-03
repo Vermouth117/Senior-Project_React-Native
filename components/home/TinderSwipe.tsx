@@ -2,26 +2,11 @@
 import React, { Dispatch, SetStateAction, memo, useRef } from 'react';
 import { StyleSheet, Dimensions, Image, Animated, PanResponder, View, TouchableWithoutFeedback, Text } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import Swiper from "react-native-swiper";
 
 import { cards } from '../../data/cards';
 import { Cards } from '../../data/globals';
-
-import Storage from 'react-native-storage';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
-//ストレージの作成
-const storage: Storage = new Storage({
-  // 最大容量
-  size: 1000,
-  // バックエンドにAsyncStorageを使う
-  storageBackend: AsyncStorage,
-  // キャッシュ期限(null=期限なし)
-  defaultExpires: null,
-  // メモリにキャッシュするかどうか
-  enableCache: true,
-  // 初期化時にデータを同期するためのオプション
-  sync: {},
-})
+import { storage } from '../../App';
 
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 const SCREEN_WIDTH = Dimensions.get('window').width;
@@ -74,21 +59,24 @@ const TinderSwipe: React.FC<Props> = memo(({ index, card, setPage, setIndex, sch
             ).then((data) => data.json());
             console.log(postData);
 
+            // 通知
             scheduleNotificationAsync();
 
-            storage
-            .load({key: 'dataKey'})
-            .then(res => console.log(res))
-            .catch(err => console.warn(err))
+            // 端末にデータを保存する
+            await storage.save({
+              key: 'data',   // データのキー（一意の値）
+              data: {
+                name: 'yohei',
+                age: 25,
+              },
+              expires: 1000 * 3600,   // 有効期限を指定する場合（ミリ秒）
+            });
 
-            // // ストレージに保存
-            // storage.save({
-            //   key: 'ZENN',
-            //   data: {
-            //     col1: 'hoge',
-            //     col2: 100
-            //   },
-            // });
+            // 端末から取得する
+            await storage
+            .load({key: 'data'})
+            .then(res => console.log("Tinder", res))
+            .catch(err => console.warn("Tinder", err))
 
           });
         } else if (gestureState.dx < -120) {
@@ -176,20 +164,33 @@ const TinderSwipe: React.FC<Props> = memo(({ index, card, setPage, setIndex, sch
           />
         </Animated.View>
         <View style={{ flex: 1 }}>
-          {typeof card.images === "string"
-          ? JSON.parse(card.images).map((uri: string, index: number) =>
-            <Image
-              key={index}
-              style={styles.cardImage}
-              source={{ uri: uri }}
-            />)
-          : card.images.map((uri: string, index: number) =>
-            <Image
-              key={index}
-              style={styles.cardImage}
-              source={{ uri: uri }}
-            />
-          )}
+          <Swiper
+            showsButtons={card.images.length !== 1 && true}
+            // autoplay={true}
+            activeDotColor={"rgb(158, 27, 27)"}
+            nextButton={
+              <Text style={{ color: 'rgba(255,255,255,0.9)', fontSize: 50 }}>›</Text>
+            }
+            prevButton={
+              <Text style={{ color: 'rgba(255,255,255,0.9)', fontSize: 50 }}>‹</Text>
+            }
+          >
+            {typeof card.images === "string"
+            ? JSON.parse(card.images).map((uri: string, index: number) =>
+              <Image
+                key={index}
+                style={styles.cardImage}
+                source={{ uri: uri }}
+              />
+            )
+            : card.images.map((uri: string, index: number) =>
+              <Image
+                key={index}
+                style={styles.cardImage}
+                source={{ uri: uri }}
+              />
+            )}
+          </Swiper>
           <TouchableWithoutFeedback onPressOut={() => { setPage("detail"); setIndex(index) }}>
             <View style={styles.cardDetailContainer}>
               <View style={styles.cardTextContainer}>
@@ -202,7 +203,7 @@ const TinderSwipe: React.FC<Props> = memo(({ index, card, setPage, setIndex, sch
                 </Text>
                 <Text style={styles.cardTextPostCode}>{`〒${card.postCode}`}</Text>
                 <Text style={styles.cardTextAddress}>{card.address}</Text>
-                <Text style={styles.cardTextTokimeki}>大人も子供も楽しめる、〇〇が美味しい、入場料無料、朝も夜も楽しめる、駅近、駐車場無料、映えスポット、カップルにおすすめ、ペットOK、〇〇通り・施設近く、食べ歩きOK、コスパ最高、ちょっと贅沢、記念日デート、〇〇が綺麗、アニメテレビに登場</Text>
+                <Text style={styles.cardTextTokimeki}>大人も子供も楽しめる、駅近、駐車場無料、映えスポット、カップルにおすすめ、ペットOK、〇〇近く、食べ歩き、コスパ最高、贅沢、記念日デート、〇〇が人気、テレビに登場</Text>
               </View>
             </View>
           </TouchableWithoutFeedback>
@@ -253,7 +254,7 @@ const styles = StyleSheet.create({
   },
   cardTextAddressTitle: {
     fontSize: 23,
-    paddingBottom: 8,
+    paddingBottom: 5,
     color: 'rgb(80, 80, 80)',
   },
   cardTextPostCode: {
@@ -264,7 +265,7 @@ const styles = StyleSheet.create({
   cardTextAddress: {
     fontSize: 20,
     paddingLeft: 5,
-    paddingBottom: 1,
+    paddingBottom: 20,
     color: 'rgb(100, 100, 100)',
   },
   cardTextTokimeki: {
