@@ -1,54 +1,49 @@
-
-import { StyleSheet } from 'react-native';
+import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
-  container: {
-
-  },
+  container: {},
   good: {
     top: 25,
     left: 30,
-    fontSize: 30, 
+    fontSize: 30,
   },
   zanteitaisaku: {
     top: 340,
     left: 100,
   },
   scrollView: {
-    justifyContent: 'space-between',
+    justifyContent: "space-between",
     top: 50,
-    flexDirection: 'row',
-    flexWrap: 'wrap',   // 要素を自動的に折り返すためにflexWrapを追加
+    flexDirection: "row",
+    flexWrap: "wrap", // 要素を自動的に折り返すためにflexWrapを追加
     paddingHorizontal: 28,
   },
-  iconWrapper: {
-
-  },
+  iconWrapper: {},
   number: {
     zIndex: 1,
-    textAlign: 'center',
+    textAlign: "center",
     height: 30,
     width: 30,
     fontSize: 20,
-    color: 'white',
-    fontWeight: '600',
+    color: "white",
+    fontWeight: "600",
     backgroundColor: "rgb(255, 100, 100)",
     borderRadius: 15,
     paddingTop: 3,
-    position: 'absolute',
+    position: "absolute",
     top: 0,
     left: 130,
-    overflow: 'hidden',
+    overflow: "hidden",
   },
   spotContainer: {
-    alignItems: 'center',
+    alignItems: "center",
   },
   imageWrapper: {
     borderWidth: 3,
-    borderColor: 'white',
+    borderColor: "white",
     borderRadius: 15,
     marginBottom: 10,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 1,

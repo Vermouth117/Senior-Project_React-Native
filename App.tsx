@@ -1,4 +1,3 @@
-
 import { StatusBar } from "expo-status-bar";
 import { Dispatch, SetStateAction, createContext, memo, useEffect, useState } from "react";
 import { Dimensions, StyleSheet, Text, TextInput, View } from "react-native";
@@ -141,7 +140,7 @@ const App = memo(() => {
                 placeholder="キーワード検索"
                 style={styles.headerTextInput}
                 value={inputRef}
-                onChangeText={text => setInputRef(text)}
+                onChangeText={(text) => setInputRef(text)}
               />
               <Icon name="menu-outline" style={styles.headerIcon} />
             </View>
@@ -161,29 +160,29 @@ const App = memo(() => {
           </View>
         )}
 
-        {page === "detail" &&
+        {page === "detail" && (
           <Detail page={page} setPage={setPage} index={index} />
-        }
+        )}
 
-        {page === "map" &&
-          <Map />
-        }
+        {page === "map" && <Map />}
 
-        {page === "favorites" &&
-          <Favorites />
-        }
+        {page === "favorites" && <Favorites />}
 
-        {page === "spots" &&
-          <Spots setPage={setPage} prefecture={prefecture} setIndex={setIndex} />
-        }
+        {page === "spots" && (
+          <Spots
+            setPage={setPage}
+            prefecture={prefecture}
+            setIndex={setIndex}
+          />
+        )}
 
-        {page === "visited" &&
+        {page === "visited" && (
           <Detail page={page} setPage={setPage} index={index} />
-        }
+        )}
 
-        {page !== "detail" && page !== "spots" && page !== "visited" &&
-          <Footer setPage={setPage}/>
-        }
+        {page !== "detail" && page !== "visited" && (
+          <Footer page={page} setPage={setPage} />
+        )}
 
         <StatusBar style="auto" />
       </MyContext.Provider>

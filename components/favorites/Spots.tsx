@@ -1,18 +1,24 @@
-
 import { Dispatch, SetStateAction, memo, useEffect, useState } from "react";
-import { StyleSheet, View, Text, Image, FlatList, SafeAreaView, TouchableOpacity } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Text,
+  Image,
+  FlatList,
+  SafeAreaView,
+  TouchableOpacity,
+} from "react-native";
 import EvilIcons from "react-native-vector-icons/EvilIcons";
 
-import { cards } from "../../data/cards";   // ダミーデータ
+import { cards } from "../../data/cards"; // ダミーデータ
 
 type Props = {
   setPage: Dispatch<SetStateAction<string>>;
   prefecture: string;
   setIndex: Dispatch<SetStateAction<number>>;
-}
+};
 
 const Spot: React.FC<Props> = memo(({ setPage, prefecture, setIndex }) => {
-
   const dammyData = [
     {
       id: 1,
@@ -86,25 +92,35 @@ const Spot: React.FC<Props> = memo(({ setPage, prefecture, setIndex }) => {
     },
   ];
 
-  const SERVER_URL = 'https://soranomix-api-server.onrender.com';
+  const SERVER_URL = "https://soranomix-api-server.onrender.com";
 
   const [spotsData, setSpotsData] = useState([]);
 
   useEffect(() => {
     (async () => {
-      const res = await fetch(`${SERVER_URL}/api/favorites/${prefecture}`).then(data => data.json());
-      console.log('res', res);
+      const res = await fetch(`${SERVER_URL}/api/favorites/${prefecture}`).then(
+        (data) => data.json()
+      );
+      console.log("res", res);
       setSpotsData(res);
     })();
   }, []);
 
-  const renderSpotItem = ( item: { id: number; name: string; imgSrc: string; price: number; access: string; } ) => (
+  const renderSpotItem = (item: {
+    id: number;
+    name: string;
+    imgSrc: string;
+    price: number;
+    access: string;
+  }) => (
     <TouchableOpacity
       style={styles.spotWrapper}
       key={item.id}
       onPress={() => {
         setPage("visited");
-        const selectIndex = cards.findIndex((spotObj) => spotObj.title === item.name);
+        const selectIndex = cards.findIndex(
+          (spotObj) => spotObj.title === item.name
+        );
         setIndex(selectIndex);
       }}
     >
@@ -124,7 +140,7 @@ const Spot: React.FC<Props> = memo(({ setPage, prefecture, setIndex }) => {
           name="chevron-left"
           size={40}
           onPress={() => setPage("favorites")}
-          />
+        />
         <Text style={styles.title}>愛知県</Text>
       </View>
       <SafeAreaView style={styles.main}>
@@ -133,7 +149,7 @@ const Spot: React.FC<Props> = memo(({ setPage, prefecture, setIndex }) => {
           // data={spotsData}
           renderItem={({ item }) => renderSpotItem(item)}
           keyExtractor={(item) => item.id.toString()}
-          numColumns={2}   // 2列で表示する
+          numColumns={2} // 2列で表示する
           style={styles.wrapper}
           columnWrapperStyle={styles.columnWrapper}
         />
@@ -145,13 +161,13 @@ const Spot: React.FC<Props> = memo(({ setPage, prefecture, setIndex }) => {
 const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
-    width: '100%',
+    width: "100%",
     paddingTop: 80,
     paddingLeft: 20,
     paddingBottom: 10,
-    fontSize: 30, 
-    backgroundColor: 'white',
-    position: 'absolute',
+    fontSize: 30,
+    backgroundColor: "white",
+    position: "absolute",
     zIndex: 1,
   },
   title: {
@@ -167,15 +183,15 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   spotWrapper: {
-    flex: 1,   //1つのアイテムの横幅大きくなる
-    margin: 5,   // アイテム間のマージン
+    flex: 1, //1つのアイテムの横幅大きくなる
+    margin: 5, // アイテム間のマージン
     height: 200,
     borderWidth: 1,
     borderColor: "white",
     borderRadius: 15,
     overflow: "hidden",
     position: "relative",
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOpacity: 0.3,
   },
   price: {

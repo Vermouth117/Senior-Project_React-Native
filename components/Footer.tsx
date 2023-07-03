@@ -1,23 +1,18 @@
-
 import { Dispatch, SetStateAction, memo, useState } from "react";
+// import { RecyclerViewBackedScrollViewComponent } from "react-native";
 import { StyleSheet, View, TouchableOpacity, Text } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 
 type Props = {
+  page: string;
   setPage: Dispatch<SetStateAction<string>>;
 };
 
-const Footer: React.FC<Props> = memo(({ setPage }) => {
-  const [selectedIcon, setSelectedIcon] = useState("home");
-  const handleIconPress = (page: string) => {
-    setSelectedIcon(page);
-    setPage(page);
-  };
-
+const Footer: React.FC<Props> = memo(({ page, setPage }) => {
   return (
     <View style={styles.footer}>
       <TouchableOpacity
-        onPress={() => handleIconPress("home")}
+        onPress={() => setPage("home")}
         style={styles.iconContainer}
       >
         <Icon
@@ -25,7 +20,7 @@ const Footer: React.FC<Props> = memo(({ setPage }) => {
           style={[
             styles.footerIcon,
             {
-              color: selectedIcon === "home" ? "#9e1b1b" : "rgb(130, 130, 130)",
+              color: page === "home" ? "#9e1b1b" : "rgb(130, 130, 130)",
             },
           ]}
         />
@@ -33,7 +28,7 @@ const Footer: React.FC<Props> = memo(({ setPage }) => {
           style={[
             styles.text,
             {
-              color: selectedIcon === "home" ? "#9e1b1b" : "rgb(130, 130, 130)",
+              color: page === "home" ? "#9e1b1b" : "rgb(130, 130, 130)",
             },
           ]}
         >
@@ -48,7 +43,7 @@ const Footer: React.FC<Props> = memo(({ setPage }) => {
           style={[
             styles.footerIcon,
             {
-              color: selectedIcon === "" ? "#9e1b1b" : "rgb(130, 130, 130)",
+              color: page === "" ? "#9e1b1b" : "rgb(130, 130, 130)",
             },
           ]}
         />
@@ -56,7 +51,7 @@ const Footer: React.FC<Props> = memo(({ setPage }) => {
           style={[
             styles.text,
             {
-              color: selectedIcon === "" ? "#9e1b1b" : "rgb(130, 130, 130)",
+              color: page === "" ? "#9e1b1b" : "rgb(130, 130, 130)",
             },
           ]}
         >
@@ -66,7 +61,7 @@ const Footer: React.FC<Props> = memo(({ setPage }) => {
 
       {/* 地図ボタン */}
       <TouchableOpacity
-        onPress={() => handleIconPress("map")}
+        onPress={() => setPage("map")}
         style={styles.iconContainer}
       >
         <Icon
@@ -74,7 +69,7 @@ const Footer: React.FC<Props> = memo(({ setPage }) => {
           style={[
             styles.footerIcon,
             {
-              color: selectedIcon === "map" ? "#9e1b1b" : "rgb(130, 130, 130)",
+              color: page === "map" ? "#9e1b1b" : "rgb(130, 130, 130)",
             },
           ]}
         />
@@ -82,7 +77,7 @@ const Footer: React.FC<Props> = memo(({ setPage }) => {
           style={[
             styles.text,
             {
-              color: selectedIcon === "map" ? "#9e1b1b" : "rgb(130, 130, 130)",
+              color: page === "map" ? "#9e1b1b" : "rgb(130, 130, 130)",
             },
           ]}
         >
@@ -92,7 +87,7 @@ const Footer: React.FC<Props> = memo(({ setPage }) => {
 
       {/* お気に入りボタン */}
       <TouchableOpacity
-        onPress={() => handleIconPress("favorites")}
+        onPress={() => setPage("favorites")}
         style={styles.iconContainer}
       >
         <Icon
@@ -101,7 +96,9 @@ const Footer: React.FC<Props> = memo(({ setPage }) => {
             styles.footerIcon,
             {
               color:
-                selectedIcon === "favorites" ? "#9e1b1b" : "rgb(130, 130, 130)",
+                page === "favorites" || page === "spots"
+                  ? "#9e1b1b"
+                  : "rgb(130, 130, 130)",
             },
           ]}
         />
@@ -110,7 +107,9 @@ const Footer: React.FC<Props> = memo(({ setPage }) => {
             styles.text,
             {
               color:
-                selectedIcon === "favorites" ? "#9e1b1b" : "rgb(130, 130, 130)",
+                page === "favorites" || page === "spots"
+                  ? "#9e1b1b"
+                  : "rgb(130, 130, 130)",
             },
           ]}
         >
@@ -125,7 +124,7 @@ const Footer: React.FC<Props> = memo(({ setPage }) => {
           style={[
             styles.footerIcon,
             {
-              color: selectedIcon === "" ? "#9e1b1b" : "rgb(130, 130, 130)",
+              color: page === "" ? "#9e1b1b" : "rgb(130, 130, 130)",
             },
           ]}
         />
@@ -133,7 +132,7 @@ const Footer: React.FC<Props> = memo(({ setPage }) => {
           style={[
             styles.text,
             {
-              color: selectedIcon === "" ? "#9e1b1b" : "rgb(130, 130, 130)",
+              color: page === "" ? "#9e1b1b" : "rgb(130, 130, 130)",
             },
           ]}
         >
