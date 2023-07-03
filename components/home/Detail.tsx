@@ -1,5 +1,13 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, TouchableOpacity, View, FlatList, Image, Dimensions, ScrollView
+import {
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  FlatList,
+  Image,
+  Dimensions,
+  ScrollView,
 } from "react-native";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
@@ -7,24 +15,23 @@ import EvilIcons from "react-native-vector-icons/EvilIcons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import Feather from "react-native-vector-icons/Feather";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import Icon from 'react-native-vector-icons/Ionicons';
+import Icon from "react-native-vector-icons/Ionicons";
 import Swiper from "react-native-swiper";
 import { Svg, Polygon } from "react-native-svg";
 
-import { cards } from "../../data/cards";   // ダミーデータ
+import { cards } from "../../data/cards"; // ダミーデータ
 import { Dispatch, SetStateAction, memo, useState } from "react";
 
 const ScreenWidth = Dimensions.get("window").width;
 const ScreenHeight = Dimensions.get("window").height;
 
 type Props = {
-  page: string,
-  setPage: Dispatch<SetStateAction<string>>,
-  index: number,
-}
+  page: string;
+  setPage: Dispatch<SetStateAction<string>>;
+  index: number;
+};
 
 const Detail: React.FC<Props> = memo(({ page, setPage, index }) => {
-
   const [showText, setShowText] = useState(false);
 
   const handleButtonPress = () => {
@@ -36,27 +43,25 @@ const Detail: React.FC<Props> = memo(({ page, setPage, index }) => {
       <TouchableOpacity
         style={styles.backButton}
         onPress={() => {
-          page === "detail"
-          ? setPage("home")
-          : setPage("spots");
+          page === "detail" ? setPage("home") : setPage("spots");
         }}
       >
         <EvilIcons name="chevron-left" style={styles.backIcon} />
       </TouchableOpacity>
 
       <ScrollView>
-        {/* 行ったよラベルを表示させる */}
-        {showText === true && (
-          <View style={styles.window}>
-            <Svg width={500} height={500}>
-              <Polygon points="0,150 150,0 150,150" fill="rgb(158, 27, 27)" />
-              <View style={styles.visitedTextContainer}>
-                <Text style={styles.visitedText}>行ったよ！   </Text>
-              </View>
-            </Svg>
-          </View>
-        )}
         <View style={styles.main}>
+          {/* 行ったよラベルを表示させる */}
+          {showText === true && (
+            <View style={styles.window}>
+              <Svg width={500} height={500}>
+                <Polygon points="0,150 150,0 150,150" fill="rgb(158, 27, 27)" />
+                <View style={styles.visitedTextContainer}>
+                  <Text style={styles.visitedText}>行ったよ！ </Text>
+                </View>
+              </Svg>
+            </View>
+          )}
           <View style={styles.cardPhoto}>
             <Swiper showsButtons={false}>
               {cards[index].images.map((item, index) => (
@@ -74,16 +79,17 @@ const Detail: React.FC<Props> = memo(({ page, setPage, index }) => {
           </View>
 
           <View style={styles.description}>
-
             <Text style={styles.title}>{cards[index].title}</Text>
 
             <View style={styles.addressContainer}>
               <Text style={styles.descriptionTitle}>
-                  <Icon name="location-outline" style={styles.icon}/>
-                  所在地
-                </Text>
-                <Text>{`〒${cards[index].postCode}`}</Text>
-                <Text style={styles.descriptionAddress}>{cards[index].address}</Text>
+                <Icon name="location-outline" style={styles.icon} />
+                所在地
+              </Text>
+              <Text>{`〒${cards[index].postCode}`}</Text>
+              <Text style={styles.descriptionAddress}>
+                {cards[index].address}
+              </Text>
             </View>
 
             <View style={styles.descriptionContainer}>
@@ -128,7 +134,10 @@ const Detail: React.FC<Props> = memo(({ page, setPage, index }) => {
 
             <View style={styles.descriptionContainer}>
               <Text style={styles.descriptionTitle}>
-                <Ionicons name="information-circle-outline" style={styles.icon} />
+                <Ionicons
+                  name="information-circle-outline"
+                  style={styles.icon}
+                />
                 定休日
               </Text>
               <Text>{cards[index].closed}</Text>
@@ -139,10 +148,9 @@ const Detail: React.FC<Props> = memo(({ page, setPage, index }) => {
                 <FontAwesome5 name="train" style={styles.icon} />
                 公共交通機関でのアクセス
               </Text>
-              <FlatList
-                data={cards[index].publicTransport}
-                renderItem={({ item }) => <Text>{item}</Text>}
-              />
+              {cards[index].publicTransport.map((item, itemIndex) => (
+                <Text key={itemIndex}>{item}</Text>
+              ))}
             </View>
 
             <View style={styles.descriptionContainer}>
@@ -150,10 +158,9 @@ const Detail: React.FC<Props> = memo(({ page, setPage, index }) => {
                 <MaterialCommunityIcons name="car" style={styles.icon} />
                 車でのアクセス
               </Text>
-              <FlatList
-                data={cards[index].car}
-                renderItem={({ item }) => <Text>{item}</Text>}
-              />
+              {cards[index].car.map((item, itemIndex) => (
+                <Text key={itemIndex}>{item}</Text>
+              ))}
             </View>
           </View>
         </View>
@@ -162,14 +169,16 @@ const Detail: React.FC<Props> = memo(({ page, setPage, index }) => {
       <View style={styles.container}>
         <View style={styles.footer}>
           {/* 行ったよボタン */}
-          <TouchableOpacity
-            style={[styles.button, showText && styles.buttonPressed]}
-            onPress={handleButtonPress}
-          >
-            <Text style={[styles.text, showText && styles.textPressed]}>
-              行ったよ！
-            </Text>
-          </TouchableOpacity>
+          {page === "visited" && (
+            <TouchableOpacity
+              style={[styles.button, showText && styles.buttonPressed]}
+              onPress={handleButtonPress}
+            >
+              <Text style={[styles.text, showText && styles.textPressed]}>
+                行ったよ！
+              </Text>
+            </TouchableOpacity>
+          )}
         </View>
       </View>
     </View>
@@ -178,7 +187,7 @@ const Detail: React.FC<Props> = memo(({ page, setPage, index }) => {
 
 const styles = StyleSheet.create({
   backButton: {
-    position: 'absolute',
+    position: "absolute",
     top: 55,
     left: 15,
     height: 30,
@@ -191,16 +200,18 @@ const styles = StyleSheet.create({
     fontSize: 35,
     left: -2,
     top: 1,
-    color: 'rgb(80, 80, 80)',
+    color: "rgb(80, 80, 80)",
   },
   main: {
     paddingBottom: 80,
+    flex: 1,
   },
   cardPhoto: {
     height: 350,
   },
   description: {
     padding: 20,
+    flex: 1,
   },
   title: {
     fontSize: 28,
@@ -222,6 +233,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     width: "100%",
     zIndex: 9999,
+    flex: 1,
   },
   footer: {
     flexDirection: "row",
@@ -254,10 +266,9 @@ const styles = StyleSheet.create({
   descriptionTitle: {
     fontSize: 23,
     paddingBottom: 8,
-    color: 'rgb(80, 80, 80)',
+    color: "rgb(80, 80, 80)",
   },
-  descriptionAddress: {
-  },
+  descriptionAddress: {},
   text: {
     fontSize: 13,
     color: "white",
@@ -270,8 +281,8 @@ const styles = StyleSheet.create({
   },
   visitedTextContainer: {
     position: "absolute",
-    bottom: -105,
-    right: 375,
+    bottom: -100,
+    right: 365,
     alignItems: "center",
     transform: [{ rotate: "315deg" }],
   },
