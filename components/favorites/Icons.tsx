@@ -2,8 +2,8 @@
 import React, { Dispatch, SetStateAction, memo } from 'react';
 import { View, Text, Image, TouchableOpacity } from 'react-native';
 
-import {Prefecture} from '../../data/globals';
-import {styles} from './styles';
+import { Prefecture } from '../../data/globals';
+import { styles } from './styles';
 
 type Props = {
   favoriteData: Array<Prefecture>;

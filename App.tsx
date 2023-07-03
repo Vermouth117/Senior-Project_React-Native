@@ -1,6 +1,6 @@
 
 import { StatusBar } from "expo-status-bar";
-import { Dispatch, SetStateAction, createContext, memo, useState } from "react";
+import { Dispatch, SetStateAction, createContext, memo, useEffect, useState } from "react";
 import { Dimensions, StyleSheet, Text, TextInput, View } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 
@@ -11,6 +11,21 @@ import { cards } from "./data/cards";
 import Map from "./components/map/Map";
 import Detail from "./components/home/Detail";
 import Spots from "./components/favorites/Spots";
+import Notice from "./components/Notice";
+import { Prefecture } from './data/globals';
+
+import * as Notifications from 'expo-notifications';
+
+// import Storage from 'react-native-storage';
+// import AsyncStorage from '@react-native-community/async-storage';
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: true,
+  }),
+});
 
 const SCREEN_HEIGHT = Dimensions.get("window").height;
 const SCREEN_WIDTH = Dimensions.get("window").width;
@@ -24,17 +39,87 @@ type Props = [
 
 export const MyContext = createContext<Props>(["", () => {}, "", () => {}]);
 
+const SERVER_URL = 'https://soranomix-api-server.onrender.com';
+
+// //ストレージの作成
+// const storage: Storage = new Storage({
+//   // 最大容量
+//   size: 1000,
+//   // バックエンドにAsyncStorageを使う
+//   storageBackend: AsyncStorage,
+//   // キャッシュ期限(null=期限なし)
+//   defaultExpires: null,
+//   // メモリにキャッシュするかどうか
+//   enableCache: true,
+// })
+
 const App = memo(() => {
+
+  useEffect(() => {
+    requestPermissionsAsync();
+    Notifications.setBadgeCountAsync(0);
+
+    // storage
+    // .load({key: 'someKey'})
+    // .then(res => console.log(res))
+    // .catch(err => console.warn(err))
+
+  }, []);
+
+  const [favoriteData, setFavoriteData] = useState<Prefecture[]>([]);
+  // 通知カウント設定
+  const [noticeCount, setNoticeCount] = useState(115);
+
+  useEffect(() => {
+    (async () => {
+      // console.log(favoriteData);
+      favoriteData.length !== 0 &&
+      favoriteData.forEach(async obj => {
+
+        obj.number >= noticeCount &&
+        // プッシュ通知を実際に送信する
+        await Notifications.scheduleNotificationAsync({
+          content: {
+            body: `🧳旅行先が${obj.number}つ溜まっています!!`,
+            title: '愛知県に行ってみませんか？',
+            sound: 'default',
+            // subtitle: 'subtitle',
+            // badge: 1,
+          },
+          trigger: {
+            seconds: 1,
+          }
+        });
+        Notifications.setBadgeCountAsync(1);
+      })
+    })();
+  }, [favoriteData]);
+
+  const scheduleNotificationAsync = async () => {
+    const res = await fetch(`${SERVER_URL}/api/favorites`).then(data => data.json());
+    // console.log('res', res);
+    setFavoriteData(res);
+  };
+
+  const requestPermissionsAsync = async () => {
+    // 現時点の通知権限の情報を取得する
+    const { granted } = await Notifications.getPermissionsAsync();
+    if (granted) return;
+
+    // ユーザーに通知権限を要求するポップアップを出す
+    await Notifications.requestPermissionsAsync();
+  }
 
   const [page, setPage] = useState("home");
   const [index, setIndex] = useState(0);
   const [prefecture, setPrefecture] = useState("");
 
   const [inputRef, setInputRef] = useState("");
-  console.log(inputRef);   // フィルターに使う
+  console.log(inputRef);   // フィルターに使う予定
 
   return (
     <View style={styles.container}>
+      {/* <Notice /> */}
       <MyContext.Provider value={[page, setPage, prefecture, setPrefecture]}>
         {page === "home" && (
           <View>
@@ -57,6 +142,7 @@ const App = memo(() => {
                   card={card}
                   setPage={setPage}
                   setIndex={setIndex}
+                  scheduleNotificationAsync={scheduleNotificationAsync}
                 />
               ))}
             </View>
