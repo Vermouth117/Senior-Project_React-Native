@@ -1,4 +1,3 @@
-
 import { StatusBar } from "expo-status-bar";
 import { Dispatch, SetStateAction, createContext, memo, useState } from "react";
 import { Dimensions, StyleSheet, Text, TextInput, View } from "react-native";
@@ -25,13 +24,12 @@ type Props = [
 export const MyContext = createContext<Props>(["", () => {}, "", () => {}]);
 
 const App = memo(() => {
-
   const [page, setPage] = useState("home");
   const [index, setIndex] = useState(0);
   const [prefecture, setPrefecture] = useState("");
 
   const [inputRef, setInputRef] = useState("");
-  console.log(inputRef);   // フィルターに使う
+  console.log(inputRef); // フィルターに使う
 
   return (
     <View style={styles.container}>
@@ -44,7 +42,7 @@ const App = memo(() => {
                 placeholder="キーワード検索"
                 style={styles.headerTextInput}
                 value={inputRef}
-                onChangeText={text => setInputRef(text)}
+                onChangeText={(text) => setInputRef(text)}
               />
               <Icon name="menu-outline" style={styles.headerIcon} />
             </View>
@@ -63,29 +61,29 @@ const App = memo(() => {
           </View>
         )}
 
-        {page === "detail" &&
+        {page === "detail" && (
           <Detail page={page} setPage={setPage} index={index} />
-        }
+        )}
 
-        {page === "map" &&
-          <Map />
-        }
+        {page === "map" && <Map />}
 
-        {page === "favorites" &&
-          <Favorites />
-        }
+        {page === "favorites" && <Favorites />}
 
-        {page === "spots" &&
-          <Spots setPage={setPage} prefecture={prefecture} setIndex={setIndex} />
-        }
+        {page === "spots" && (
+          <Spots
+            setPage={setPage}
+            prefecture={prefecture}
+            setIndex={setIndex}
+          />
+        )}
 
-        {page === "visited" &&
+        {page === "visited" && (
           <Detail page={page} setPage={setPage} index={index} />
-        }
+        )}
 
-        {page !== "detail" && page !== "spots" && page !== "visited" &&
-          <Footer setPage={setPage}/>
-        }
+        {page !== "detail" && page !== "visited" && (
+          <Footer page={page} setPage={setPage} />
+        )}
 
         <StatusBar style="auto" />
       </MyContext.Provider>
