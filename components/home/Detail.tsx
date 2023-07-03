@@ -1,4 +1,3 @@
-
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, TouchableOpacity, View, FlatList, Image, Dimensions, ScrollView
 } from "react-native";
@@ -185,7 +184,7 @@ const styles = StyleSheet.create({
     height: 30,
     width: 30,
     zIndex: 1,
-    backgroundColor: 'white',
+    backgroundColor: "white",
     borderRadius: 20,
   },
   backIcon: {
@@ -210,25 +209,14 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     marginTop: 20,
     borderTopWidth: 1,
-    borderColor: 'rgb(230, 230, 230)',
+    borderColor: "rgb(230, 230, 230)",
   },
   descriptionContainer: {
     paddingVertical: 10,
     borderTopWidth: 1,
-    borderColor: 'rgb(230, 230, 230)',
+    borderColor: "rgb(230, 230, 230)",
   },
-  descriptionTitle: {
-    fontSize: 23,
-    paddingBottom: 8,
-    color: 'rgb(80, 80, 80)',
-  },
-  descriptionAddress: {
-
-  },
-  icon: {
-    fontSize: 23,
-    color: 'rgb(80, 80, 80)',
-  },
+  icon: {},
   container: {
     position: "absolute",
     bottom: 0,
@@ -263,7 +251,13 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: "#9e1b1b",
   },
-
+  descriptionTitle: {
+    fontSize: 23,
+    paddingBottom: 8,
+    color: 'rgb(80, 80, 80)',
+  },
+  descriptionAddress: {
+  },
   text: {
     fontSize: 13,
     color: "white",
