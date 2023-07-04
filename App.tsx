@@ -1,3 +1,4 @@
+
 import {
   Dispatch,
   SetStateAction,
@@ -153,7 +154,7 @@ const App1 = memo(() => {
   const [hasVisited, setHasVisited] = useState(false);
 
   const [inputRef, setInputRef] = useState("");
-  console.log(inputRef); // フィルターに使う予定
+  console.log(inputRef);   // フィルターに使う予定
 
   return (
     <View style={styles.container}>
@@ -318,7 +319,7 @@ function App(user: any) {
         Header={MyAppHeader}
       >
         <App1 />
-        <SignOutButton />
+        {/* <SignOutButton /> */}
       </Authenticator>
     </Authenticator.Provider>
   );

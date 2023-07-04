@@ -58,7 +58,7 @@ const TinderSwipe: React.FC<Props> = memo(({ index, card, setPage, setIndex, sch
               }
             )
             // .then((data) => data.json());
-            console.log(postData);
+            // console.log(postData);
 
             // 通知
             scheduleNotificationAsync();
@@ -68,16 +68,16 @@ const TinderSwipe: React.FC<Props> = memo(({ index, card, setPage, setIndex, sch
               key: 'data',   // データのキー（一意の値）
               data: {
                 name: 'yohei',
-                age: 25,
+                age: 30,
               },
               expires: 1000 * 3600,   // 有効期限を指定する場合（ミリ秒）
             });
 
             // 端末から取得する
             await storage
-            .load({key: 'data'})
-            .then(res => console.log("Tinder", res))
-            .catch(err => console.warn("Tinder", err))
+              .load({key: 'data'})
+              .then(res => console.log("Tinder", res))
+              .catch(err => console.warn("Tinder", err))
 
           });
         } else if (gestureState.dx < -120) {

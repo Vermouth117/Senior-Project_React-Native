@@ -1,3 +1,4 @@
+
 declare module "aws-amplify-react-native" {
   const Amplify: any;
   export default Amplify;

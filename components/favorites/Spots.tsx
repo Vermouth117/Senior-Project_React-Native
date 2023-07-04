@@ -108,6 +108,7 @@ const Spot: React.FC<Props> = memo(({ setPage, prefecture, setIndex, setHasVisit
         );
         setIndex(selectIndex);
         setHasVisited(item.hasVisited);
+        // fetch GET したデータをstate管理でAppへ（idをパスパラで）
       }}
     >
       <View style={styles.imageWrapper}>

@@ -165,7 +165,7 @@ const Detail: React.FC<Props> = memo(({ page, setPage, index, hasVisited }) => {
               style={[styles.button, showText && styles.buttonPressed]}
               onPress={async () => {
                 handleButtonPress()
-                // await fetch(`${SERVER_URL}/api/favorites`,
+                // await fetch(`${SERVER_URL}/api/favorites/:id`,
                 //   {
                 //     method: 'PATCH',
                 //     headers: {

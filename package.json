@@ -16,7 +16,7 @@
     "@react-native-community/netinfo": "9.3.7",
     "aws-amplify-react-native": "^7.0.2",
     "aws-sdk": "^2.1407.0",
-    "@react-native-async-storage/async-storage": "^1.19.0",
+    "@react-native-async-storage/async-storage": "^1.17.11",
     "expo": "~48.0.18",
     "expo-location": "~15.1.1",
     "expo-notifications": "~0.18.1",
