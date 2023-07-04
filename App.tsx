@@ -1,13 +1,53 @@
+import {
+  Dispatch,
+  SetStateAction,
+  createContext,
+  memo,
+  useEffect,
+  useState,
+} from "react";
+/**
+ * リアクトネイティブで使うタグ
+ */
+import {
+  Dimensions,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+  Button,
+} from "react-native";
+/**
+ *  description UI reactNativeコンポーネント
+ */
+import {
+  Authenticator,
+  useAuthenticator,
+  useTheme,
+} from "@aws-amplify/ui-react-native";
+/**
+ * AWSライブラリ
+ */
+import { Amplify, Auth } from "aws-amplify";
+import awsconfig from "./src/aws-exports";
+/**
+ * Authセッティング
+ * amplifyセッティング
+ */
+Auth.configure(awsconfig);
+Amplify.configure(awsconfig);
 
-import { Dispatch, SetStateAction, createContext, memo, useEffect, useState } from "react";
-import { Dimensions, StyleSheet, Text, TextInput, View } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
-import * as Notifications from 'expo-notifications';
-import Storage from 'react-native-storage';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Notifications from "expo-notifications";
+import Storage from "react-native-storage";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+/**
+ * description ログイン画面構成
+ */
+import AuthenticatorFormFields from "./components/login/AuthenticatorFormFields";
 
 import { cards } from "./data/cards";
-import { Prefecture } from './data/globals';
+import { Prefecture } from "./data/globals";
 import TinderSwipe from "./components/home/TinderSwipe";
 import Favorites from "./components/favorites/Page";
 import Footer from "./components/Footer";
@@ -52,17 +92,17 @@ export const storage: Storage = new Storage({
   enableCache: true,
   // 初期化時にデータを同期するためのオプション
   sync: {},
-})
+});
 
-const App = memo(() => {
-
+const App1 = memo(() => {
   useEffect(() => {
     requestPermissionsAsync();
     Notifications.setBadgeCountAsync(0);
 
-    storage.load({key: 'data'})
-    .then(res => console.log("App", res))
-    .catch(err => console.warn("App", err));
+    storage
+      .load({ key: "data" })
+      .then((res) => console.log("App", res))
+      .catch((err) => console.warn("App", err));
   }, []);
 
   const [noticeCount, setNoticeCount] = useState(10);   // 通知カウント設定
@@ -72,24 +112,23 @@ const App = memo(() => {
     (async () => {
       // console.log(favoriteData);
       favoriteData.length !== 0 &&
-      favoriteData.forEach(async obj => {
-
-        obj.number >= noticeCount &&
-        // プッシュ通知を実際に送信する
-        await Notifications.scheduleNotificationAsync({
-          content: {
-            body: `🧳旅行先が${obj.number}つ溜まっています!!`,
-            title: '愛知県に行ってみませんか？',
-            sound: 'default',
-            // subtitle: 'subtitle',
-            // badge: 1,
-          },
-          trigger: {
-            seconds: 1,
-          }
+        favoriteData.forEach(async (obj) => {
+          obj.number >= noticeCount &&
+            // プッシュ通知を実際に送信する
+            (await Notifications.scheduleNotificationAsync({
+              content: {
+                body: `🧳旅行先が${obj.number}つ溜まっています!!`,
+                title: "愛知県に行ってみませんか？",
+                sound: "default",
+                // subtitle: 'subtitle',
+                // badge: 1,
+              },
+              trigger: {
+                seconds: 1,
+              },
+            }));
+          Notifications.setBadgeCountAsync(1);
         });
-        Notifications.setBadgeCountAsync(1);
-      })
     })();
   }, [favoriteData]);
 
@@ -106,7 +145,7 @@ const App = memo(() => {
 
     // ユーザーに通知権限を要求するポップアップを出す
     await Notifications.requestPermissionsAsync();
-  }
+  };
 
   const [page, setPage] = useState("home");
   const [index, setIndex] = useState(0);
@@ -114,7 +153,7 @@ const App = memo(() => {
   const [hasVisited, setHasVisited] = useState(false);
 
   const [inputRef, setInputRef] = useState("");
-  console.log(inputRef);   // フィルターに使う予定
+  console.log(inputRef); // フィルターに使う予定
 
   return (
     <View style={styles.container}>
@@ -152,17 +191,11 @@ const App = memo(() => {
           <Detail page={page} setPage={setPage} index={index} hasVisited={null} />
         }
 
-        {page === "notice" &&
-          <Notice />
-        }
+        {page === "notice" && <Notice />}
 
-        {page === "map" &&
-          <Map />
-        }
+        {page === "map" && <Map />}
 
-        {page === "favorites" &&
-          <Favorites />
-        }
+        {page === "favorites" && <Favorites />}
 
         {page === "spots" &&
           <Spots setPage={setPage} prefecture={prefecture} setIndex={setIndex} setHasVisited={setHasVisited} />
@@ -172,14 +205,11 @@ const App = memo(() => {
           <Detail page={page} setPage={setPage} index={index} hasVisited={hasVisited} />
         }
 
-        {page === "user" &&
-          <User />
-        }
+        {page === "user" && <User />}
 
-        {page !== "detail" && page !== "visited" &&
+        {page !== "detail" && page !== "visited" && (
           <Footer page={page} setPage={setPage} />
-        }
-
+        )}
       </MyContext.Provider>
     </View>
   );
@@ -224,6 +254,78 @@ const styles = StyleSheet.create({
     marginTop: Dimensions.get("window").height / 2,
     marginHorizontal: 140,
   },
+});
+
+//FIXME cognitoゾーン
+function SignOutButton() {
+  const { signOut } = useAuthenticator();
+  return <Button onPress={signOut} title="Sign Out" />;
+}
+
+function App(user: any) {
+  const MyAppHeader = () => {
+    const {
+      tokens: { space, fontSizes },
+    } = useTheme();
+    return (
+      <View>
+        <Text style={{ fontSize: fontSizes.xxxl, padding: space.xl }}>
+          とき旅
+        </Text>
+      </View>
+    );
+  };
+  return (
+    <Authenticator.Provider>
+      <Authenticator
+        Container={(props) => (
+          // reuse default `Container` and apply custom background
+          <Authenticator.Container
+            {...props}
+            style={{ backgroundColor: "#EEE2DE" }}
+          />
+        )}
+        initialState="signIn"
+        components={{
+          //NOTEサインアップフィールド
+          SignUp: ({ fields, ...props }) => (
+            <Authenticator.SignUp {...props} fields={AuthenticatorFormFields} />
+          ),
+          //NOTEサインインフィールド
+          SignIn: ({ fields, ...props }) => (
+            <Authenticator.SignIn
+              {...props}
+              fields={[
+                {
+                  name: "username",
+                  label: "ユーザーネーム",
+                  type: "default",
+                  placeholder: "ユーザーネーム",
+                },
+
+                {
+                  name: "password",
+                  label: "パスワード",
+                  type: "default",
+                  placeholder: "パスワード",
+                  secureTextEntry: true,
+                },
+              ]}
+            />
+          ),
+        }}
+        //コンポーネンツend
+        Header={MyAppHeader}
+      >
+        <App1 />
+        <SignOutButton />
+      </Authenticator>
+    </Authenticator.Provider>
+  );
+}
+
+const style = StyleSheet.create({
+  container: { flex: 1, alignItems: "center", justifyContent: "center" },
 });
 
 export default App;
