@@ -1,4 +1,3 @@
-
 import { Dispatch, SetStateAction, memo } from "react";
 import { StyleSheet, View, TouchableOpacity, Text } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
@@ -11,8 +10,10 @@ type Props = {
 const Footer: React.FC<Props> = memo(({ page, setPage }) => {
   return (
     <View style={styles.footer}>
-
-      <TouchableOpacity onPress={() => setPage("home")} style={styles.iconContainer}>
+      <TouchableOpacity
+        onPress={() => setPage("home")}
+        style={styles.iconContainer}
+      >
         <Icon
           name="home-outline"
           style={[
@@ -30,7 +31,10 @@ const Footer: React.FC<Props> = memo(({ page, setPage }) => {
         </Text>
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => setPage("notice")} style={styles.iconContainer}>
+      <TouchableOpacity
+        onPress={() => setPage("notice")}
+        style={styles.iconContainer}
+      >
         <Icon
           name="notifications-outline"
           style={[
@@ -48,7 +52,10 @@ const Footer: React.FC<Props> = memo(({ page, setPage }) => {
         </Text>
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => setPage("map")} style={styles.iconContainer}>
+      <TouchableOpacity
+        onPress={() => setPage("map")}
+        style={styles.iconContainer}
+      >
         <Icon
           name="location-outline"
           style={[
@@ -66,25 +73,41 @@ const Footer: React.FC<Props> = memo(({ page, setPage }) => {
         </Text>
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => setPage("favorites")} style={styles.iconContainer}>
+      <TouchableOpacity
+        onPress={() => setPage("favorites")}
+        style={styles.iconContainer}
+      >
         <Icon
           name="thumbs-up-outline"
           style={[
             styles.footerIcon,
-            { color: page === "favorites" || page === "spots" ? "#9e1b1b" : "rgb(130, 130, 130)" },
+            {
+              color:
+                page === "favorites" || page === "spots"
+                  ? "#9e1b1b"
+                  : "rgb(130, 130, 130)",
+            },
           ]}
         />
         <Text
           style={[
             styles.text,
-            { color: page === "favorites" || page === "spots" ? "#9e1b1b" : "rgb(130, 130, 130)" },
+            {
+              color:
+                page === "favorites" || page === "spots"
+                  ? "#9e1b1b"
+                  : "rgb(130, 130, 130)",
+            },
           ]}
         >
           お気に入り
         </Text>
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => setPage("user")} style={styles.iconContainer}>
+      <TouchableOpacity
+        onPress={() => setPage("user")}
+        style={styles.iconContainer}
+      >
         <Icon
           name="person-outline"
           style={[

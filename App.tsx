@@ -45,7 +45,9 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
  * description ログイン画面構成
  */
 import AuthenticatorFormFields from "./components/login/AuthenticatorFormFields";
-
+/**
+ * 子コンポーネント群
+ */
 import { cards } from "./data/cards";
 import { Prefecture } from "./data/globals";
 import TinderSwipe from "./components/home/TinderSwipe";
@@ -91,8 +93,18 @@ export const storage: Storage = new Storage({
   // 初期化時にデータを同期するためのオプション
   sync: {},
 });
-
+/**
+ * description メインのコンポーネント
+ */
 const App1 = memo(() => {
+  const [noticeCount, setNoticeCount] = useState(115); // 通知カウント設定
+  const [favoriteData, setFavoriteData] = useState<Prefecture[]>([]);
+  const [username, setUsername] = useState("");
+  const [page, setPage] = useState("home");
+  const [index, setIndex] = useState(0);
+  const [prefecture, setPrefecture] = useState("");
+  const [inputRef, setInputRef] = useState("");
+
   useEffect(() => {
     requestPermissionsAsync();
     Notifications.setBadgeCountAsync(0);
@@ -103,9 +115,31 @@ const App1 = memo(() => {
       .catch((err) => console.warn("App", err));
   }, []);
 
-  const [noticeCount, setNoticeCount] = useState(115); // 通知カウント設定
-  const [favoriteData, setFavoriteData] = useState<Prefecture[]>([]);
+  /**
+   * description 通知数設定用
+   */
+  const userToApp = (userdata: SetStateAction<number>) => {
+    setNoticeCount(userdata);
+  };
 
+  /**
+   * Description　画面にユーザー名表示用エフェクト
+   * @returns {react　Native　Components}
+   */
+  useEffect(() => {
+    async function getUsername() {
+      try {
+        const user = await Auth.currentAuthenticatedUser();
+        setUsername(user.attributes.nickname);
+      } catch (error) {
+        console.log("Error getting username:", error);
+      }
+    }
+    getUsername();
+  }, []);
+  /**
+   * 通知設定用エフェクト
+   */
   useEffect(() => {
     (async () => {
       // console.log(favoriteData);
@@ -147,11 +181,6 @@ const App1 = memo(() => {
     await Notifications.requestPermissionsAsync();
   };
 
-  const [page, setPage] = useState("home");
-  const [index, setIndex] = useState(0);
-  const [prefecture, setPrefecture] = useState("");
-
-  const [inputRef, setInputRef] = useState("");
   console.log(inputRef); // フィルターに使う予定
 
   return (
@@ -189,7 +218,7 @@ const App1 = memo(() => {
           <Detail page={page} setPage={setPage} index={index} />
         )}
 
-        {page === "notice" && <Notice />}
+        {page === "notice" && <Notice noticeSet={noticeCount} />}
 
         {page === "map" && <Map />}
 
@@ -207,7 +236,13 @@ const App1 = memo(() => {
           <Detail page={page} setPage={setPage} index={index} />
         )}
 
-        {page === "user" && <User />}
+        {page === "user" && (
+          <User
+            userName={username}
+            noticeSet={noticeCount}
+            appToUser={userToApp}
+          />
+        )}
 
         {page !== "detail" && page !== "visited" && (
           <Footer page={page} setPage={setPage} />
@@ -259,16 +294,12 @@ const styles = StyleSheet.create({
 });
 
 //FIXME cognitoゾーン
-function SignOutButton() {
-  const { signOut } = useAuthenticator();
-  return <Button onPress={signOut} title="Sign Out" />;
-}
 
 function App(user: any) {
   const MyAppHeader = () => {
-    const {
-      tokens: { space, fontSizes },
-    } = useTheme();
+    const { tokens } = useTheme();
+    const { space, fontSizes } = tokens; // tokensのプロパティを個別の変数に分割代入
+
     return (
       <View>
         <Text style={{ fontSize: fontSizes.xxxl, padding: space.xl }}>
@@ -277,6 +308,7 @@ function App(user: any) {
       </View>
     );
   };
+
   return (
     <Authenticator.Provider>
       <Authenticator
@@ -320,14 +352,17 @@ function App(user: any) {
         Header={MyAppHeader}
       >
         <App1 />
-        <SignOutButton />
       </Authenticator>
     </Authenticator.Provider>
   );
 }
 
 const style = StyleSheet.create({
-  container: { flex: 1, alignItems: "center", justifyContent: "center" },
+  container: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
 });
 
 export default App;
