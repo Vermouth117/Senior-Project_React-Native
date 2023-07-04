@@ -6,18 +6,17 @@ import Icons from "./Icons";
 import { Prefecture } from "../../data/globals";
 import { MyContext } from "../../App";
 
-const SERVER_URL = "https://soranomix-api-server.onrender.com";
+const SERVER_URL = "https://o49zrrdot8.execute-api.us-east-1.amazonaws.com/tokitabi";
 
 function App(): JSX.Element {
   const [favoriteData, setFavoriteData] = useState<Prefecture[]>([]);
 
-  const [page, setPage] = useContext(MyContext);
-  const [prefecture, setPrefecture] = useContext(MyContext);
+  const [page, setPage, prefecture, setPrefecture] = useContext(MyContext);
 
   useEffect(() => {
     (async () => {
       const res = await fetch(`${SERVER_URL}/api/favorites`).then(data => data.json());
-      console.log("res", res);
+      // console.log("res", res);
       setFavoriteData(res);
     })();
   }, []);

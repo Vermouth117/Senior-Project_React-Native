@@ -30,6 +30,7 @@ const Icons: React.FC<Props> = memo(({ favoriteData, setPage, setPrefecture }) =
       {favoriteData.map((dataObj, index) =>
         <TouchableOpacity
           onPress={() => {
+            console.log("Icons", favoriteData[index].name);
             setPrefecture(favoriteData[index].name);
             setPage("spots");
           }}

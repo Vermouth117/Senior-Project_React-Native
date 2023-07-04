@@ -14,17 +14,21 @@ export interface Spot {
 }
 
 export interface Cards {
+  name: string;
+  prefecture: string;
   images: string[] | string;
-  // images: string[];
-  title: string;
-  postCode: string;
-  address: string;
   price: number;
+  access: string;
+  zip_code: string;
+  address: string;
   business: string;
-  phoneNumber: string;
+  phone_number: string;
   parking: string;
   toilet: string;
   closed: string;
-  publicTransport: string[] | string;
+  public_transport: string[] | string;
   car: string[] | string;
+  has_visited: boolean;
+  latitude: number;
+  longitude: number;
 }

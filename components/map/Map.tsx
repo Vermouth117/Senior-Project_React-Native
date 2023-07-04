@@ -1,17 +1,20 @@
 
 import React, { memo, useEffect, useState } from 'react';
-import { SafeAreaView, Text } from 'react-native';
+import { Image, SafeAreaView, Text, View } from 'react-native';
 import { StyleSheet } from 'react-native';
-import MapView, { Marker } from 'react-native-maps';
+import MapView, { LatLng, Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
 
-const marker = {
-  title: '公園',
-  discription: '遊び場',
+import { cards } from '../../data/cards';
+
+type MapInfo = {
+  title: string,
+  discription: string,
   latlng: {
-    latitude: 36.28825,
-    longitude: 136.7324,
+    latitude: number,
+    longitude: number,
   },
+  uri: string,
 };
 
 const Map = memo(() => {
@@ -40,33 +43,59 @@ const Map = memo(() => {
     })();
   }, []);
 
+  // const markers: any = [{
+  //   title: '香嵐渓',
+  //   discription: '  愛知県',
+  //   latlng: {
+  //     latitude: 35.1270725,
+  //     longitude: 137.3162119,
+  //   },
+  // }];
+
+  const markers: MapInfo[] = cards.map(card => ({
+    title: card.name,
+    discription: `  ${card.prefecture}`,
+    latlng: {
+      latitude: card.latitude,
+      longitude: card.longitude,
+    },
+    uri: card.images[0],
+  }));
+
   return (
-    <SafeAreaView style={styles.map}>
+    <SafeAreaView style={styles.loadView}>
       {latitude !== 0 && longitude !== 0 && (
         <MapView
-          style={styles.mapStyle}
+          style={styles.map}
           // 初期領域を使用してマップをレンダリングする
           initialRegion={{
             latitude: latitude,     // 緯度
             longitude: longitude,   // 軽度
-            latitudeDelta: 0.3,     // 縮尺
-            longitudeDelta: 0.3,    // 縮尺
+            latitudeDelta: 0.5,     // 縮尺
+            longitudeDelta: 0.5,    // 縮尺
           }}
         >
           <Marker
-            coordinate={marker.latlng}
-            // image={{uri: 'https://www.tripyhotellounge.xyz/wp-content/uploads/2022/10/Fukazawa050.jpg'}}
-            title={marker.title}
-            description={marker.discription}
-          />
-          <Marker
+            title="現在地"
             coordinate={{
               latitude: latitude,
               longitude: longitude,
             }}
-            // image={{uri: 'https://www.tripyhotellounge.xyz/wp-content/uploads/2022/10/Fukazawa050.jpg'}}
-            title="現在地"
           />
+          {markers.map((marker, index) => (
+            <Marker
+              key={`location-${index}`}
+              title={marker.title}
+              description={marker.discription}
+              coordinate={marker.latlng}
+            >
+              <Image
+                source={{ uri: marker.uri }}
+                style={styles.pointerImage}
+              />
+              <View style={styles.pointer}/>
+            </Marker>
+          ))}
         </MapView>
       )}
       {latitude === 0 && <Text>ロード中・・・</Text>}
@@ -75,14 +104,38 @@ const Map = memo(() => {
 });
 
 const styles = StyleSheet.create({
-  map: {
+  loadView: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
-  mapStyle: {
+  map: {
     width: '100%',
-    height:  '100%',
+    height: '100%',
+  },
+  pointerImage: {
+    width: 50,
+    height: 50,
+    borderWidth: 2,
+    borderColor: "white",
+    borderRadius: 50 / 2,
+    zIndex: 1,
+  },
+  pointer: {
+    top: -2,
+    alignSelf: 'center',
+    borderLeftWidth: 8,
+    borderRightWidth: 8,
+    borderTopWidth: 15,
+    borderTopColor: "rgb(158, 27, 27)",
+    borderLeftColor: 'transparent',
+    borderRightColor: 'transparent',
+    shadowColor: 'rgb(255, 255, 255)',
+    shadowOffset: {
+      width: 0,
+      height: 8,
+    },
+    shadowOpacity: 1,
   },
 });
 

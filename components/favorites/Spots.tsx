@@ -2,6 +2,7 @@
 import { Dispatch, SetStateAction, memo, useEffect, useState } from "react";
 import { StyleSheet, View, Text, Image, FlatList, SafeAreaView, TouchableOpacity } from "react-native";
 import EvilIcons from "react-native-vector-icons/EvilIcons";
+import { Svg, Polygon } from "react-native-svg";
 
 import { cards } from "../../data/cards";   // ダミーデータ
 
@@ -9,108 +10,118 @@ type Props = {
   setPage: Dispatch<SetStateAction<string>>;
   prefecture: string;
   setIndex: Dispatch<SetStateAction<number>>;
+  setHasVisited: Dispatch<SetStateAction<boolean>>;
 };
 
-const Spot: React.FC<Props> = memo(({ setPage, prefecture, setIndex }) => {
-  const dammyData = [
-    {
-      id: 1,
-      name: "香嵐渓",
-      imgSrc:
-        "https://www.tourismtoyota.jp/upload/rspots/large/10950727826278429f9021f.jpg",
-      price: 500,
-      access: "車",
-    },
-    {
-      id: 6,
-      name: "名古屋城",
-      imgSrc:
-        "https://cdn-news.asoview.com/production/note/05a9e06f-f4c9-4632-a1e5-94d55e4ab29a.jpeg",
-      price: 0,
-      access: "電車",
-    },
-    {
-      id: 42,
-      name: "刈谷ハイウェイオアシス",
-      imgSrc: "https://anniversarys-mag.jp/img/p/pixta_44462056_M.jpg?w=730",
-      price: 0,
-      access: "車",
-    },
-    {
-      id: 78,
-      name: "ラグーナ蒲郡",
-      imgSrc:
-        "https://travel.rakuten.co.jp/mytrip/sites/mytrip/files/styles/1cal_image/public/2022-10/News-202210-laguna-01-2.jpg?itok=mHYN0LnN",
-      price: 0,
-      access: "車",
-    },
-    {
-      id: 79,
-      name: "ラグーナ蒲郡",
-      imgSrc:
-        "https://travel.rakuten.co.jp/mytrip/sites/mytrip/files/styles/1cal_image/public/2022-10/News-202210-laguna-01-2.jpg?itok=mHYN0LnN",
-      price: 0,
-      access: "車",
-    },
-    {
-      id: 108,
-      name: "犬山城下町",
-      imgSrc:
-        "https://aichinavi.jp/upload/spot_images/a0a09a7407e66f560e2483b27911a820.jpg",
-      price: 0,
-      access: "車",
-    },
-    {
-      id: 2,
-      name: "香嵐渓",
-      imgSrc:
-        "https://www.tourismtoyota.jp/upload/rspots/large/10950727826278429f9021f.jpg",
-      price: 500,
-      access: "車",
-    },
-    {
-      id: 7,
-      name: "名古屋城",
-      imgSrc:
-        "https://cdn-news.asoview.com/production/note/05a9e06f-f4c9-4632-a1e5-94d55e4ab29a.jpeg",
-      price: 0,
-      access: "電車",
-    },
-    {
-      id: 43,
-      name: "刈谷ハイウェイオアシス",
-      imgSrc: "https://anniversarys-mag.jp/img/p/pixta_44462056_M.jpg?w=730",
-      price: 0,
-      access: "車",
-    },
-  ];
+const Spot: React.FC<Props> = memo(({ setPage, prefecture, setIndex, setHasVisited }) => {
+  // const dammyData = [
+  //   {
+  //     id: 1,
+  //     name: "香嵐渓",
+  //     imgSrc: "https://www.tourismtoyota.jp/upload/rspots/large/10950727826278429f9021f.jpg",
+  //     price: 500,
+  //     access: "車",
+  //   },
+  //   {
+  //     id: 6,
+  //     name: "名古屋城",
+  //     imgSrc:
+  //       "https://cdn-news.asoview.com/production/note/05a9e06f-f4c9-4632-a1e5-94d55e4ab29a.jpeg",
+  //     price: 0,
+  //     access: "電車",
+  //   },
+  //   {
+  //     id: 42,
+  //     name: "刈谷ハイウェイオアシス",
+  //     imgSrc: "https://anniversarys-mag.jp/img/p/pixta_44462056_M.jpg?w=730",
+  //     price: 0,
+  //     access: "車",
+  //   },
+  //   {
+  //     id: 78,
+  //     name: "ラグーナ蒲郡",
+  //     imgSrc: "https://travel.rakuten.co.jp/mytrip/sites/mytrip/files/styles/1cal_image/public/2022-10/News-202210-laguna-01-2.jpg?itok=mHYN0LnN",
+  //     price: 0,
+  //     access: "車",
+  //   },
+  //   {
+  //     id: 79,
+  //     name: "ラグーナ蒲郡",
+  //     imgSrc: "https://travel.rakuten.co.jp/mytrip/sites/mytrip/files/styles/1cal_image/public/2022-10/News-202210-laguna-01-2.jpg?itok=mHYN0LnN",
+  //     price: 0,
+  //     access: "車",
+  //   },
+  //   {
+  //     id: 108,
+  //     name: "犬山城下町",
+  //     imgSrc: "https://aichinavi.jp/upload/spot_images/a0a09a7407e66f560e2483b27911a820.jpg",
+  //     price: 0,
+  //     access: "車",
+  //   },
+  //   {
+  //     id: 2,
+  //     name: "香嵐渓",
+  //     imgSrc: "https://www.tourismtoyota.jp/upload/rspots/large/10950727826278429f9021f.jpg",
+  //     price: 500,
+  //     access: "車",
+  //   },
+  //   {
+  //     id: 7,
+  //     name: "名古屋城",
+  //     imgSrc: "https://cdn-news.asoview.com/production/note/05a9e06f-f4c9-4632-a1e5-94d55e4ab29a.jpeg",
+  //     price: 0,
+  //     access: "電車",
+  //   },
+  //   {
+  //     id: 43,
+  //     name: "刈谷ハイウェイオアシス",
+  //     imgSrc: "https://anniversarys-mag.jp/img/p/pixta_44462056_M.jpg?w=730",
+  //     price: 0,
+  //     access: "車",
+  //   },
+  // ];
 
-  const SERVER_URL = "https://soranomix-api-server.onrender.com";
+  const SERVER_URL = "https://o49zrrdot8.execute-api.us-east-1.amazonaws.com/tokitabi";
 
-  const [spotsData, setSpotsData] = useState([]);
+  const [spotsData, setSpotsData] = useState<any>([]);
 
   useEffect(() => {
     (async () => {
+      console.log("spots", prefecture);
+
       const res = await fetch(`${SERVER_URL}/api/favorites/${prefecture}`).then(data => data.json());
-      console.log("res", res);
+      console.log("spotsRes", res);
+      res.forEach((spot: { hasVisited: boolean; }) => console.log("visited", spot.hasVisited));
       setSpotsData(res);
     })();
   }, []);
 
-  const renderSpotItem = (item: { id: number, name: string, imgSrc: string, price: number, access: string }) => (
+  const renderSpotItem = (item: { hasVisited: boolean; id: number, name: string, imgSrc: string, price: number, access: string 
+}) => (
     <TouchableOpacity
       style={styles.spotWrapper}
       key={item.id}
       onPress={() => {
         setPage("visited");
         const selectIndex = cards.findIndex(
-          (spotObj) => spotObj.title === item.name
+          spotObj => spotObj.name === item.name
         );
         setIndex(selectIndex);
+        setHasVisited(item.hasVisited);
       }}
     >
       <View style={styles.imageWrapper}>
-        <Image source={{ uri: item.imgSrc }} style={styles.photo} />
+        {item.hasVisited && (
+          <View style={styles.window}>
+            <Svg width={500} height={500}>
+              <Polygon points="0,150 150,0 150,150" fill="rgb(158, 27, 27)" />
+              <View style={styles.visitedTextContainer}>
+                <Text style={styles.visitedText}>行ったよ！</Text>
+              </View>
+            </Svg>
+          </View>
+        )}
+        <Image source={{ uri: item.imgSrc[0] }} style={styles.photo} />
       </View>
       <Text style={styles.price}>¥{item.price}</Text>
       <Text style={styles.name}>{item.name}</Text>
@@ -130,10 +141,10 @@ const Spot: React.FC<Props> = memo(({ setPage, prefecture, setIndex }) => {
       </View>
       <SafeAreaView style={styles.main}>
         <FlatList
-          data={dammyData}
-          // data={spotsData}
+          // data={dammyData}
+          data={spotsData.length !== 0 && spotsData}
           renderItem={({ item }) => renderSpotItem(item)}
-          keyExtractor={(item) => item.id.toString()}
+          keyExtractor={item => item.id.toString()}
           numColumns={2} // 2列で表示する
           style={styles.wrapper}
           columnWrapperStyle={styles.columnWrapper}
@@ -195,6 +206,22 @@ const styles = StyleSheet.create({
     height: 150,
     width: "100%",
     overflow: "hidden",
+  },
+  window: {
+    position: "absolute",
+    left: 80,
+    zIndex: 999,
+  },
+  visitedTextContainer: {
+    position: "absolute",
+    bottom: -130,
+    right: 420,
+    transform: [{ rotate: "315deg" }],
+  },
+  visitedText: {
+    color: "white",
+    fontSize: 15,
+    fontWeight: "bold",
   },
   photo: {
     height: "100%",

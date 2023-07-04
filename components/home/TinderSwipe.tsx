@@ -19,7 +19,7 @@ type Props = {
   scheduleNotificationAsync: Function;
 };
 
-const SERVER_URL = "https://soranomix-api-server.onrender.com";
+const SERVER_URL = "https://o49zrrdot8.execute-api.us-east-1.amazonaws.com/tokitabi";
 
 const TinderSwipe: React.FC<Props> = memo(({ index, card, setPage, setIndex, scheduleNotificationAsync }) => {
 
@@ -38,15 +38,15 @@ const TinderSwipe: React.FC<Props> = memo(({ index, card, setPage, setIndex, sch
             useNativeDriver: true,
           }).start(async () => {
 
-            console.log("LIKE");
+            console.log("LIKE", index);
 
             const postObj: Cards = {
               ...cards[index],
             };
             postObj.images = JSON.stringify(postObj.images);
-            postObj.publicTransport = JSON.stringify(postObj.publicTransport);
+            postObj.public_transport = JSON.stringify(postObj.public_transport);
             postObj.car = JSON.stringify(postObj.car);
-      
+
             const postData = await fetch(
               `${SERVER_URL}/api/favorites`,
               {
@@ -54,9 +54,10 @@ const TinderSwipe: React.FC<Props> = memo(({ index, card, setPage, setIndex, sch
                 headers: {
                   'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ user_id: 1, ...postObj }),
+                body: JSON.stringify({ user_id: "test", ...postObj }),
               }
-            ).then((data) => data.json());
+            )
+            // .then((data) => data.json());
             console.log(postData);
 
             // 通知
@@ -194,14 +195,14 @@ const TinderSwipe: React.FC<Props> = memo(({ index, card, setPage, setIndex, sch
           <TouchableWithoutFeedback onPressOut={() => { setPage("detail"); setIndex(index) }}>
             <View style={styles.cardDetailContainer}>
               <View style={styles.cardTextContainer}>
-                <Text style={styles.cardText} >{card.title}</Text>
+                <Text style={styles.cardText} >{card.name}</Text>
               </View>
               <View style={styles.cardTextTokimekiContainer}>
                 <Text style={styles.cardTextAddressTitle}>
                   <Icon name="location-outline" style={styles.cardTextAddressTitle}/>
                   所在地
                 </Text>
-                <Text style={styles.cardTextPostCode}>{`〒${card.postCode}`}</Text>
+                <Text style={styles.cardTextPostCode}>{`〒${card.zip_code}`}</Text>
                 <Text style={styles.cardTextAddress}>{card.address}</Text>
                 <Text style={styles.cardTextTokimeki}>大人も子供も楽しめる、駅近、駐車場無料、映えスポット、カップルにおすすめ、ペットOK、〇〇近く、食べ歩き、コスパ最高、贅沢、記念日デート、〇〇が人気、テレビに登場</Text>
               </View>

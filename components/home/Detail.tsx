@@ -8,7 +8,7 @@ import Swiper from "react-native-swiper";
 import { Svg, Polygon } from "react-native-svg";
 
 import { cards } from "../../data/cards"; // ダミーデータ
-import { Dispatch, SetStateAction, memo, useState } from "react";
+import { Dispatch, SetStateAction, memo, useEffect, useState } from "react";
 
 const ScreenWidth = Dimensions.get("window").width;
 const ScreenHeight = Dimensions.get("window").height;
@@ -17,14 +17,17 @@ type Props = {
   page: string;
   setPage: Dispatch<SetStateAction<string>>;
   index: number;
+  hasVisited: boolean | null;
 };
 
-const Detail: React.FC<Props> = memo(({ page, setPage, index }) => {
-  const [showText, setShowText] = useState(false);
+const Detail: React.FC<Props> = memo(({ page, setPage, index, hasVisited }) => {
+  const [showText, setShowText] = useState(hasVisited);
 
   const handleButtonPress = () => {
     setShowText((prevShowText) => !prevShowText);
   };
+
+  const SERVER_URL = "https://o49zrrdot8.execute-api.us-east-1.amazonaws.com/tokitabi";
 
   return (
     <View>
@@ -40,7 +43,7 @@ const Detail: React.FC<Props> = memo(({ page, setPage, index }) => {
       <ScrollView>
         <View style={ page === "visited" ? { paddingBottom: 80 } : { paddingBottom: 5 } }>
           {/* 行ったよラベルを表示させる */}
-          {showText === true && (
+          {showText && (
             <View style={styles.window}>
               <Svg width={500} height={500}>
                 <Polygon points="0,150 150,0 150,150" fill="rgb(158, 27, 27)" />
@@ -77,13 +80,13 @@ const Detail: React.FC<Props> = memo(({ page, setPage, index }) => {
           </View>
 
           <View style={styles.description}>
-            <Text style={styles.title}>{cards[index].title}</Text>
+            <Text style={styles.title}>{cards[index].name}</Text>
 
             <View style={styles.addressContainer}>
               <Text style={styles.descriptionTitle}>
                 <Ionicon name="location-outline" style={styles.icon} />所在地
               </Text>
-              <Text style={styles.descriptionPostCode}>{`〒${cards[index].postCode}`}</Text>
+              <Text style={styles.descriptionPostCode}>{`〒${cards[index].zip_code}`}</Text>
               <Text style={styles.descriptionText}>
                 {cards[index].address}
               </Text>
@@ -107,7 +110,7 @@ const Detail: React.FC<Props> = memo(({ page, setPage, index }) => {
               <Text style={styles.descriptionTitle}>
                 <Ionicon name="call-outline" style={styles.icon} /> 電話番号
               </Text>
-              <Text style={styles.descriptionText}>{cards[index].phoneNumber}</Text>
+              <Text style={styles.descriptionText}>{cards[index].phone_number}</Text>
             </View>
 
             <View style={styles.descriptionContainer}>
@@ -138,7 +141,7 @@ const Detail: React.FC<Props> = memo(({ page, setPage, index }) => {
               <Text style={styles.descriptionTitle}>
                 <Ionicon name="subway-outline" style={styles.icon} /> 公共交通機関でのアクセス
               </Text>
-              {cards[index].publicTransport.map((item, itemIndex) => (
+              {cards[index].public_transport.map((item, itemIndex) => (
                 <Text key={itemIndex} style={styles.descriptionTextList}>{item}</Text>
               ))}
             </View>
@@ -160,7 +163,17 @@ const Detail: React.FC<Props> = memo(({ page, setPage, index }) => {
           {/* 行ったよボタン */}
             <TouchableOpacity
               style={[styles.button, showText && styles.buttonPressed]}
-              onPress={handleButtonPress}
+              onPress={async () => {
+                handleButtonPress()
+                // await fetch(`${SERVER_URL}/api/favorites`,
+                //   {
+                //     method: 'PATCH',
+                //     headers: {
+                //       'Content-Type': 'application/json',
+                //     },
+                //   }
+                // );
+              }}
             >
               <Text style={[styles.text, showText && styles.textPressed]}>
                 行ったよ！

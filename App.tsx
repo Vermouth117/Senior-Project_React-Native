@@ -25,7 +25,7 @@ Notifications.setNotificationHandler({
   }),
 });
 
-const SERVER_URL = 'https://soranomix-api-server.onrender.com';
+const SERVER_URL = 'https://o49zrrdot8.execute-api.us-east-1.amazonaws.com/tokitabi';
 const SCREEN_HEIGHT = Dimensions.get("window").height;
 const SCREEN_WIDTH = Dimensions.get("window").width;
 
@@ -33,10 +33,12 @@ type Props = [
   page: string,
   setPage: Dispatch<SetStateAction<string>>,
   prefecture: string,
-  setPrefecture: Dispatch<SetStateAction<string>>
+  setPrefecture: Dispatch<SetStateAction<string>>,
+  hasVisited: boolean,
+  setHasVisited: Dispatch<SetStateAction<boolean>>,
 ];
 
-export const MyContext = createContext<Props>(["", () => {}, "", () => {}]);
+export const MyContext = createContext<Props>([ "", () => {}, "", () => {}, false, () => {} ]);
 
 // ストレージの作成
 export const storage: Storage = new Storage({
@@ -63,7 +65,7 @@ const App = memo(() => {
     .catch(err => console.warn("App", err));
   }, []);
 
-  const [noticeCount, setNoticeCount] = useState(115);   // 通知カウント設定
+  const [noticeCount, setNoticeCount] = useState(10);   // 通知カウント設定
   const [favoriteData, setFavoriteData] = useState<Prefecture[]>([]);
 
   useEffect(() => {
@@ -93,7 +95,7 @@ const App = memo(() => {
 
   const scheduleNotificationAsync = async () => {
     const res = await fetch(`${SERVER_URL}/api/favorites`).then(data => data.json());
-    // console.log('res', res);
+    // console.log('appRes', res);
     setFavoriteData(res);
   };
 
@@ -109,13 +111,14 @@ const App = memo(() => {
   const [page, setPage] = useState("home");
   const [index, setIndex] = useState(0);
   const [prefecture, setPrefecture] = useState("");
+  const [hasVisited, setHasVisited] = useState(false);
 
   const [inputRef, setInputRef] = useState("");
   console.log(inputRef);   // フィルターに使う予定
 
   return (
     <View style={styles.container}>
-      <MyContext.Provider value={[page, setPage, prefecture, setPrefecture]}>
+      <MyContext.Provider value={[ page, setPage, prefecture, setPrefecture, hasVisited, setHasVisited ]}>
 
         {page === "home" &&
           <View>
@@ -146,7 +149,7 @@ const App = memo(() => {
         }
 
         {page === "detail" &&
-          <Detail page={page} setPage={setPage} index={index} />
+          <Detail page={page} setPage={setPage} index={index} hasVisited={null} />
         }
 
         {page === "notice" &&
@@ -162,11 +165,11 @@ const App = memo(() => {
         }
 
         {page === "spots" &&
-          <Spots setPage={setPage} prefecture={prefecture} setIndex={setIndex} />
+          <Spots setPage={setPage} prefecture={prefecture} setIndex={setIndex} setHasVisited={setHasVisited} />
         }
 
         {page === "visited" &&
-          <Detail page={page} setPage={setPage} index={index} />
+          <Detail page={page} setPage={setPage} index={index} hasVisited={hasVisited} />
         }
 
         {page === "user" &&
