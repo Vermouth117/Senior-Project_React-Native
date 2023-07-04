@@ -9,6 +9,13 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@aws-amplify/cli": "^12.1.1",
+    "@aws-amplify/ui-react": "^5.0.3",
+    "@aws-amplify/ui-react-native": "^1.2.20",
+    "@aws-sdk/client-lex-runtime-v2": "^3.362.0",
+    "@react-native-community/netinfo": "9.3.7",
+    "aws-amplify-react-native": "^7.0.2",
+    "aws-sdk": "^2.1407.0",
     "@react-native-async-storage/async-storage": "^1.19.0",
     "expo": "~48.0.18",
     "expo-location": "~15.1.1",
