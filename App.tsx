@@ -319,10 +319,8 @@ function App(user: any) {
         //コンポーネンツend
         Header={MyAppHeader}
       >
-        <View style={style.container}>
-          <App1 />
-          <SignOutButton />
-        </View>
+        <App1 />
+        <SignOutButton />
       </Authenticator>
     </Authenticator.Provider>
   );
