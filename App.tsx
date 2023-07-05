@@ -77,10 +77,17 @@ type Props = [
   prefecture: string,
   setPrefecture: Dispatch<SetStateAction<string>>,
   hasVisited: boolean,
-  setHasVisited: Dispatch<SetStateAction<boolean>>,
+  setHasVisited: Dispatch<SetStateAction<boolean>>
 ];
 
-export const MyContext = createContext<Props>([ "", () => {}, "", () => {}, false, () => {} ]);
+export const MyContext = createContext<Props>([
+  "",
+  () => {},
+  "",
+  () => {},
+  false,
+  () => {},
+]);
 
 // ストレージの作成
 export const storage: Storage = new Storage({
@@ -99,7 +106,8 @@ export const storage: Storage = new Storage({
  * description メインのコンポーネント
  */
 const App1 = memo(() => {
-  const [noticeCount, setNoticeCount] = useState(115); // 通知カウント設定
+  const [noticeCount, setNoticeCount] = useState(3); // 通知カウント設定
+  const [touchId, setTouchId] = useState(0);
   const [favoriteData, setFavoriteData] = useState<Prefecture[]>([]);
   const [username, setUsername] = useState("");
   const [page, setPage] = useState("home");
@@ -123,6 +131,12 @@ const App1 = memo(() => {
    */
   const userToApp = (userdata: SetStateAction<number>) => {
     setNoticeCount(userdata);
+  };
+  /**
+   * description ID取得用
+   */
+  const spotToApp = (id: SetStateAction<number>) => {
+    setTouchId(id);
   };
 
   /**
@@ -187,7 +201,16 @@ const App1 = memo(() => {
 
   return (
     <View style={styles.container}>
-      <MyContext.Provider value={[page, setPage, prefecture, setPrefecture, hasVisited, setHasVisited]}>
+      <MyContext.Provider
+        value={[
+          page,
+          setPage,
+          prefecture,
+          setPrefecture,
+          hasVisited,
+          setHasVisited,
+        ]}
+      >
         {page === "home" && (
           <View>
             <View style={styles.header}>
@@ -201,7 +224,7 @@ const App1 = memo(() => {
               <Icon name="menu-outline" style={styles.headerIcon} />
             </View>
             <View style={styles.main}>
-              <Text style={styles.mainText}>おすすめ終了！</Text>
+              <Text style={styles.mainText}>おすすめ終了！{touchId}</Text>
               {cards.map((card, index) => (
                 <TinderSwipe
                   key={index}
@@ -217,7 +240,13 @@ const App1 = memo(() => {
         )}
 
         {page === "detail" && (
-          <Detail page={page} setPage={setPage} index={index} hasVisited={null} />
+          <Detail
+            page={page}
+            setPage={setPage}
+            index={index}
+            hasVisited={null}
+            touchId={touchId}
+          />
         )}
 
         {page === "notice" && <Notice />}
@@ -231,11 +260,23 @@ const App1 = memo(() => {
         {page === "favorites" && <Favorites />}
 
         {page === "spots" && (
-          <Spots setPage={setPage} prefecture={prefecture} setIndex={setIndex} setHasVisited={setHasVisited} />
+          <Spots
+            setPage={setPage}
+            prefecture={prefecture}
+            setIndex={setIndex}
+            setHasVisited={setHasVisited}
+            appToSpot={spotToApp}
+          />
         )}
 
         {page === "visited" && (
-          <Detail page={page} setPage={setPage} index={index} hasVisited={hasVisited} />
+          <Detail
+            page={page}
+            setPage={setPage}
+            index={index}
+            hasVisited={hasVisited}
+            touchId={touchId}
+          />
         )}
 
         {page === "user" && (
