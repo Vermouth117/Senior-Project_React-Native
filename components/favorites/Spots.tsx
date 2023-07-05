@@ -19,6 +19,7 @@ type Props = {
   prefecture: string;
   setIndex: Dispatch<SetStateAction<number>>;
   setHasVisited: Dispatch<SetStateAction<boolean>>;
+  appToSpot: Function;
 };
 /**
  * RDSのとき旅用　URL
@@ -31,7 +32,7 @@ const SERVER_URL =
  * @return {JSXElement}
  */
 const Spots: React.FC<Props> = memo(
-  ({ setPage, prefecture, setIndex, setHasVisited }) => {
+  ({ setPage, prefecture, setIndex, setHasVisited, appToSpot }) => {
     /**
      * いいねをしたスポットを処理するためのステート
      */
@@ -46,7 +47,7 @@ const Spots: React.FC<Props> = memo(
         const getPrefectureFavoriteData = await fetch(
           `${SERVER_URL}/api/favorites/${prefecture}`
         ).then((data) => data.json());
-        console.log("SpotsRes", getPrefectureFavoriteData);
+        // console.log("SpotsRes", getPrefectureFavoriteData);
 
         getPrefectureFavoriteData.forEach((spot: { hasVisited: boolean }) =>
           console.log("visited", spot.hasVisited)
@@ -99,6 +100,8 @@ const Spots: React.FC<Props> = memo(
                     setIndex(selectIndex);
                     setHasVisited(item.hasVisited);
                     // fetchで GET したデータをstate管理でAppへ（idをパスパラで渡す）
+                    appToSpot(Number(item.id));
+                    console.log(item.id);
                   }}
                 >
                   <View style={styles.imageWrapper}>

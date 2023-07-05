@@ -1,6 +1,14 @@
-
 import { Dispatch, SetStateAction, memo, useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, View, Image, Dimensions, ScrollView, TextInput } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  Image,
+  Dimensions,
+  ScrollView,
+  TextInput,
+} from "react-native";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import EvilIcon from "react-native-vector-icons/EvilIcons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -9,314 +17,341 @@ import Swiper from "react-native-swiper";
 import { Svg, Polygon } from "react-native-svg";
 import Modal from "react-native-modal";
 
-import { cards } from "../../data/cards";   // ダミーデータ (YOLP API使用予定)
+import { cards } from "../../data/cards"; // ダミーデータ (YOLP API使用予定)
 
 type Props = {
   page: string;
   setPage: Dispatch<SetStateAction<string>>;
   index: number;
   hasVisited: boolean | null;
+  touchId: number;
 };
 
 const ScreenWidth = Dimensions.get("window").width;
 const ScreenHeight = Dimensions.get("window").height;
 
-const SERVER_URL = "https://o49zrrdot8.execute-api.us-east-1.amazonaws.com/tokitabi";
+const SERVER_URL =
+  "https://o49zrrdot8.execute-api.us-east-1.amazonaws.com/tokitabi";
 
-const Detail: React.FC<Props> = memo(({ page, setPage, index, hasVisited }) => {
+const Detail: React.FC<Props> = memo(
+  ({ page, setPage, index, hasVisited, touchId }) => {
+    const [showText, setShowText] = useState(hasVisited);
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [inputText, setInputElement] = useState("");
+    const [isEditing, setIsEditing] = useState(false);
+    const [text, setText] = useState("");
+    // const [pressedTime, setPressedTime] = useState<string | null>(null);
 
-  const [showText, setShowText] = useState(hasVisited);
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [inputText, setInputElement] = useState("");
-  const [isEditing, setIsEditing] = useState(false);
-  const [text, setText] = useState("");
-  // const [pressedTime, setPressedTime] = useState<string | null>(null);
+    const handleButtonPress = () => {
+      setShowText((prevShowText) => !prevShowText);
+    };
+    const toggleModal = () => {
+      setIsModalVisible((prevState) => !prevState);
+    };
 
-  const handleButtonPress = () => {
-    setShowText((prevShowText) => !prevShowText);
-  };
-  const toggleModal = () => {
-    setIsModalVisible((prevState) => !prevState);
-  };
+    const handleEditButtonClick = () => {
+      setInputElement(text);
+      setIsEditing(true);
+    };
 
-  const handleEditButtonClick = () => {
-    setInputElement(text);
-    setIsEditing(true);
-  };
+    const handleSaveButtonClick = () => {
+      setIsEditing(false);
+      setText(inputText); // テキストを保存する場合はここで値を更新する
+      const currentTime = new Date().toLocaleString();
+      // setPressedTime(currentTime);
+    };
 
-  const handleSaveButtonClick = () => {
-    setIsEditing(false);
-    setText(inputText);   // テキストを保存する場合はここで値を更新する
-    const currentTime = new Date().toLocaleString();
-    // setPressedTime(currentTime);
-  };
-
-  return (
-    <View>
-      <TouchableOpacity
-        style={styles.backButton}
-        onPress={() => {
-          page === "detail" ? setPage("home") : setPage("spots");
-        }}
-      >
-        <EvilIcon name="chevron-left" style={styles.backIcon} />
-      </TouchableOpacity>
-      {page === "visited" && (
-        <>
-          {/* {text === "" && (
+    return (
+      <View>
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => {
+            page === "detail" ? setPage("home") : setPage("spots");
+          }}
+        >
+          <EvilIcon name="chevron-left" style={styles.backIcon} />
+        </TouchableOpacity>
+        {page === "visited" && (
+          <>
+            {/* {text === "" && (
             <Icon name="chatbox-outline" style={styles.noCommentIcon} />
           )} */}
-          {text !== "" &&
-            <TouchableOpacity
-              onPress={toggleModal}
-              style={styles.checkCommentButton}
-            >
-              <Icon name="chatbox-ellipses" style={styles.checkCommentIcon} />
-              <Text style={{ color: "#9e1b1b", fontSize: 7, textAlign: "center" }}>
-                メモあり
-              </Text>
-            </TouchableOpacity>
-          }
-        </>
-      )}
-
-      <ScrollView>
-        <View style={ page === "visited" && { paddingBottom: 80 } }>
-          {/* 行ったよラベルを表示させる */}
-          {showText === true && (
-            <View style={styles.window}>
-              <Svg width={500} height={500}>
-                <Polygon points="0,150 150,0 150,150" fill="rgb(158, 27, 27)" />
-                <View style={styles.visitedTextContainer}>
-                  <Text style={styles.visitedText}>行ったよ！ </Text>
-                </View>
-              </Svg>
-            </View>
-          )}
-          <View style={styles.cardPhoto}>
-            <Swiper
-              showsButtons={cards[index].images.length !== 1 && true}
-              autoplay={true}
-              activeDotColor={"rgb(158, 27, 27)"}
-              nextButton={
-                <Text style={{ color: 'rgba(255,255,255,0.9)', fontSize: 50 }}>›</Text>
-              }
-              prevButton={
-                <Text style={{ color: 'rgba(255,255,255,0.9)', fontSize: 50 }}>‹</Text>
-              }
-            >
-              {cards[index].images.map((item, index) => (
-                <View key={index}>
-                  <Image
-                    style={{
-                      width: ScreenWidth,
-                      height: 350,
-                    }}
-                    source={{ uri: item }}
-                  />
-                </View>
-              ))}
-            </Swiper>
-          </View>
-
-          <View style={styles.description}>
-            <Text style={styles.title}>{cards[index].name}</Text>
-
-            <View style={styles.addressContainer}>
-              <Text style={styles.descriptionTitle}>
-                <Icon name="location-outline" style={styles.icon} />
-                所在地
-              </Text>
-              <Text
-                style={styles.descriptionPostCode}
-              >{`〒${cards[index].zip_code}`}</Text>
-              <Text style={styles.descriptionText}>{cards[index].address}</Text>
-            </View>
-            <View style={styles.descriptionContainer}>
-              <Text style={styles.descriptionTitle}>
-                <Icon name="cash-outline" style={styles.icon} /> 料金
-              </Text>
-              <Text
-                style={styles.descriptionText}
-              >{`${cards[index].price}円`}</Text>
-            </View>
-
-            <View style={styles.descriptionContainer}>
-              <Text style={styles.descriptionTitle}>
-                <Icon name="time-outline" style={styles.icon} /> 営業日･時間
-              </Text>
-              <Text style={styles.descriptionText}>
-                {cards[index].business}
-              </Text>
-            </View>
-            <View style={styles.descriptionContainer}>
-              <Text style={styles.descriptionTitle}>
-                <Icon name="call-outline" style={styles.icon} /> 電話番号
-              </Text>
-              <Text style={styles.descriptionText}>
-                {cards[index].phone_number}
-              </Text>
-            </View>
-
-            <View style={styles.descriptionContainer}>
-              <Text style={styles.descriptionTitle}>
-                <MaterialCommunityIcons
-                  name="alpha-p-circle-outline"
-                  style={styles.icon}
-                />{" "}
-                駐車場
-              </Text>
-              <Text style={styles.descriptionTextParking}>
-                {cards[index].parking}
-              </Text>
-            </View>
-
-            <View style={styles.descriptionContainer}>
-              <Text style={styles.descriptionTitle}>
-                <MaterialCommunityIcons
-                  name="human-male-female"
-                  style={styles.icon}
-                />
-                トイレ
-              </Text>
-              <Text style={styles.descriptionText}>{cards[index].toilet}</Text>
-            </View>
-
-            <View style={styles.descriptionContainer}>
-              <Text style={styles.descriptionTitle}>
-                <Icon name="information-circle-outline" style={styles.icon} />{" "}
-                定休日
-              </Text>
-              <Text style={styles.descriptionText}>{cards[index].closed}</Text>
-            </View>
-
-            <View style={styles.descriptionContainer}>
-              <Text style={styles.descriptionTitle}>
-                <Icon name="subway-outline" style={styles.icon} />{" "}
-                公共交通機関でのアクセス
-              </Text>
-              {cards[index].public_transport.map((item, itemIndex) => (
-                <Text key={itemIndex} style={styles.descriptionTextList}>
-                  {item}
+            {text !== "" && (
+              <TouchableOpacity
+                onPress={toggleModal}
+                style={styles.checkCommentButton}
+              >
+                <Icon name="chatbox-ellipses" style={styles.checkCommentIcon} />
+                <Text
+                  style={{ color: "#9e1b1b", fontSize: 7, textAlign: "center" }}
+                >
+                  メモあり
                 </Text>
-              ))}
-            </View>
-
-            <View style={styles.descriptionContainer}>
-              <Text style={styles.descriptionTitle}>
-                <Icon name="car-outline" style={styles.icon} /> 車でのアクセス
-              </Text>
-              {cards[index].car.map((item, itemIndex) => (
-                <Text key={itemIndex} style={styles.descriptionTextList}>
-                  {item}
-                </Text>
-              ))}
-            </View>
-          </View>
-        </View>
-      </ScrollView>
-      {/* visitedの場合のみフッターを表示 */}
-      {page === "visited" && (
-        <>
-          <View style={styles.container}>
-            <View style={styles.footer}>
-              {/* コメント編集画面 */}
-              <TouchableOpacity onPress={toggleModal}>
-                <FontAwesome name="pencil" style={styles.penIcon} />
               </TouchableOpacity>
+            )}
+          </>
+        )}
 
-              <Modal isVisible={isModalVisible}>
-                {/* Modalの配置設定 */}
-                <TouchableOpacity activeOpacity={1} onPressOut={toggleModal}>
-                  <View
-                    style={{
-                      flex: 1,
-                      marginBottom: "100%",
-                      // justifyContent: "center",
-                      alignItems: "center",
-                      backgroundColor: "#fff",
-                    }}
+        <ScrollView>
+          <View style={page === "visited" && { paddingBottom: 80 }}>
+            {/* 行ったよラベルを表示させる */}
+            {showText === true && (
+              <View style={styles.window}>
+                <Svg width={500} height={500}>
+                  <Polygon
+                    points="0,150 150,0 150,150"
+                    fill="rgb(158, 27, 27)"
+                  />
+                  <View style={styles.visitedTextContainer}>
+                    <Text style={styles.visitedText}>行ったよ！ </Text>
+                  </View>
+                </Svg>
+              </View>
+            )}
+            <View style={styles.cardPhoto}>
+              <Swiper
+                showsButtons={cards[index].images.length !== 1 && true}
+                autoplay={true}
+                activeDotColor={"rgb(158, 27, 27)"}
+                nextButton={
+                  <Text
+                    style={{ color: "rgba(255,255,255,0.9)", fontSize: 50 }}
                   >
-                    <View style={{ alignItems: "center" }}>
-                      <TouchableOpacity
-                        style={styles.backCommentButton}
-                        onPress={toggleModal}
-                      >
-                        <EvilIcon name="chevron-left" style={styles.backIcon} />
-                      </TouchableOpacity>
-                      {/* 初期画面 */}
-                      {isEditing === false && text === "" && (
-                        <TextInput
-                          value={inputText}
-                          onChangeText={setInputElement}
-                          placeholder="📝メモがあれば記入してね！"
-                          style={styles.commentTextContainer}
-                        />
-                      )}
-                      {/* 登録後の画面 */}
-                      {isEditing === false && text !== "" && (
-                        <>
-                          <View style={styles.savedCommentTextContainer}>
-                            <Text style={styles.savedCommentText}>{text}</Text>
-                          </View>
-                          {/* {pressedTime && (
+                    ›
+                  </Text>
+                }
+                prevButton={
+                  <Text
+                    style={{ color: "rgba(255,255,255,0.9)", fontSize: 50 }}
+                  >
+                    ‹
+                  </Text>
+                }
+              >
+                {cards[index].images.map((item, index) => (
+                  <View key={index}>
+                    <Image
+                      style={{
+                        width: ScreenWidth,
+                        height: 350,
+                      }}
+                      source={{ uri: item }}
+                    />
+                  </View>
+                ))}
+              </Swiper>
+            </View>
+
+            <View style={styles.description}>
+              <Text style={styles.title}>{cards[index].name}</Text>
+
+              <View style={styles.addressContainer}>
+                <Text style={styles.descriptionTitle}>
+                  <Icon name="location-outline" style={styles.icon} />
+                  所在地
+                </Text>
+                <Text
+                  style={styles.descriptionPostCode}
+                >{`〒${cards[index].zip_code}`}</Text>
+                <Text style={styles.descriptionText}>
+                  {cards[index].address}
+                </Text>
+              </View>
+              <View style={styles.descriptionContainer}>
+                <Text style={styles.descriptionTitle}>
+                  <Icon name="cash-outline" style={styles.icon} /> 料金
+                </Text>
+                <Text
+                  style={styles.descriptionText}
+                >{`${cards[index].price}円`}</Text>
+              </View>
+
+              <View style={styles.descriptionContainer}>
+                <Text style={styles.descriptionTitle}>
+                  <Icon name="time-outline" style={styles.icon} /> 営業日･時間
+                </Text>
+                <Text style={styles.descriptionText}>
+                  {cards[index].business}
+                </Text>
+              </View>
+              <View style={styles.descriptionContainer}>
+                <Text style={styles.descriptionTitle}>
+                  <Icon name="call-outline" style={styles.icon} /> 電話番号
+                </Text>
+                <Text style={styles.descriptionText}>
+                  {cards[index].phone_number}
+                </Text>
+              </View>
+
+              <View style={styles.descriptionContainer}>
+                <Text style={styles.descriptionTitle}>
+                  <MaterialCommunityIcons
+                    name="alpha-p-circle-outline"
+                    style={styles.icon}
+                  />{" "}
+                  駐車場
+                </Text>
+                <Text style={styles.descriptionTextParking}>
+                  {cards[index].parking}
+                </Text>
+              </View>
+
+              <View style={styles.descriptionContainer}>
+                <Text style={styles.descriptionTitle}>
+                  <MaterialCommunityIcons
+                    name="human-male-female"
+                    style={styles.icon}
+                  />
+                  トイレ
+                </Text>
+                <Text style={styles.descriptionText}>
+                  {cards[index].toilet}
+                </Text>
+              </View>
+
+              <View style={styles.descriptionContainer}>
+                <Text style={styles.descriptionTitle}>
+                  <Icon name="information-circle-outline" style={styles.icon} />{" "}
+                  定休日
+                </Text>
+                <Text style={styles.descriptionText}>
+                  {cards[index].closed}
+                </Text>
+              </View>
+
+              <View style={styles.descriptionContainer}>
+                <Text style={styles.descriptionTitle}>
+                  <Icon name="subway-outline" style={styles.icon} />{" "}
+                  公共交通機関でのアクセス
+                </Text>
+                {cards[index].public_transport.map((item, itemIndex) => (
+                  <Text key={itemIndex} style={styles.descriptionTextList}>
+                    {item}
+                  </Text>
+                ))}
+              </View>
+
+              <View style={styles.descriptionContainer}>
+                <Text style={styles.descriptionTitle}>
+                  <Icon name="car-outline" style={styles.icon} /> 車でのアクセス
+                </Text>
+                {cards[index].car.map((item, itemIndex) => (
+                  <Text key={itemIndex} style={styles.descriptionTextList}>
+                    {item}
+                  </Text>
+                ))}
+              </View>
+            </View>
+          </View>
+        </ScrollView>
+        {/* visitedの場合のみフッターを表示 */}
+        {page === "visited" && (
+          <>
+            <View style={styles.container}>
+              <View style={styles.footer}>
+                {/* コメント編集画面 */}
+                <TouchableOpacity onPress={toggleModal}>
+                  <FontAwesome name="pencil" style={styles.penIcon} />
+                </TouchableOpacity>
+
+                <Modal isVisible={isModalVisible}>
+                  {/* Modalの配置設定 */}
+                  <TouchableOpacity activeOpacity={1} onPressOut={toggleModal}>
+                    <View
+                      style={{
+                        flex: 1,
+                        marginBottom: "100%",
+                        // justifyContent: "center",
+                        alignItems: "center",
+                        backgroundColor: "#fff",
+                      }}
+                    >
+                      <View style={{ alignItems: "center" }}>
+                        <TouchableOpacity
+                          style={styles.backCommentButton}
+                          onPress={toggleModal}
+                        >
+                          <EvilIcon
+                            name="chevron-left"
+                            style={styles.backIcon}
+                          />
+                        </TouchableOpacity>
+                        {/* 初期画面 */}
+                        {isEditing === false && text === "" && (
+                          <TextInput
+                            value={inputText}
+                            onChangeText={setInputElement}
+                            placeholder="📝メモがあれば記入してね！"
+                            style={styles.commentTextContainer}
+                          />
+                        )}
+                        {/* 登録後の画面 */}
+                        {isEditing === false && text !== "" && (
+                          <>
+                            <View style={styles.savedCommentTextContainer}>
+                              <Text style={styles.savedCommentText}>
+                                {text}
+                              </Text>
+                            </View>
+                            {/* {pressedTime && (
                             <Text>メモ登録日：{pressedTime}</Text>
                           )} */}
-                        </>
-                      )}
-                      {/* 編集中の画面 */}
-                      {isEditing === true && (
-                        <TextInput
-                          value={inputText}
-                          onChangeText={setInputElement}
-                          // placeholder="入力してボタンを押してください。"
-                          style={styles.commentTextContainer}
-                        />
-                      )}
-                      <View style={styles.buttonContainer}>
-                        <TouchableOpacity
-                          style={styles.editButton}
-                          onPress={handleEditButtonClick}
-                        >
-                          <Text style={styles.editButtonText}>編集</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                          style={styles.savedButton}
-                          onPress={handleSaveButtonClick}
-                        >
-                          <Text style={styles.text}>登録</Text>
-                        </TouchableOpacity>
+                          </>
+                        )}
+                        {/* 編集中の画面 */}
+                        {isEditing === true && (
+                          <TextInput
+                            value={inputText}
+                            onChangeText={setInputElement}
+                            // placeholder="入力してボタンを押してください。"
+                            style={styles.commentTextContainer}
+                          />
+                        )}
+                        <View style={styles.buttonContainer}>
+                          <TouchableOpacity
+                            style={styles.editButton}
+                            onPress={handleEditButtonClick}
+                          >
+                            <Text style={styles.editButtonText}>編集</Text>
+                          </TouchableOpacity>
+                          <TouchableOpacity
+                            style={styles.savedButton}
+                            onPress={handleSaveButtonClick}
+                          >
+                            <Text style={styles.text}>登録</Text>
+                          </TouchableOpacity>
+                        </View>
                       </View>
                     </View>
-                  </View>
+                  </TouchableOpacity>
+                </Modal>
+                {/* 行ったよボタン */}
+                <TouchableOpacity
+                  style={[styles.button, showText && styles.buttonPressed]}
+                  onPress={async () => {
+                    console.log("patched", touchId);
+                    handleButtonPress();
+                    await fetch(`${SERVER_URL}/api/favorites/${touchId}`, {
+                      method: "PATCH",
+                      headers: {
+                        "Content-Type": "application/json",
+                      },
+                      body: JSON.stringify(touchId),
+                    });
+                  }}
+                >
+                  <Text style={[styles.text, showText && styles.textPressed]}>
+                    行ったよ！
+                  </Text>
                 </TouchableOpacity>
-              </Modal>
-              {/* 行ったよボタン */}
-              <TouchableOpacity
-                style={[styles.button, showText && styles.buttonPressed]}
-                onPress={async () => {
-                  handleButtonPress();
-                  // await fetch(`${SERVER_URL}/api/favorites/:id`,
-                  //   {
-                  //     method: 'PATCH',
-                  //     headers: {
-                  //       'Content-Type': 'application/json',
-                  //     },
-                  //   }
-                  // );
-                }}
-              >
-                <Text style={[styles.text, showText && styles.textPressed]}>
-                  行ったよ！
-                </Text>
-              </TouchableOpacity>
+              </View>
             </View>
-          </View>
-        </>
-      )}
-    </View>
-  );
-});
+          </>
+        )}
+      </View>
+    );
+  }
+);
 
 const styles = StyleSheet.create({
   backButton: {
