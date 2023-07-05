@@ -6,7 +6,7 @@ import Swiper from "react-native-swiper";
 
 import { cards } from '../../data/cards';
 import { Cards } from '../../data/globals';
-import { storage } from '../../App';
+// import { storage } from '../../App';
 
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 const SCREEN_WIDTH = Dimensions.get('window').width;
@@ -65,21 +65,21 @@ const TinderSwipe: React.FC<Props> = memo(({ index, card, setPage, setIndex, sch
             // 通知
             scheduleNotificationAsync();
 
-            // 端末にデータを保存する
-            await storage.save({
-              key: 'data',   // データのキー（一意の値）
-              data: {
-                name: 'yohei',
-                age: 30,
-              },
-              expires: 1000 * 3600,   // 有効期限を指定する場合（ミリ秒）
-            });
+            // // 端末にデータを保存する
+            // await storage.save({
+            //   key: 'data',   // データのキー（一意の値）
+            //   data: {
+            //     name: 'yohei',
+            //     age: 30,
+            //   },
+            //   expires: 1000 * 3600,   // 有効期限を指定する場合（ミリ秒）
+            // });
 
-            // 端末から取得する
-            await storage
-              .load({key: 'data'})
-              .then(res => console.log("Tinder", res))
-              .catch(err => console.warn("Tinder", err))
+            // // 端末から取得する
+            // await storage
+            //   .load({key: 'data'})
+            //   .then(res => console.log("Tinder", res))
+            //   .catch(err => console.warn("Tinder", err))
 
           });
         } else if (gestureState.dx < -120) {
@@ -206,7 +206,7 @@ const TinderSwipe: React.FC<Props> = memo(({ index, card, setPage, setIndex, sch
                 </Text>
                 <Text style={styles.cardTextPostCode}>{`〒${card.zip_code}`}</Text>
                 <Text style={styles.cardTextAddress}>{card.address}</Text>
-                <Text style={styles.cardTextTokimeki}>駅近、駐車場無料、映えスポット、カップルにおすすめ、食べ歩き、コスパ最強</Text>
+                {/* <Text style={styles.cardTextTokimeki}>駅近、駐車場無料、映えスポット、カップルにおすすめ、食べ歩き、コスパ最強</Text> */}
                 {/* <Text style={styles.cardTextTokimeki}>大人も子供も楽しめる、駅近、駐車場無料、映えスポット、カップルにおすすめ、ペットOK、〇〇近く、食べ歩き、コスパ最高、贅沢、記念日デート、〇〇が人気、テレビに登場</Text> */}
               </View>
             </View>
