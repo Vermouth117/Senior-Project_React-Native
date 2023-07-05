@@ -1,37 +1,6 @@
 
 export const cards = [
   {
-    name: "香嵐渓",
-    prefecture: "愛知県",
-    images: [
-      "https://www.tripyhotellounge.xyz/wp-content/uploads/2022/10/Fukazawa050.jpg",
-      "https://s3-ap-northeast-1.amazonaws.com/thegate/2021/02/10/12/16/55/Korankei.jpg",
-      "https://mitsu-log.com/wp-content/uploads/2022/07/23008080_s-1.jpg",
-      "https://tori-dori.com/wp/wp-content/uploads/EBP15-44444.jpg",
-    ],
-    price: 0,
-    access: "車",
-    zip_code: "444-2424",
-    address: "愛知県豊田市足助町飯盛",
-    business: "見学終日",
-    phone_number: "0565-62-1272",
-    parking: "有料・香嵐渓駐車場（約670台）1台500円",
-    toilet: "あり",
-    closed: "なし",
-    public_transport: [
-      "名鉄豊田線「浄水駅」より、とよたおいでんバス猿投足助線に乗り換え「香嵐渓」バス停下車。徒歩すぐ",
-      "名鉄三河線/豊田線「豊田市駅」より、名鉄バス矢並線に乗り換え「香嵐渓」バス停下車。徒歩すぐ",
-      "名鉄本線「東岡崎駅」より、名鉄バス足助線に乗り換え「香嵐渓」バス停下車。徒歩すぐ",
-    ],
-    car: [
-      "猿投グリーンロード「力石IC」から約15分",
-      "東海環状自動車道「豊田勘八IC」から約20分",
-    ],
-    has_visited: false,
-    latitude: 35.1270725,     // 緯度
-    longitude: 137.3162119,   // 軽度
-  },
-  {
     images: [
       "https://cdn-news.asoview.com/production/note/05a9e06f-f4c9-4632-a1e5-94d55e4ab29a.jpeg",
     ],
@@ -142,6 +111,37 @@ export const cards = [
     has_visited: false,
     latitude: 34.8098455,     // 緯度
     longitude: 137.2730885,   // 軽度
+  },
+  {
+    name: "香嵐渓",
+    prefecture: "愛知県",
+    images: [
+      "https://www.tripyhotellounge.xyz/wp-content/uploads/2022/10/Fukazawa050.jpg",
+      "https://s3-ap-northeast-1.amazonaws.com/thegate/2021/02/10/12/16/55/Korankei.jpg",
+      "https://mitsu-log.com/wp-content/uploads/2022/07/23008080_s-1.jpg",
+      "https://tori-dori.com/wp/wp-content/uploads/EBP15-44444.jpg",
+    ],
+    price: 0,
+    access: "車",
+    zip_code: "444-2424",
+    address: "愛知県豊田市足助町飯盛",
+    business: "見学終日",
+    phone_number: "0565-62-1272",
+    parking: "有料・香嵐渓駐車場（約670台）1台500円",
+    toilet: "あり",
+    closed: "なし",
+    public_transport: [
+      "名鉄豊田線「浄水駅」より、とよたおいでんバス猿投足助線に乗り換え「香嵐渓」バス停下車。徒歩すぐ",
+      "名鉄三河線/豊田線「豊田市駅」より、名鉄バス矢並線に乗り換え「香嵐渓」バス停下車。徒歩すぐ",
+      "名鉄本線「東岡崎駅」より、名鉄バス足助線に乗り換え「香嵐渓」バス停下車。徒歩すぐ",
+    ],
+    car: [
+      "猿投グリーンロード「力石IC」から約15分",
+      "東海環状自動車道「豊田勘八IC」から約20分",
+    ],
+    has_visited: false,
+    latitude: 35.1270725,     // 緯度
+    longitude: 137.3162119,   // 軽度
   },
 ];
 

@@ -202,7 +202,8 @@ const TinderSwipe: React.FC<Props> = memo(({ index, card, setPage, setIndex, sch
                 </Text>
                 <Text style={styles.cardTextPostCode}>{`〒${card.zip_code}`}</Text>
                 <Text style={styles.cardTextAddress}>{card.address}</Text>
-                <Text style={styles.cardTextTokimeki}>大人も子供も楽しめる、駅近、駐車場無料、映えスポット、カップルにおすすめ、ペットOK、〇〇近く、食べ歩き、コスパ最高、贅沢、記念日デート、〇〇が人気、テレビに登場</Text>
+                <Text style={styles.cardTextTokimeki}>駅近、駐車場無料、映えスポット、カップルにおすすめ、食べ歩き、コスパ最強</Text>
+                {/* <Text style={styles.cardTextTokimeki}>大人も子供も楽しめる、駅近、駐車場無料、映えスポット、カップルにおすすめ、ペットOK、〇〇近く、食べ歩き、コスパ最高、贅沢、記念日デート、〇〇が人気、テレビに登場</Text> */}
               </View>
             </View>
           </TouchableWithoutFeedback>
@@ -268,8 +269,9 @@ const styles = StyleSheet.create({
     color: 'rgb(100, 100, 100)',
   },
   cardTextTokimeki: {
-    fontSize: 20,
+    fontSize: 15,
     color: 'rgb(100, 100, 100)',
+    padding: 5,
   }
 });
 

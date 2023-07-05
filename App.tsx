@@ -67,7 +67,7 @@ Notifications.setNotificationHandler({
   }),
 });
 
-const SERVER_URL = "https://soranomix-api-server.onrender.com";
+const SERVER_URL = "https://o49zrrdot8.execute-api.us-east-1.amazonaws.com/tokitabi";
 const SCREEN_HEIGHT = Dimensions.get("window").height;
 const SCREEN_WIDTH = Dimensions.get("window").width;
 
@@ -145,15 +145,14 @@ const App1 = memo(() => {
    */
   useEffect(() => {
     (async () => {
-      // console.log(favoriteData);
       favoriteData.length !== 0 &&
         favoriteData.forEach(async (obj) => {
           obj.number >= noticeCount &&
             // プッシュ通知を実際に送信する
             (await Notifications.scheduleNotificationAsync({
               content: {
-                body: `🧳旅行先が${obj.number}つ溜まっています!!`,
-                title: "愛知県に行ってみませんか？",
+                body: `🧳旅行先が『${obj.number}ヶ所』溜まっています!!`,
+                title: `${obj.name}に行ってみませんか？`,
                 sound: "default",
                 // subtitle: 'subtitle',
                 // badge: 1,
@@ -223,7 +222,11 @@ const App1 = memo(() => {
 
         {page === "notice" && <Notice />}
 
-        {page === "map" && <Map />}
+        {page === "map" && <Map setPage={setPage} setIndex={setIndex} />}
+
+        {page === "fromMap" && (
+          <Detail page={page} setPage={setPage} index={index} hasVisited={null} />
+        )}
 
         {page === "favorites" && <Favorites />}
 
@@ -243,7 +246,7 @@ const App1 = memo(() => {
           />
         )}
 
-        {page !== "detail" && page !== "visited" && (
+        {page !== "detail" && page !== "visited" && page !== "fromMap" && (
           <Footer page={page} setPage={setPage} />
         )}
       </MyContext.Provider>
@@ -315,7 +318,7 @@ function App(user: any) {
           // reuse default `Container` and apply custom background
           <Authenticator.Container
             {...props}
-            style={{ backgroundColor: "#EEE2DE" }}
+            style={{ backgroundColor: "white" }}
           />
         )}
         initialState="signIn"

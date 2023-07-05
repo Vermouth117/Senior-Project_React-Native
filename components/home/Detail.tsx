@@ -56,12 +56,19 @@ const Detail: React.FC<Props> = memo(({ page, setPage, index, hasVisited }) => {
       <TouchableOpacity
         style={styles.backButton}
         onPress={() => {
-          page === "detail" ? setPage("home") : setPage("spots");
+          if (page === "detail") {
+            setPage("home");
+          } else if (page === "visited") {
+            setPage("spots");
+          } else if (page === "fromMap") {
+            setPage("map");
+          }
+          // page === "detail" ? setPage("home") : setPage("spots");
         }}
       >
         <EvilIcon name="chevron-left" style={styles.backIcon} />
       </TouchableOpacity>
-      {page === "visited" && (
+      {page !== "detail" && (
         <>
           {/* {text === "" && (
             <Icon name="chatbox-outline" style={styles.noCommentIcon} />
@@ -81,7 +88,7 @@ const Detail: React.FC<Props> = memo(({ page, setPage, index, hasVisited }) => {
       )}
 
       <ScrollView>
-        <View style={ page === "visited" && { paddingBottom: 80 } }>
+        <View style={ page !== "detail" && { paddingBottom: 80 } }>
           {/* 行ったよラベルを表示させる */}
           {showText === true && (
             <View style={styles.window}>
@@ -216,7 +223,7 @@ const Detail: React.FC<Props> = memo(({ page, setPage, index, hasVisited }) => {
         </View>
       </ScrollView>
       {/* visitedの場合のみフッターを表示 */}
-      {page === "visited" && (
+      {page !== "detail" && (
         <>
           <View style={styles.container}>
             <View style={styles.footer}>
