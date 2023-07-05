@@ -107,6 +107,15 @@ const App1 = memo(() => {
   const [prefecture, setPrefecture] = useState("");
   const [inputRef, setInputRef] = useState("");
   const [hasVisited, setHasVisited] = useState(false);
+  const [ramdomCards, setRamdomCards] = useState([]);
+  const [ramdomCardsChange, setRamdomCardsChange] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      const ramdomCardsData = await fetch(`${SERVER_URL}/api/cards/test`).then(data => data.json());
+      setRamdomCards(ramdomCardsData);
+    })()
+  }, [ramdomCardsChange]);
 
   useEffect(() => {
     requestPermissionsAsync();
@@ -202,7 +211,8 @@ const App1 = memo(() => {
             </View>
             <View style={styles.main}>
               <Text style={styles.mainText}>おすすめ終了！</Text>
-              {cards.map((card, index) => (
+              {/* {cards.map((card, index) => ( */}
+              {ramdomCards && ramdomCards.map((card, index) => (
                 <TinderSwipe
                   key={index}
                   index={index}
@@ -210,6 +220,7 @@ const App1 = memo(() => {
                   setPage={setPage}
                   setIndex={setIndex}
                   scheduleNotificationAsync={scheduleNotificationAsync}
+                  ramdomCards={ramdomCards}
                 />
               ))}
             </View>
@@ -217,7 +228,7 @@ const App1 = memo(() => {
         )}
 
         {page === "detail" && (
-          <Detail page={page} setPage={setPage} index={index} hasVisited={null} />
+          <Detail page={page} setPage={setPage} index={index} hasVisited={null} ramdomCards={ramdomCards} />
         )}
 
         {page === "notice" && <Notice />}
@@ -225,7 +236,7 @@ const App1 = memo(() => {
         {page === "map" && <Map setPage={setPage} setIndex={setIndex} />}
 
         {page === "fromMap" && (
-          <Detail page={page} setPage={setPage} index={index} hasVisited={null} />
+          <Detail page={page} setPage={setPage} index={index} hasVisited={null} ramdomCards={null} />
         )}
 
         {page === "favorites" && <Favorites />}
@@ -235,7 +246,7 @@ const App1 = memo(() => {
         )}
 
         {page === "visited" && (
-          <Detail page={page} setPage={setPage} index={index} hasVisited={hasVisited} />
+          <Detail page={page} setPage={setPage} index={index} hasVisited={hasVisited} ramdomCards={null} />
         )}
 
         {page === "user" && (

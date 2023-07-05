@@ -17,11 +17,12 @@ type Props = {
   setPage: Dispatch<SetStateAction<string>>;
   setIndex: Dispatch<SetStateAction<number>>;
   scheduleNotificationAsync: Function;
+  ramdomCards: Cards[];
 };
 
 const SERVER_URL = "https://o49zrrdot8.execute-api.us-east-1.amazonaws.com/tokitabi";
 
-const TinderSwipe: React.FC<Props> = memo(({ index, card, setPage, setIndex, scheduleNotificationAsync }) => {
+const TinderSwipe: React.FC<Props> = memo(({ index, card, setPage, setIndex, scheduleNotificationAsync, ramdomCards }) => {
 
   const position = useRef(new Animated.ValueXY()).current;
 
@@ -41,11 +42,14 @@ const TinderSwipe: React.FC<Props> = memo(({ index, card, setPage, setIndex, sch
             console.log("LIKE", index);
 
             const postObj: Cards = {
-              ...cards[index],
+              ...ramdomCards[index],
+              // ...cards[index],
             };
             postObj.images = JSON.stringify(postObj.images);
             postObj.public_transport = JSON.stringify(postObj.public_transport);
             postObj.car = JSON.stringify(postObj.car);
+
+            console.log(postObj);
 
             await fetch(
               `${SERVER_URL}/api/favorites`,

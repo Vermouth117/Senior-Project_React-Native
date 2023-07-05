@@ -10,12 +10,15 @@ import { Svg, Polygon } from "react-native-svg";
 import Modal from "react-native-modal";
 
 import { cards } from "../../data/cards";   // ダミーデータ (YOLP API使用予定)
+import { RandomCards } from "../../data/globals";
+
 
 type Props = {
   page: string;
   setPage: Dispatch<SetStateAction<string>>;
   index: number;
   hasVisited: boolean | null;
+  ramdomCards: RandomCards[] | null;
 };
 
 const ScreenWidth = Dimensions.get("window").width;
@@ -23,7 +26,7 @@ const ScreenHeight = Dimensions.get("window").height;
 
 const SERVER_URL = "https://o49zrrdot8.execute-api.us-east-1.amazonaws.com/tokitabi";
 
-const Detail: React.FC<Props> = memo(({ page, setPage, index, hasVisited }) => {
+const Detail: React.FC<Props> = memo(({ page, setPage, index, hasVisited, ramdomCards }) => {
 
   const [showText, setShowText] = useState(hasVisited);
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -102,7 +105,8 @@ const Detail: React.FC<Props> = memo(({ page, setPage, index, hasVisited }) => {
           )}
           <View style={styles.cardPhoto}>
             <Swiper
-              showsButtons={cards[index].images.length !== 1 && true}
+              // showsButtons={cards[index].images.length !== 1 && true}
+              showsButtons={ramdomCards !== null && ramdomCards[index].images.length !== 1 && true}
               autoplay={true}
               activeDotColor={"rgb(158, 27, 27)"}
               nextButton={
@@ -112,7 +116,8 @@ const Detail: React.FC<Props> = memo(({ page, setPage, index, hasVisited }) => {
                 <Text style={{ color: 'rgba(255,255,255,0.9)', fontSize: 50 }}>‹</Text>
               }
             >
-              {cards[index].images.map((item, index) => (
+              {/* {cards[index].images.map((item, index) => ( */}
+              {ramdomCards && ramdomCards[index].images.map((item, index) => (
                 <View key={index}>
                   <Image
                     style={{
@@ -127,7 +132,8 @@ const Detail: React.FC<Props> = memo(({ page, setPage, index, hasVisited }) => {
           </View>
 
           <View style={styles.description}>
-            <Text style={styles.title}>{cards[index].name}</Text>
+            <Text style={styles.title}>{ramdomCards && ramdomCards[index].name}</Text>
+            {/* <Text style={styles.title}>{cards[index].name}</Text> */}
 
             <View style={styles.addressContainer}>
               <Text style={styles.descriptionTitle}>
