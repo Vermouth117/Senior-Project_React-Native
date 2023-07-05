@@ -1,6 +1,14 @@
-
 import { Dispatch, SetStateAction, memo, useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, View, Image, Dimensions, ScrollView, TextInput } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  Image,
+  Dimensions,
+  ScrollView,
+  TextInput,
+} from "react-native";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import EvilIcon from "react-native-vector-icons/EvilIcons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -19,40 +27,42 @@ type Props = {
   index: number;
   hasVisited: boolean | null;
   ramdomCards: RandomCards[] | null;
+  touchId: number;
 };
 
 const ScreenWidth = Dimensions.get("window").width;
 const ScreenHeight = Dimensions.get("window").height;
 
-const SERVER_URL = "https://o49zrrdot8.execute-api.us-east-1.amazonaws.com/tokitabi";
+const SERVER_URL =
+  "https://o49zrrdot8.execute-api.us-east-1.amazonaws.com/tokitabi";
 
-const Detail: React.FC<Props> = memo(({ page, setPage, index, hasVisited, ramdomCards }) => {
+const Detail: React.FC<Props> = memo(
+  ({ page, setPage, index, hasVisited,ramdomCards, touchId }) => {
+    const [showText, setShowText] = useState(hasVisited);
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [inputText, setInputElement] = useState("");
+    const [isEditing, setIsEditing] = useState(false);
+    const [text, setText] = useState("");
+    // const [pressedTime, setPressedTime] = useState<string | null>(null);
 
-  const [showText, setShowText] = useState(hasVisited);
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [inputText, setInputElement] = useState("");
-  const [isEditing, setIsEditing] = useState(false);
-  const [text, setText] = useState("");
-  // const [pressedTime, setPressedTime] = useState<string | null>(null);
+    const handleButtonPress = () => {
+      setShowText((prevShowText) => !prevShowText);
+    };
+    const toggleModal = () => {
+      setIsModalVisible((prevState) => !prevState);
+    };
 
-  const handleButtonPress = () => {
-    setShowText((prevShowText) => !prevShowText);
-  };
-  const toggleModal = () => {
-    setIsModalVisible((prevState) => !prevState);
-  };
+    const handleEditButtonClick = () => {
+      setInputElement(text);
+      setIsEditing(true);
+    };
 
-  const handleEditButtonClick = () => {
-    setInputElement(text);
-    setIsEditing(true);
-  };
-
-  const handleSaveButtonClick = () => {
-    setIsEditing(false);
-    setText(inputText);   // テキストを保存する場合はここで値を更新する
-    const currentTime = new Date().toLocaleString();
-    // setPressedTime(currentTime);
-  };
+    const handleSaveButtonClick = () => {
+      setIsEditing(false);
+      setText(inputText); // テキストを保存する場合はここで値を更新する
+      const currentTime = new Date().toLocaleString();
+      // setPressedTime(currentTime);
+    };
 
   return (
     <View>
@@ -76,19 +86,22 @@ const Detail: React.FC<Props> = memo(({ page, setPage, index, hasVisited, ramdom
           {/* {text === "" && (
             <Icon name="chatbox-outline" style={styles.noCommentIcon} />
           )} */}
-          {text !== "" &&
-            <TouchableOpacity
-              onPress={toggleModal}
-              style={styles.checkCommentButton}
-            >
-              <Icon name="chatbox-ellipses" style={styles.checkCommentIcon} />
-              <Text style={{ color: "#9e1b1b", fontSize: 7, textAlign: "center" }}>
-                メモあり
-              </Text>
-            </TouchableOpacity>
-          }
-        </>
-      )}
+            {text !== "" && (
+              <TouchableOpacity
+                onPress={toggleModal}
+                style={styles.checkCommentButton}
+              >
+                <Icon name="chatbox-ellipses" style={styles.checkCommentIcon} />
+                <Text
+                  style={{ color: "#9e1b1b", fontSize: 7, textAlign: "center" }}
+                >
+                  メモあり
+                </Text>
+              </TouchableOpacity>
+            )}
+          </>
+        )}
+
 
       <ScrollView>
         <View style={ page !== "detail" && { paddingBottom: 80 } }>
@@ -105,8 +118,8 @@ const Detail: React.FC<Props> = memo(({ page, setPage, index, hasVisited, ramdom
           )}
           <View style={styles.cardPhoto}>
             <Swiper
-              // showsButtons={cards[index].images.length !== 1 && true}
-              showsButtons={ramdomCards !== null && ramdomCards[index].images.length !== 1 && true}
+              showsButtons={cards[index].images.length !== 1 && true}
+              // showsButtons={ramdomCards !== null && ramdomCards[index].images.length !== 1 && true}
               autoplay={true}
               activeDotColor={"rgb(158, 27, 27)"}
               nextButton={
@@ -116,8 +129,8 @@ const Detail: React.FC<Props> = memo(({ page, setPage, index, hasVisited, ramdom
                 <Text style={{ color: 'rgba(255,255,255,0.9)', fontSize: 50 }}>‹</Text>
               }
             >
-              {/* {cards[index].images.map((item, index) => ( */}
-              {ramdomCards && ramdomCards[index].images.map((item, index) => (
+              {cards[index].images.map((item, index) => (
+              // {ramdomCards && ramdomCards[index].images.map((item, index) => (
                 <View key={index}>
                   <Image
                     style={{
@@ -125,6 +138,7 @@ const Detail: React.FC<Props> = memo(({ page, setPage, index, hasVisited, ramdom
                       height: 350,
                     }}
                     source={{ uri: item }}
+
                   />
                 </View>
               ))}
@@ -132,8 +146,8 @@ const Detail: React.FC<Props> = memo(({ page, setPage, index, hasVisited, ramdom
           </View>
 
           <View style={styles.description}>
-            <Text style={styles.title}>{ramdomCards && ramdomCards[index].name}</Text>
-            {/* <Text style={styles.title}>{cards[index].name}</Text> */}
+            {/* <Text style={styles.title}>{ramdomCards && ramdomCards[index].name}</Text> */}
+            <Text style={styles.title}>{cards[index].name}</Text>
 
             <View style={styles.addressContainer}>
               <Text style={styles.descriptionTitle}>
@@ -228,108 +242,115 @@ const Detail: React.FC<Props> = memo(({ page, setPage, index, hasVisited, ramdom
           </View>
         </View>
       </ScrollView>
-      {/* visitedの場合のみフッターを表示 */}
-      {page !== "detail" && (
-        <>
-          <View style={styles.container}>
-            <View style={styles.footer}>
-              {/* コメント編集画面 */}
-              <TouchableOpacity onPress={toggleModal}>
-                <FontAwesome name="pencil" style={styles.penIcon} />
-              </TouchableOpacity>
+        {/* visitedの場合のみフッターを表示 */}
+        {page !== "detail" && (
+          <>
+            <View style={styles.container}>
+              <View style={styles.footer}>
+                {/* コメント編集画面 */}
+                <TouchableOpacity onPress={toggleModal}>
+                  <FontAwesome name="pencil" style={styles.penIcon} />
+                </TouchableOpacity>
 
-              <Modal isVisible={isModalVisible}>
-                {/* Modalの配置設定 */}
-                <TouchableOpacity activeOpacity={1} onPressOut={toggleModal}>
-                  <View
-                    style={{
-                      flex: 1,
-                      marginBottom: "100%",
-                      // justifyContent: "center",
-                      alignItems: "center",
-                      backgroundColor: "#fff",
-                    }}
-                  >
-                    <View style={{ alignItems: "center" }}>
-                      <TouchableOpacity
-                        style={styles.backCommentButton}
-                        onPress={toggleModal}
-                      >
-                        <EvilIcon name="chevron-left" style={styles.backIcon} />
-                      </TouchableOpacity>
-                      {/* 初期画面 */}
-                      {isEditing === false && text === "" && (
-                        <TextInput
-                          value={inputText}
-                          onChangeText={setInputElement}
-                          placeholder="📝メモがあれば記入してね！"
-                          style={styles.commentTextContainer}
-                        />
-                      )}
-                      {/* 登録後の画面 */}
-                      {isEditing === false && text !== "" && (
-                        <>
-                          <View style={styles.savedCommentTextContainer}>
-                            <Text style={styles.savedCommentText}>{text}</Text>
-                          </View>
-                          {/* {pressedTime && (
+
+                <Modal isVisible={isModalVisible}>
+                  {/* Modalの配置設定 */}
+                  <TouchableOpacity activeOpacity={1} onPressOut={toggleModal}>
+                    <View
+                      style={{
+                        flex: 1,
+                        marginBottom: "100%",
+                        // justifyContent: "center",
+                        alignItems: "center",
+                        backgroundColor: "#fff",
+                      }}
+                    >
+                      <View style={{ alignItems: "center" }}>
+                        <TouchableOpacity
+                          style={styles.backCommentButton}
+                          onPress={toggleModal}
+                        >
+                          <EvilIcon
+                            name="chevron-left"
+                            style={styles.backIcon}
+                          />
+                        </TouchableOpacity>
+                        {/* 初期画面 */}
+                        {isEditing === false && text === "" && (
+                          <TextInput
+                            value={inputText}
+                            onChangeText={setInputElement}
+                            placeholder="📝メモがあれば記入してね！"
+                            style={styles.commentTextContainer}
+                          />
+                        )}
+                        {/* 登録後の画面 */}
+                        {isEditing === false && text !== "" && (
+                          <>
+                            <View style={styles.savedCommentTextContainer}>
+                              <Text style={styles.savedCommentText}>
+                                {text}
+                              </Text>
+                            </View>
+                            {/* {pressedTime && (
                             <Text>メモ登録日：{pressedTime}</Text>
                           )} */}
-                        </>
-                      )}
-                      {/* 編集中の画面 */}
-                      {isEditing === true && (
-                        <TextInput
-                          value={inputText}
-                          onChangeText={setInputElement}
-                          // placeholder="入力してボタンを押してください。"
-                          style={styles.commentTextContainer}
-                        />
-                      )}
-                      <View style={styles.buttonContainer}>
-                        <TouchableOpacity
-                          style={styles.editButton}
-                          onPress={handleEditButtonClick}
-                        >
-                          <Text style={styles.editButtonText}>編集</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                          style={styles.savedButton}
-                          onPress={handleSaveButtonClick}
-                        >
-                          <Text style={styles.text}>登録</Text>
-                        </TouchableOpacity>
+                          </>
+                        )}
+                        {/* 編集中の画面 */}
+                        {isEditing === true && (
+                          <TextInput
+                            value={inputText}
+                            onChangeText={setInputElement}
+                            // placeholder="入力してボタンを押してください。"
+                            style={styles.commentTextContainer}
+                          />
+                        )}
+                        <View style={styles.buttonContainer}>
+                          <TouchableOpacity
+                            style={styles.editButton}
+                            onPress={handleEditButtonClick}
+                          >
+                            <Text style={styles.editButtonText}>編集</Text>
+                          </TouchableOpacity>
+                          <TouchableOpacity
+                            style={styles.savedButton}
+                            onPress={handleSaveButtonClick}
+                          >
+                            <Text style={styles.text}>登録</Text>
+                          </TouchableOpacity>
+                        </View>
                       </View>
                     </View>
-                  </View>
+                  </TouchableOpacity>
+                </Modal>
+                {/* 行ったよボタン */}
+                <TouchableOpacity
+                  style={[styles.button, showText && styles.buttonPressed]}
+                  onPress={async () => {
+                    console.log("patched", touchId);
+                    handleButtonPress();
+                    await fetch(`${SERVER_URL}/api/favorites/${touchId}`, {
+                      method: "PATCH",
+                      headers: {
+                        "Content-Type": "application/json",
+                      },
+                      body: JSON.stringify(touchId),
+                    });
+                  }}
+                >
+                  <Text style={[styles.text, showText && styles.textPressed]}>
+                    行ったよ！
+                  </Text>
                 </TouchableOpacity>
-              </Modal>
-              {/* 行ったよボタン */}
-              <TouchableOpacity
-                style={[styles.button, showText && styles.buttonPressed]}
-                onPress={async () => {
-                  handleButtonPress();
-                  // await fetch(`${SERVER_URL}/api/favorites/:id`,
-                  //   {
-                  //     method: 'PATCH',
-                  //     headers: {
-                  //       'Content-Type': 'application/json',
-                  //     },
-                  //   }
-                  // );
-                }}
-              >
-                <Text style={[styles.text, showText && styles.textPressed]}>
-                  行ったよ！
-                </Text>
-              </TouchableOpacity>
+              </View>
             </View>
-          </View>
-        </>
-      )}
-    </View>
-  );
-});
+          </>
+        )}
+      </View>
+    );
+  }
+);
 
 const styles = StyleSheet.create({
   backButton: {
