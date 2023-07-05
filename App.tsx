@@ -1,4 +1,3 @@
-
 import {
   Dispatch,
   SetStateAction,
@@ -46,11 +45,13 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
  * description ログイン画面構成
  */
 import AuthenticatorFormFields from "./components/login/AuthenticatorFormFields";
-
+/**
+ * 子コンポーネント群
+ */
 import { cards } from "./data/cards";
 import { Prefecture } from "./data/globals";
 import TinderSwipe from "./components/home/TinderSwipe";
-import Favorites from "./components/favorites/Page";
+import Favorites from "./components/favorites/Favorites";
 import Footer from "./components/Footer";
 import Map from "./components/map/Map";
 import Detail from "./components/home/Detail";
@@ -66,7 +67,7 @@ Notifications.setNotificationHandler({
   }),
 });
 
-const SERVER_URL = 'https://o49zrrdot8.execute-api.us-east-1.amazonaws.com/tokitabi';
+const SERVER_URL = "https://soranomix-api-server.onrender.com";
 const SCREEN_HEIGHT = Dimensions.get("window").height;
 const SCREEN_WIDTH = Dimensions.get("window").width;
 
@@ -94,8 +95,19 @@ export const storage: Storage = new Storage({
   // 初期化時にデータを同期するためのオプション
   sync: {},
 });
-
+/**
+ * description メインのコンポーネント
+ */
 const App1 = memo(() => {
+  const [noticeCount, setNoticeCount] = useState(115); // 通知カウント設定
+  const [favoriteData, setFavoriteData] = useState<Prefecture[]>([]);
+  const [username, setUsername] = useState("");
+  const [page, setPage] = useState("home");
+  const [index, setIndex] = useState(0);
+  const [prefecture, setPrefecture] = useState("");
+  const [inputRef, setInputRef] = useState("");
+  const [hasVisited, setHasVisited] = useState(false);
+
   useEffect(() => {
     requestPermissionsAsync();
     Notifications.setBadgeCountAsync(0);
@@ -106,9 +118,31 @@ const App1 = memo(() => {
       .catch((err) => console.warn("App", err));
   }, []);
 
-  const [noticeCount, setNoticeCount] = useState(10);   // 通知カウント設定
-  const [favoriteData, setFavoriteData] = useState<Prefecture[]>([]);
+  /**
+   * description 通知数設定用
+   */
+  const userToApp = (userdata: SetStateAction<number>) => {
+    setNoticeCount(userdata);
+  };
 
+  /**
+   * Description　画面にユーザー名表示用エフェクト
+   * @returns {react　Native　Components}
+   */
+  useEffect(() => {
+    async function getUsername() {
+      try {
+        const user = await Auth.currentAuthenticatedUser();
+        setUsername(user.attributes.nickname);
+      } catch (error) {
+        console.log("Error getting username:", error);
+      }
+    }
+    getUsername();
+  }, []);
+  /**
+   * 通知設定用エフェクト
+   */
   useEffect(() => {
     (async () => {
       // console.log(favoriteData);
@@ -134,8 +168,10 @@ const App1 = memo(() => {
   }, [favoriteData]);
 
   const scheduleNotificationAsync = async () => {
-    const res = await fetch(`${SERVER_URL}/api/favorites`).then(data => data.json());
-    // console.log('appRes', res);
+    const res = await fetch(`${SERVER_URL}/api/favorites`).then((data) =>
+      data.json()
+    );
+    // console.log('res', res);
     setFavoriteData(res);
   };
 
@@ -148,19 +184,12 @@ const App1 = memo(() => {
     await Notifications.requestPermissionsAsync();
   };
 
-  const [page, setPage] = useState("home");
-  const [index, setIndex] = useState(0);
-  const [prefecture, setPrefecture] = useState("");
-  const [hasVisited, setHasVisited] = useState(false);
-
-  const [inputRef, setInputRef] = useState("");
-  console.log(inputRef);   // フィルターに使う予定
+  console.log(inputRef); // フィルターに使う予定
 
   return (
     <View style={styles.container}>
-      <MyContext.Provider value={[ page, setPage, prefecture, setPrefecture, hasVisited, setHasVisited ]}>
-
-        {page === "home" &&
+      <MyContext.Provider value={[page, setPage, prefecture, setPrefecture, hasVisited, setHasVisited]}>
+        {page === "home" && (
           <View>
             <View style={styles.header}>
               <Icon name="search-outline" style={styles.headerIcon} />
@@ -186,11 +215,11 @@ const App1 = memo(() => {
               ))}
             </View>
           </View>
-        }
+        )}
 
-        {page === "detail" &&
+        {page === "detail" && (
           <Detail page={page} setPage={setPage} index={index} hasVisited={null} />
-        }
+        )}
 
         {page === "notice" && <Notice />}
 
@@ -198,15 +227,21 @@ const App1 = memo(() => {
 
         {page === "favorites" && <Favorites />}
 
-        {page === "spots" &&
+        {page === "spots" && (
           <Spots setPage={setPage} prefecture={prefecture} setIndex={setIndex} setHasVisited={setHasVisited} />
-        }
+        )}
 
-        {page === "visited" &&
+        {page === "visited" && (
           <Detail page={page} setPage={setPage} index={index} hasVisited={hasVisited} />
-        }
+        )}
 
-        {page === "user" && <User />}
+        {page === "user" && (
+          <User
+            userName={username}
+            noticeSet={noticeCount}
+            appToUser={userToApp}
+          />
+        )}
 
         {page !== "detail" && page !== "visited" && (
           <Footer page={page} setPage={setPage} />
@@ -258,16 +293,12 @@ const styles = StyleSheet.create({
 });
 
 //FIXME cognitoゾーン
-function SignOutButton() {
-  const { signOut } = useAuthenticator();
-  return <Button onPress={signOut} title="Sign Out" />;
-}
 
 function App(user: any) {
   const MyAppHeader = () => {
-    const {
-      tokens: { space, fontSizes },
-    } = useTheme();
+    const { tokens } = useTheme();
+    const { space, fontSizes } = tokens; // tokensのプロパティを個別の変数に分割代入
+
     return (
       <View>
         <Text style={{ fontSize: fontSizes.xxxl, padding: space.xl }}>
@@ -276,6 +307,7 @@ function App(user: any) {
       </View>
     );
   };
+
   return (
     <Authenticator.Provider>
       <Authenticator
@@ -319,14 +351,17 @@ function App(user: any) {
         Header={MyAppHeader}
       >
         <App1 />
-        {/* <SignOutButton /> */}
       </Authenticator>
     </Authenticator.Provider>
   );
 }
 
 const style = StyleSheet.create({
-  container: { flex: 1, alignItems: "center", justifyContent: "center" },
+  container: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
 });
 
 export default App;

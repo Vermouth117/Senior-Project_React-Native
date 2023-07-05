@@ -10,38 +10,24 @@ type Props = {
   setPrefecture: Dispatch<SetStateAction<string>>;
 };
 
-// const dammy = [
-//   {"imgSrc": "https://www.tripyhotellounge.xyz/wp-content/uploads/2022/10/Fukazawa050.jpg", "name": "愛知県", "number": 4},
-//   {"imgSrc": "https://www.tripyhotellounge.xyz/wp-content/uploads/2022/10/Fukazawa050.jpg", "name": "愛知県", "number": 4},
-//   {"imgSrc": "https://www.tripyhotellounge.xyz/wp-content/uploads/2022/10/Fukazawa050.jpg", "name": "愛知県", "number": 4},
-//   {"imgSrc": "https://www.tripyhotellounge.xyz/wp-content/uploads/2022/10/Fukazawa050.jpg", "name": "愛知県", "number": 4},
-//   {"imgSrc": "https://www.tripyhotellounge.xyz/wp-content/uploads/2022/10/Fukazawa050.jpg", "name": "愛知県", "number": 4},
-//   {"imgSrc": "https://www.tripyhotellounge.xyz/wp-content/uploads/2022/10/Fukazawa050.jpg", "name": "愛知県", "number": 4},
-//   {"imgSrc": "https://www.tripyhotellounge.xyz/wp-content/uploads/2022/10/Fukazawa050.jpg", "name": "愛知県", "number": 4},
-//   {"imgSrc": "https://www.tripyhotellounge.xyz/wp-content/uploads/2022/10/Fukazawa050.jpg", "name": "愛知県", "number": 4},
-//   {"imgSrc": "https://www.tripyhotellounge.xyz/wp-content/uploads/2022/10/Fukazawa050.jpg", "name": "愛知県", "number": 4},
-// ]
-
 const Icons: React.FC<Props> = memo(({ favoriteData, setPage, setPrefecture }) => {
 
   return (
     <View style={styles.scrollView}>
-      {/* {dammy.map((dataObj, index) => */}
       {favoriteData.map((dataObj, index) =>
         <TouchableOpacity
+          key={index}
           onPress={() => {
-            console.log("Icons", favoriteData[index].name);
-            setPrefecture(favoriteData[index].name);
+            setPrefecture(dataObj.name);
             setPage("spots");
           }}
-          key={dataObj.name}
         >
-          <Text style={styles.number}>{dataObj.number}</Text>
+          <Text style={styles.number}>{ dataObj.number }</Text>
           <View style={styles.spotContainer}>
             <View style={styles.imageWrapper}>
               <Image style={styles.photo} source={{uri: dataObj.imgSrc}} alt={`${dataObj.name}の写真`} />
             </View>
-            <Text style={styles.name}>{dataObj.name}</Text>
+            <Text style={styles.name}>{ dataObj.name }</Text>
           </View>
         </TouchableOpacity>
       )}
@@ -55,7 +41,7 @@ const styles = StyleSheet.create({
     top: 50,
     flexDirection: "row",
     flexWrap: "wrap",   // 要素を自動的に折り返す
-    paddingHorizontal: 28,
+    paddingHorizontal: 20,
     paddingBottom: 100,
   },
   number: {

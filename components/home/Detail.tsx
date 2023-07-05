@@ -1,27 +1,15 @@
-import { StatusBar } from "expo-status-bar";
-import {
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-  Image,
-  Dimensions,
-  ScrollView,
-  TextInput,
-} from "react-native";
+
+import { Dispatch, SetStateAction, memo, useState } from "react";
+import { StyleSheet, Text, TouchableOpacity, View, Image, Dimensions, ScrollView, TextInput } from "react-native";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import EvilIcon from "react-native-vector-icons/EvilIcons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import Icon from "react-native-vector-icons/Ionicons";
 import Swiper from "react-native-swiper";
 import { Svg, Polygon } from "react-native-svg";
-
-import { cards } from "../../data/cards"; // ダミーデータ
-import { Dispatch, SetStateAction, memo, useEffect, useState } from "react";
-
-const ScreenWidth = Dimensions.get("window").width;
-const ScreenHeight = Dimensions.get("window").height;
 import Modal from "react-native-modal";
+
+import { cards } from "../../data/cards";   // ダミーデータ (YOLP API使用予定)
 
 type Props = {
   page: string;
@@ -30,7 +18,13 @@ type Props = {
   hasVisited: boolean | null;
 };
 
+const ScreenWidth = Dimensions.get("window").width;
+const ScreenHeight = Dimensions.get("window").height;
+
+const SERVER_URL = "https://o49zrrdot8.execute-api.us-east-1.amazonaws.com/tokitabi";
+
 const Detail: React.FC<Props> = memo(({ page, setPage, index, hasVisited }) => {
+
   const [showText, setShowText] = useState(hasVisited);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [inputText, setInputElement] = useState("");
@@ -43,7 +37,6 @@ const Detail: React.FC<Props> = memo(({ page, setPage, index, hasVisited }) => {
   };
   const toggleModal = () => {
     setIsModalVisible((prevState) => !prevState);
-    // setInputElement(text);
   };
 
   const handleEditButtonClick = () => {
@@ -53,13 +46,10 @@ const Detail: React.FC<Props> = memo(({ page, setPage, index, hasVisited }) => {
 
   const handleSaveButtonClick = () => {
     setIsEditing(false);
-    setText(inputText); // テキストを保存する場合はここで値を更新する
+    setText(inputText);   // テキストを保存する場合はここで値を更新する
     const currentTime = new Date().toLocaleString();
     // setPressedTime(currentTime);
   };
-
-  const SERVER_URL =
-    "https://o49zrrdot8.execute-api.us-east-1.amazonaws.com/tokitabi";
 
   return (
     <View>
@@ -76,24 +66,22 @@ const Detail: React.FC<Props> = memo(({ page, setPage, index, hasVisited }) => {
           {/* {text === "" && (
             <Icon name="chatbox-outline" style={styles.noCommentIcon} />
           )} */}
-          {text !== "" && (
+          {text !== "" &&
             <TouchableOpacity
               onPress={toggleModal}
               style={styles.checkCommentButton}
             >
               <Icon name="chatbox-ellipses" style={styles.checkCommentIcon} />
-              <Text
-                style={{ color: "#9e1b1b", fontSize: 7, textAlign: "center" }}
-              >
+              <Text style={{ color: "#9e1b1b", fontSize: 7, textAlign: "center" }}>
                 メモあり
               </Text>
             </TouchableOpacity>
-          )}
+          }
         </>
       )}
 
       <ScrollView>
-        <View style={styles.main}>
+        <View style={ page === "visited" && { paddingBottom: 80 } }>
           {/* 行ったよラベルを表示させる */}
           {showText === true && (
             <View style={styles.window}>
@@ -106,7 +94,17 @@ const Detail: React.FC<Props> = memo(({ page, setPage, index, hasVisited }) => {
             </View>
           )}
           <View style={styles.cardPhoto}>
-            <Swiper showsButtons={false}>
+            <Swiper
+              showsButtons={cards[index].images.length !== 1 && true}
+              autoplay={true}
+              activeDotColor={"rgb(158, 27, 27)"}
+              nextButton={
+                <Text style={{ color: 'rgba(255,255,255,0.9)', fontSize: 50 }}>›</Text>
+              }
+              prevButton={
+                <Text style={{ color: 'rgba(255,255,255,0.9)', fontSize: 50 }}>‹</Text>
+              }
+            >
               {cards[index].images.map((item, index) => (
                 <View key={index}>
                   <Image
@@ -216,7 +214,6 @@ const Detail: React.FC<Props> = memo(({ page, setPage, index, hasVisited }) => {
             </View>
           </View>
         </View>
-        <StatusBar style="auto" />
       </ScrollView>
       {/* visitedの場合のみフッターを表示 */}
       {page === "visited" && (
@@ -338,10 +335,6 @@ const styles = StyleSheet.create({
     top: 1,
     color: "rgb(80, 80, 80)",
   },
-  main: {
-    paddingBottom: 80,
-    flex: 1,
-  },
   cardPhoto: {
     height: 350,
   },
@@ -366,7 +359,7 @@ const styles = StyleSheet.create({
   },
 
   descriptionContainer: {
-    paddingVertical: 10,
+    paddingVertical: 20,
     borderTopWidth: 1,
     borderColor: "rgb(230, 230, 230)",
   },

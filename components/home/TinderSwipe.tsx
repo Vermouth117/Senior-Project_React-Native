@@ -47,7 +47,7 @@ const TinderSwipe: React.FC<Props> = memo(({ index, card, setPage, setIndex, sch
             postObj.public_transport = JSON.stringify(postObj.public_transport);
             postObj.car = JSON.stringify(postObj.car);
 
-            const postData = await fetch(
+            await fetch(
               `${SERVER_URL}/api/favorites`,
               {
                 method: 'POST',
@@ -57,8 +57,6 @@ const TinderSwipe: React.FC<Props> = memo(({ index, card, setPage, setIndex, sch
                 body: JSON.stringify({ user_id: "test", ...postObj }),
               }
             )
-            // .then((data) => data.json());
-            // console.log(postData);
 
             // 通知
             scheduleNotificationAsync();

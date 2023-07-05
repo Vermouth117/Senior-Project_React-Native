@@ -1,3 +1,4 @@
+
 interface AuthenticatorFormField {
   name: string;
   label: string;
@@ -33,4 +34,5 @@ const AuthenticatorFormFields: any = [
     placeholder: "メールアドレスを入力してください",
   },
 ];
+
 export default AuthenticatorFormFields;

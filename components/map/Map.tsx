@@ -43,18 +43,9 @@ const Map = memo(() => {
     })();
   }, []);
 
-  // const markers: any = [{
-  //   title: '香嵐渓',
-  //   discription: '  愛知県',
-  //   latlng: {
-  //     latitude: 35.1270725,
-  //     longitude: 137.3162119,
-  //   },
-  // }];
-
   const markers: MapInfo[] = cards.map(card => ({
     title: card.name,
-    discription: `  ${card.prefecture}`,
+    discription: ` ${card.prefecture}`,
     latlng: {
       latitude: card.latitude,
       longitude: card.longitude,
