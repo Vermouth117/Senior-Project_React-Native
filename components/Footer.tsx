@@ -112,6 +112,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgb(255, 255, 255)",
     justifyContent: "space-between",
     paddingVertical: 10,
+    paddingHorizontal: 8,
     paddingBottom: 27,
     position: "absolute",
     bottom: 0,

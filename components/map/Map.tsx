@@ -1,8 +1,8 @@
 
-import React, { memo, useEffect, useState } from 'react';
-import { Image, SafeAreaView, Text, View } from 'react-native';
+import React, { Dispatch, SetStateAction, memo, useEffect, useState } from 'react';
+import { Image, SafeAreaView, Text, TouchableOpacity, View } from 'react-native';
 import { StyleSheet } from 'react-native';
-import MapView, { LatLng, Marker } from 'react-native-maps';
+import MapView, { Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
 
 import { cards } from '../../data/cards';
@@ -17,7 +17,12 @@ type MapInfo = {
   uri: string,
 };
 
-const Map = memo(() => {
+type Props = {
+  setPage: Dispatch<SetStateAction<string>>;
+  setIndex: Dispatch<SetStateAction<number>>;
+}
+
+const Map: React.FC<Props> = memo(({ setPage, setIndex }) => {
 
   const [latitude, setLatitude] = useState(0);
   const [longitude, setLongitude] = useState(0);
@@ -80,11 +85,19 @@ const Map = memo(() => {
               description={marker.discription}
               coordinate={marker.latlng}
             >
-              <Image
-                source={{ uri: marker.uri }}
-                style={styles.pointerImage}
-              />
-              <View style={styles.pointer}/>
+              <TouchableOpacity
+                style={{ zIndex: 1 }}
+                onPress={() => {
+                  setPage("fromMap");
+                  setIndex(index);
+                }}
+              >
+                <Image
+                  source={{ uri: marker.uri }}
+                  style={styles.pointerImage}
+                />
+                <View style={styles.pointer}/>
+              </TouchableOpacity>
             </Marker>
           ))}
         </MapView>

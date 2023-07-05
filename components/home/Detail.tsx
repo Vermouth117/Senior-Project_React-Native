@@ -61,19 +61,28 @@ const Detail: React.FC<Props> = memo(
       // setPressedTime(currentTime);
     };
 
-    return (
-      <View>
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => {
-            page === "detail" ? setPage("home") : setPage("spots");
-          }}
-        >
-          <EvilIcon name="chevron-left" style={styles.backIcon} />
-        </TouchableOpacity>
-        {page === "visited" && (
-          <>
-            {/* {text === "" && (
+
+
+  return (
+    <View>
+      <TouchableOpacity
+        style={styles.backButton}
+        onPress={() => {
+          if (page === "detail") {
+            setPage("home");
+          } else if (page === "visited") {
+            setPage("spots");
+          } else if (page === "fromMap") {
+            setPage("map");
+          }
+          // page === "detail" ? setPage("home") : setPage("spots");
+        }}
+      >
+        <EvilIcon name="chevron-left" style={styles.backIcon} />
+      </TouchableOpacity>
+      {page !== "detail" && (
+        <>
+          {/* {text === "" && (
             <Icon name="chatbox-outline" style={styles.noCommentIcon} />
           )} */}
             {text !== "" && (
@@ -92,15 +101,41 @@ const Detail: React.FC<Props> = memo(
           </>
         )}
 
-        <ScrollView>
-          <View style={page === "visited" && { paddingBottom: 80 }}>
-            {/* 行ったよラベルを表示させる */}
-            {showText === true && (
-              <View style={styles.window}>
-                <Svg width={500} height={500}>
-                  <Polygon
-                    points="0,150 150,0 150,150"
-                    fill="rgb(158, 27, 27)"
+
+      <ScrollView>
+        <View style={ page !== "detail" && { paddingBottom: 80 } }>
+          {/* 行ったよラベルを表示させる */}
+          {showText === true && (
+            <View style={styles.window}>
+              <Svg width={500} height={500}>
+                <Polygon points="0,150 150,0 150,150" fill="rgb(158, 27, 27)" />
+                <View style={styles.visitedTextContainer}>
+                  <Text style={styles.visitedText}>行ったよ！ </Text>
+                </View>
+              </Svg>
+            </View>
+          )}
+          <View style={styles.cardPhoto}>
+            <Swiper
+              showsButtons={cards[index].images.length !== 1 && true}
+              autoplay={true}
+              activeDotColor={"rgb(158, 27, 27)"}
+              nextButton={
+                <Text style={{ color: 'rgba(255,255,255,0.9)', fontSize: 50 }}>›</Text>
+              }
+              prevButton={
+                <Text style={{ color: 'rgba(255,255,255,0.9)', fontSize: 50 }}>‹</Text>
+              }
+            >
+              {cards[index].images.map((item, index) => (
+                <View key={index}>
+                  <Image
+                    style={{
+                      width: ScreenWidth,
+                      height: 350,
+                    }}
+                    source={{ uri: item }}
+
                   />
                   <View style={styles.visitedTextContainer}>
                     <Text style={styles.visitedText}>行ったよ！ </Text>
@@ -253,6 +288,7 @@ const Detail: React.FC<Props> = memo(
                 <TouchableOpacity onPress={toggleModal}>
                   <FontAwesome name="pencil" style={styles.penIcon} />
                 </TouchableOpacity>
+
 
                 <Modal isVisible={isModalVisible}>
                   {/* Modalの配置設定 */}
