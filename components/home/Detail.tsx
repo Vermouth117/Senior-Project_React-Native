@@ -1,25 +1,16 @@
+
 import { Dispatch, SetStateAction, memo, useState } from "react";
-import {
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-  Image,
-  Dimensions,
-  ScrollView,
-  TextInput,
-} from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View, Image, Dimensions, ScrollView, TextInput } from "react-native";
+import { Svg, Polygon } from "react-native-svg";
+import Swiper from "react-native-swiper";
+import Modal from "react-native-modal";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import EvilIcon from "react-native-vector-icons/EvilIcons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import Icon from "react-native-vector-icons/Ionicons";
-import Swiper from "react-native-swiper";
-import { Svg, Polygon } from "react-native-svg";
-import Modal from "react-native-modal";
 
 import { cards } from "../../data/cards";   // ダミーデータ (YOLP API使用予定)
 import { RandomCards } from "../../data/globals";
-
 
 type Props = {
   page: string;
@@ -33,11 +24,10 @@ type Props = {
 const ScreenWidth = Dimensions.get("window").width;
 const ScreenHeight = Dimensions.get("window").height;
 
-const SERVER_URL =
-  "https://o49zrrdot8.execute-api.us-east-1.amazonaws.com/tokitabi";
+const SERVER_URL = "https://o49zrrdot8.execute-api.us-east-1.amazonaws.com/tokitabi";
 
-const Detail: React.FC<Props> = memo(
-  ({ page, setPage, index, hasVisited,ramdomCards, touchId }) => {
+const Detail: React.FC<Props> = memo(({ page, setPage, index, hasVisited, touchId, ramdomCards }) => {
+
     const [showText, setShowText] = useState(hasVisited);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [inputText, setInputElement] = useState("");
@@ -76,7 +66,6 @@ const Detail: React.FC<Props> = memo(
           } else if (page === "fromMap") {
             setPage("map");
           }
-          // page === "detail" ? setPage("home") : setPage("spots");
         }}
       >
         <EvilIcon name="chevron-left" style={styles.backIcon} />
@@ -86,23 +75,16 @@ const Detail: React.FC<Props> = memo(
           {/* {text === "" && (
             <Icon name="chatbox-outline" style={styles.noCommentIcon} />
           )} */}
-            {text !== "" && (
-              <TouchableOpacity
-                onPress={toggleModal}
-                style={styles.checkCommentButton}
-              >
-                <Icon name="chatbox-ellipses" style={styles.checkCommentIcon} />
-                <Text
-                  style={{ color: "#9e1b1b", fontSize: 7, textAlign: "center" }}
-                >
-                  メモあり
-                </Text>
-              </TouchableOpacity>
-            )}
-          </>
-        )}
-
-
+          {text !== "" && (
+            <TouchableOpacity onPress={toggleModal} style={styles.checkCommentButton}>
+              <Icon name="chatbox-ellipses" style={styles.checkCommentIcon} />
+              <Text style={{ color: "#9e1b1b", fontSize: 7, textAlign: "center" }}>
+                メモあり
+              </Text>
+            </TouchableOpacity>
+          )}
+        </>
+      )}
       <ScrollView>
         <View style={ page !== "detail" && { paddingBottom: 80 } }>
           {/* 行ったよラベルを表示させる */}
@@ -118,8 +100,8 @@ const Detail: React.FC<Props> = memo(
           )}
           <View style={styles.cardPhoto}>
             <Swiper
-              showsButtons={cards[index].images.length !== 1 && true}
-              // showsButtons={ramdomCards !== null && ramdomCards[index].images.length !== 1 && true}
+              // showsButtons={cards[index].images.length !== 1 && true}
+              showsButtons={ramdomCards !== null && ramdomCards[index].images.length !== 1 && true}
               autoplay={true}
               activeDotColor={"rgb(158, 27, 27)"}
               nextButton={
@@ -129,16 +111,12 @@ const Detail: React.FC<Props> = memo(
                 <Text style={{ color: 'rgba(255,255,255,0.9)', fontSize: 50 }}>‹</Text>
               }
             >
-              {cards[index].images.map((item, index) => (
-              // {ramdomCards && ramdomCards[index].images.map((item, index) => (
+              {/* {cards[index].images.map((item, index) => ( */}
+              {ramdomCards && ramdomCards[index].images.map((item, index) => (
                 <View key={index}>
                   <Image
-                    style={{
-                      width: ScreenWidth,
-                      height: 350,
-                    }}
+                    style={{ width: ScreenWidth, height: 350 }}
                     source={{ uri: item }}
-
                   />
                 </View>
               ))}
@@ -146,8 +124,8 @@ const Detail: React.FC<Props> = memo(
           </View>
 
           <View style={styles.description}>
-            {/* <Text style={styles.title}>{ramdomCards && ramdomCards[index].name}</Text> */}
-            <Text style={styles.title}>{cards[index].name}</Text>
+            <Text style={styles.title}>{ramdomCards && ramdomCards[index].name}</Text>
+            {/* <Text style={styles.title}>{cards[index].name}</Text> */}
 
             <View style={styles.addressContainer}>
               <Text style={styles.descriptionTitle}>
@@ -156,8 +134,10 @@ const Detail: React.FC<Props> = memo(
               </Text>
               <Text
                 style={styles.descriptionPostCode}
-              >{`〒${cards[index].zip_code}`}</Text>
-              <Text style={styles.descriptionText}>{cards[index].address}</Text>
+              >{`〒${ramdomCards && ramdomCards[index].zip_code}`}</Text>
+              {/* >{`〒${cards[index].zip_code}`}</Text> */}
+              <Text style={styles.descriptionText}>{ramdomCards && ramdomCards[index].address}</Text>
+              {/* <Text style={styles.descriptionText}>{cards[index].address}</Text> */}
             </View>
             <View style={styles.descriptionContainer}>
               <Text style={styles.descriptionTitle}>
@@ -165,7 +145,8 @@ const Detail: React.FC<Props> = memo(
               </Text>
               <Text
                 style={styles.descriptionText}
-              >{`${cards[index].price}円`}</Text>
+              >{`${ramdomCards && ramdomCards[index].price}円`}</Text>
+              {/* >{`${cards[index].price}円`}</Text> */}
             </View>
 
             <View style={styles.descriptionContainer}>
@@ -173,7 +154,8 @@ const Detail: React.FC<Props> = memo(
                 <Icon name="time-outline" style={styles.icon} /> 営業日･時間
               </Text>
               <Text style={styles.descriptionText}>
-                {cards[index].business}
+                {ramdomCards && ramdomCards[index].business}
+                {/* {cards[index].business} */}
               </Text>
             </View>
             <View style={styles.descriptionContainer}>
@@ -181,7 +163,8 @@ const Detail: React.FC<Props> = memo(
                 <Icon name="call-outline" style={styles.icon} /> 電話番号
               </Text>
               <Text style={styles.descriptionText}>
-                {cards[index].phone_number}
+                {ramdomCards && ramdomCards[index].phone_number}
+                {/* {cards[index].phone_number} */}
               </Text>
             </View>
 
@@ -194,7 +177,8 @@ const Detail: React.FC<Props> = memo(
                 駐車場
               </Text>
               <Text style={styles.descriptionTextParking}>
-                {cards[index].parking}
+                {ramdomCards && ramdomCards[index].parking}
+                {/* {cards[index].parking} */}
               </Text>
             </View>
 
@@ -206,7 +190,8 @@ const Detail: React.FC<Props> = memo(
                 />
                 トイレ
               </Text>
-              <Text style={styles.descriptionText}>{cards[index].toilet}</Text>
+              <Text style={styles.descriptionText}>{ramdomCards && ramdomCards[index].toilet}</Text>
+              {/* <Text style={styles.descriptionText}>{cards[index].toilet}</Text> */}
             </View>
 
             <View style={styles.descriptionContainer}>
@@ -214,7 +199,8 @@ const Detail: React.FC<Props> = memo(
                 <Icon name="information-circle-outline" style={styles.icon} />{" "}
                 定休日
               </Text>
-              <Text style={styles.descriptionText}>{cards[index].closed}</Text>
+              <Text style={styles.descriptionText}>{ramdomCards && ramdomCards[index].closed}</Text>
+              {/* <Text style={styles.descriptionText}>{cards[index].closed}</Text> */}
             </View>
 
             <View style={styles.descriptionContainer}>
@@ -222,7 +208,8 @@ const Detail: React.FC<Props> = memo(
                 <Icon name="subway-outline" style={styles.icon} />{" "}
                 公共交通機関でのアクセス
               </Text>
-              {cards[index].public_transport.map((item, itemIndex) => (
+              {/* {cards[index].public_transport.map((item, itemIndex) => ( */}
+              {ramdomCards && ramdomCards[index].public_transport.map((item, itemIndex) => (
                 <Text key={itemIndex} style={styles.descriptionTextList}>
                   {item}
                 </Text>
@@ -233,7 +220,8 @@ const Detail: React.FC<Props> = memo(
               <Text style={styles.descriptionTitle}>
                 <Icon name="car-outline" style={styles.icon} /> 車でのアクセス
               </Text>
-              {cards[index].car.map((item, itemIndex) => (
+              {/* {cards[index].car.map((item, itemIndex) => ( */}
+              {ramdomCards && ramdomCards[index].car.map((item, itemIndex) => (
                 <Text key={itemIndex} style={styles.descriptionTextList}>
                   {item}
                 </Text>
@@ -260,7 +248,6 @@ const Detail: React.FC<Props> = memo(
                       style={{
                         flex: 1,
                         marginBottom: "100%",
-                        // justifyContent: "center",
                         alignItems: "center",
                         backgroundColor: "#fff",
                       }}

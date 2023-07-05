@@ -42,8 +42,8 @@ const TinderSwipe: React.FC<Props> = memo(({ index, card, setPage, setIndex, sch
             console.log("LIKE", index);
 
             const postObj: Cards = {
-              // ...ramdomCards[index],
-              ...cards[index],
+              ...ramdomCards[index],
+              // ...cards[index],
             };
             postObj.images = JSON.stringify(postObj.images);
             postObj.public_transport = JSON.stringify(postObj.public_transport);

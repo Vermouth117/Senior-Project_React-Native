@@ -9,7 +9,7 @@ import Icon from "react-native-vector-icons/Ionicons";
 // import Storage from "react-native-storage";
 // import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import { cards } from "./data/cards";
+import { cards } from "./data/cards";   // ダミーデータ (YOLP API使用予定)
 import { Prefecture } from "./data/globals";
 import AuthenticatorFormFields from "./components/login/AuthenticatorFormFields";
 import TinderSwipe from "./components/home/TinderSwipe";
@@ -210,8 +210,8 @@ const App = memo(() => {
                 </View>
                 <View style={styles.main}>
                   <Text style={styles.mainText}>おすすめ終了！</Text>
-                  {cards.map((card, index) => (
-                  // {ramdomCards && ramdomCards.map((card, index) => (
+                  {/* {cards.map((card, index) => ( */}
+                  {ramdomCards && ramdomCards.map((card, index) => (
                     <TinderSwipe
                       key={index}
                       index={index}

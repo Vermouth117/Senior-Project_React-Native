@@ -46,8 +46,8 @@ export interface RandomCards {
   parking: string;
   toilet: string;
   closed: string;
-  public_transport: string[] | string;
-  car: string[] | string;
+  public_transport: string[];
+  car: string[];
   has_visited: boolean;
   latitude: number;
   longitude: number;

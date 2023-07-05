@@ -21,11 +21,8 @@ type Props = {
   setHasVisited: Dispatch<SetStateAction<boolean>>;
   appToSpot: Function;
 };
-/**
- * RDSのとき旅用　URL
- */
-const SERVER_URL =
-  "https://o49zrrdot8.execute-api.us-east-1.amazonaws.com/tokitabi";
+
+const SERVER_URL = "https://o49zrrdot8.execute-api.us-east-1.amazonaws.com/tokitabi";
 
 /**
  * お気に入り一覧表示用コンポーネント
