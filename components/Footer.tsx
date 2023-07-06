@@ -7,15 +7,17 @@ type Props = {
   page: string;
   setPage: Dispatch<SetStateAction<string>>;
   setRamdomCardsChange: Dispatch<SetStateAction<boolean>>;
+  setPrefectureValue: Dispatch<SetStateAction<null>>;
 };
 
-const Footer: React.FC<Props> = memo(({ page, setPage, setRamdomCardsChange }) => {
+const Footer: React.FC<Props> = memo(({ page, setPage, setRamdomCardsChange, setPrefectureValue }) => {
   return (
     <View style={styles.footer}>
 
       <TouchableOpacity onPress={() => {
         setPage("home");
         setRamdomCardsChange(prev => !prev);
+        setPrefectureValue(null);
       }} style={styles.iconContainer}>
         <Icon
           name="home-outline"

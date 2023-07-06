@@ -13,7 +13,6 @@ import {
   Text,
   TextInput,
   View,
-  Button,
   TouchableOpacity,
   Animated,
 } from "react-native";
@@ -22,6 +21,8 @@ import { Amplify, Auth } from "aws-amplify";
 import awsconfig from "./src/aws-exports.js";
 import * as Notifications from "expo-notifications";
 import Icon from "react-native-vector-icons/Ionicons";
+import {useForm, Controller} from 'react-hook-form';
+import DropDownPicker from "react-native-dropdown-picker";
 // import Storage from "react-native-storage";
 // import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -39,6 +40,7 @@ import Footer from "./components/Footer";
 import Modal from "react-native-modal";
 import GenreIcon from "react-native-vector-icons/MaterialCommunityIcons";
 import GenreIcon2 from "react-native-vector-icons/MaterialIcons";
+import { prefectureListData } from "./data/prefectureList";
 
 Auth.configure(awsconfig);
 Amplify.configure(awsconfig);
@@ -103,6 +105,22 @@ const App = memo(() => {
   const [ramdomCardsChange, setRamdomCardsChange] = useState(false);
   const [sliceCards, setSliceCards] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const { control } = useForm();
+  const [prefectureOpen, setPrefectureOpen] = useState(false);
+  const [prefectureValue, setPrefectureValue] = useState(null);
+  const [prefectureList, setPrefectureList] = useState(prefectureListData);
+
+  const filterPrefecture = () => {
+    console.log(prefectureValue);
+    setRamdomCards([]);
+    (async () => {
+      const ramdomCardsData = await fetch(`${SERVER_URL}/api/cards/test?prefecture=${prefectureValue}`).then(
+        (data) => data.json()
+      );
+      console.log(ramdomCardsData);
+      setRamdomCards(ramdomCardsData);
+    })();
+  }
 
   useEffect(() => {
     setRamdomCards([]);
@@ -362,13 +380,36 @@ const App = memo(() => {
               <View>
                 <View style={styles.header}>
                   <Icon name="search-outline" style={styles.headerIcon} />
-                  <TextInput
-                    placeholder="キーワード検索"
+                  {/* <TextInput
+                    placeholder="都道府県を選択"
                     style={styles.headerTextInput}
                     value={inputRef}
                     onChangeText={(text) => setInputRef(text)}
+                  /> */}
+                  <Controller
+                    name="prefecture"
+                    defaultValue=""
+                    control={control}
+                    render={() => (
+                      <View style={styles.dropdownCompany}>
+                        <DropDownPicker
+                          style={styles.dropdown}
+                          containerStyle={{ borderColor: "white" }}
+                          open={prefectureOpen}
+                          value={prefectureValue}
+                          items={prefectureList}
+                          setOpen={setPrefectureOpen}
+                          setValue={setPrefectureValue}
+                          setItems={setPrefectureList}
+                          placeholder="都道府県を選択"
+                          placeholderStyle={styles.placeholderStyles}
+                          searchable={true}
+                          searchPlaceholder="都道府県を入力"
+                          onChangeValue={filterPrefecture}
+                        />
+                      </View>
+                    )}
                   />
-
                   <TouchableOpacity onPress={toggleModal}>
                     <Icon
                       name="options-outline"
@@ -600,7 +641,7 @@ const App = memo(() => {
             )}
 
             {page !== "detail" && page !== "visited" && page !== "fromMap" &&
-              <Footer page={page} setPage={setPage} setRamdomCardsChange={setRamdomCardsChange} />
+              <Footer page={page} setPage={setPage} setRamdomCardsChange={setRamdomCardsChange} setPrefectureValue={setPrefectureValue} />
             }
           </MyContext.Provider>
         </View>
@@ -610,6 +651,17 @@ const App = memo(() => {
 });
 
 const styles = StyleSheet.create({
+  dropdownCompany: {
+    width: "70%",
+    height: 0,
+    top: -9,
+  },
+  dropdown: {
+    borderColor: "white",
+  },
+  placeholderStyles: {
+    color: "grey",
+  },
   container: {
     flexGrow: 1,
     backgroundColor: "white",
@@ -627,7 +679,7 @@ const styles = StyleSheet.create({
       width: 0,
       height: 1,
     },
-    shadowOpacity: 0.5,
+    shadowOpacity: 0.8,
     zIndex: 1,
   },
   headerIcon: {
