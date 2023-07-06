@@ -1,4 +1,3 @@
-
 import { Dispatch, SetStateAction, memo } from "react";
 import { StyleSheet, View, TouchableOpacity, Text } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
@@ -10,106 +9,141 @@ type Props = {
   setPrefectureValue: Dispatch<SetStateAction<null>>;
 };
 
-const Footer: React.FC<Props> = memo(({ page, setPage, setRamdomCardsChange, setPrefectureValue }) => {
-  return (
-    <View style={styles.footer}>
+const Footer: React.FC<Props> = memo(
+  ({ page, setPage, setRamdomCardsChange, setPrefectureValue }) => {
+    const getFooterBack = () => {
+      if (page === "home") {
+        return "rgba(255, 255, 255,0.5)";
+      } else {
+        return "rgba(255, 255, 255,1)";
+      }
+    };
+    const footerBack = getFooterBack();
 
-      <TouchableOpacity onPress={() => {
-        setPage("home");
-        setRamdomCardsChange(prev => !prev);
-        setPrefectureValue(null);
-      }} style={styles.iconContainer}>
-        <Icon
-          name="home-outline"
-          style={[
-            styles.footerIcon,
-            { color: page === "home" ? "#9e1b1b" : "rgb(130, 130, 130)" },
-          ]}
-        />
-        <Text
-          style={[
-            styles.text,
-            { color: page === "home" ? "#9e1b1b" : "rgb(130, 130, 130)" },
-          ]}
+    return (
+      <View style={styles.footer}>
+        <TouchableOpacity
+          onPress={() => {
+            setPage("home");
+            setRamdomCardsChange((prev) => !prev);
+            setPrefectureValue(null);
+          }}
+          style={styles.iconContainer}
         >
-          ホーム
-        </Text>
-      </TouchableOpacity>
+          <Icon
+            name="home-outline"
+            style={[
+              styles.footerIcon,
+              { color: page === "home" ? "#9e1b1b" : "rgb(130, 130, 130)" },
+            ]}
+          />
+          <Text
+            style={[
+              styles.text,
+              { color: page === "home" ? "#9e1b1b" : "rgb(130, 130, 130)" },
+            ]}
+          >
+            ホーム
+          </Text>
+        </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => setPage("notice")} style={styles.iconContainer}>
-        <Icon
-          name="notifications-outline"
-          style={[
-            styles.footerIcon,
-            { color: page === "notice" ? "#9e1b1b" : "rgb(130, 130, 130)" },
-          ]}
-        />
-        <Text
-          style={[
-            styles.text,
-            { color: page === "notice" ? "#9e1b1b" : "rgb(130, 130, 130)" },
-          ]}
+        <TouchableOpacity
+          onPress={() => setPage("notice")}
+          style={styles.iconContainer}
         >
-          お知らせ
-        </Text>
-      </TouchableOpacity>
+          <Icon
+            name="notifications-outline"
+            style={[
+              styles.footerIcon,
+              { color: page === "notice" ? "#9e1b1b" : "rgb(130, 130, 130)" },
+            ]}
+          />
+          <Text
+            style={[
+              styles.text,
+              { color: page === "notice" ? "#9e1b1b" : "rgb(130, 130, 130)" },
+            ]}
+          >
+            お知らせ
+          </Text>
+        </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => setPage("map")} style={styles.iconContainer}>
-        <Icon
-          name="location-outline"
-          style={[
-            styles.footerIcon,
-            { color: page === "map" ? "#9e1b1b" : "rgb(130, 130, 130)" },
-          ]}
-        />
-        <Text
-          style={[
-            styles.text,
-            { color: page === "map" ? "#9e1b1b" : "rgb(130, 130, 130)" },
-          ]}
+        <TouchableOpacity
+          onPress={() => setPage("map")}
+          style={styles.iconContainer}
         >
-          地図
-        </Text>
-      </TouchableOpacity>
+          <Icon
+            name="location-outline"
+            style={[
+              styles.footerIcon,
+              { color: page === "map" ? "#9e1b1b" : "rgb(130, 130, 130)" },
+            ]}
+          />
+          <Text
+            style={[
+              styles.text,
+              { color: page === "map" ? "#9e1b1b" : "rgb(130, 130, 130)" },
+            ]}
+          >
+            地図
+          </Text>
+        </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => setPage("favorites")} style={styles.iconContainer}>
-        <Icon
-          name="thumbs-up-outline"
-          style={[
-            styles.footerIcon,
-            { color: page === "favorites" || page === "spots" ? "#9e1b1b" : "rgb(130, 130, 130)" },
-          ]}
-        />
-        <Text
-          style={[
-            styles.text,
-            { color: page === "favorites" || page === "spots" ? "#9e1b1b" : "rgb(130, 130, 130)" },
-          ]}
+        <TouchableOpacity
+          onPress={() => setPage("favorites")}
+          style={styles.iconContainer}
         >
-          お気に入り
-        </Text>
-      </TouchableOpacity>
+          <Icon
+            name="thumbs-up-outline"
+            style={[
+              styles.footerIcon,
+              {
+                color:
+                  page === "favorites" || page === "spots"
+                    ? "#9e1b1b"
+                    : "rgb(130, 130, 130)",
+              },
+            ]}
+          />
+          <Text
+            style={[
+              styles.text,
+              {
+                color:
+                  page === "favorites" || page === "spots"
+                    ? "#9e1b1b"
+                    : "rgb(130, 130, 130)",
+              },
+            ]}
+          >
+            お気に入り
+          </Text>
+        </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => setPage("user")} style={styles.iconContainer}>
-        <Icon
-          name="person-outline"
-          style={[
-            styles.footerIcon,
-            { color: page === "user" ? "#9e1b1b" : "rgb(130, 130, 130)" },
-          ]}
-        />
-        <Text
-          style={[
-            styles.text,
-            { color: page === "user" ? "#9e1b1b" : "rgb(130, 130, 130)" },
-          ]}
+        <TouchableOpacity
+          onPress={() => setPage("user")}
+          style={styles.iconContainer}
         >
-          マイページ
-        </Text>
-      </TouchableOpacity>
-    </View>
-  );
-});
+          <Icon
+            name="person-outline"
+            style={[
+              styles.footerIcon,
+              { color: page === "user" ? "#9e1b1b" : "rgb(130, 130, 130)" },
+            ]}
+          />
+          <Text
+            style={[
+              styles.text,
+              { color: page === "user" ? "#9e1b1b" : "rgb(130, 130, 130)" },
+            ]}
+          >
+            マイページ
+          </Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+);
 
 const styles = StyleSheet.create({
   footer: {
