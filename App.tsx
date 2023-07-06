@@ -98,6 +98,7 @@ const App = memo(() => {
   const [prefecture, setPrefecture] = useState("");
   const [inputRef, setInputRef] = useState("");
   const [hasVisited, setHasVisited] = useState(false);
+  const [hasCount, setHasCount] = useState(0);
   const [ramdomCards, setRamdomCards] = useState([]);
   const [ramdomCardsChange, setRamdomCardsChange] = useState(false);
   const [sliceCards, setSliceCards] = useState(false);
@@ -145,15 +146,31 @@ const App = memo(() => {
     })();
   }, []);
 
+  //通知送信用エフェクト
   useEffect(() => {
     (async () => {
       favoriteData.length !== 0 &&
+        //favデータ取得
         favoriteData.forEach(async (obj) => {
-          obj.number >= noticeCount &&
+          const getPrefectureFavoriteData = await fetch(
+            `${SERVER_URL}/api/favorites/${obj.name}`
+          ).then((data) => data.json());
+          type props = {
+            hasVisited: boolean;
+          };
+
+          //行ったよ数セット
+          const hascount =
+            obj.number -
+            (await getPrefectureFavoriteData.filter((data: props) => {
+              return data.hasVisited;
+            }).length);
+          console.log(hascount);
+          hascount >= noticeCount &&
             // プッシュ通知を実際に送信する
             (await Notifications.scheduleNotificationAsync({
               content: {
-                body: `🧳旅行先が『${obj.number}ヶ所』溜まっています!!`,
+                body: `🧳旅行先が『${hascount}ヶ所』溜まっています!!`,
                 title: `${obj.name}に行ってみませんか？`,
                 sound: "default",
                 // subtitle: 'subtitle',
