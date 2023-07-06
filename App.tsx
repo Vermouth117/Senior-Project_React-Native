@@ -165,7 +165,6 @@ const App = memo(() => {
             (await getPrefectureFavoriteData.filter((data: props) => {
               return data.hasVisited;
             }).length);
-          console.log(hascount);
           hascount >= noticeCount &&
             // プッシュ通知を実際に送信する
             (await Notifications.scheduleNotificationAsync({

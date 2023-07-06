@@ -44,11 +44,6 @@ const Spots: React.FC<Props> = memo(
         const getPrefectureFavoriteData = await fetch(
           `${SERVER_URL}/api/favorites/${prefecture}`
         ).then((data) => data.json());
-        // console.log("SpotsRes", getPrefectureFavoriteData);
-
-        getPrefectureFavoriteData.forEach((spot: { hasVisited: boolean }) =>
-          console.log("visited", spot.hasVisited)
-        );
 
         setSpotsData(getPrefectureFavoriteData);
       })();
@@ -86,7 +81,6 @@ const Spots: React.FC<Props> = memo(
               if (checked && item.hasVisited) {
                 return null; // フィルタリングされたアイテムは表示しない
               }
-              console.log(spotsData);
               return (
                 <TouchableOpacity
                   key={item.id}

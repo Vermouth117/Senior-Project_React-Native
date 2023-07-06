@@ -11,7 +11,7 @@ const styles = StyleSheet.create({
     top: "6%",
     height: "10%",
     width: "100%",
-    backgroundColor: "#000000",
+    backgroundColor: "#2B2A4C",
     position: "absolute",
     flexDirection: "row",
     alignItems: "center",
