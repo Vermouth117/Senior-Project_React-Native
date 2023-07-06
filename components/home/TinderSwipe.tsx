@@ -28,6 +28,7 @@ type Props = {
   ramdomCards: Cards[];
   setSliceCards: Dispatch<SetStateAction<boolean>>;
   setLikeCheck: Dispatch<SetStateAction<boolean>>;
+  setIsAnimationVisible: Dispatch<SetStateAction<boolean>>;
 };
 
 const SERVER_URL =
@@ -43,6 +44,7 @@ const TinderSwipe: React.FC<Props> = memo(
     ramdomCards,
     setSliceCards,
     setLikeCheck,
+    setIsAnimationVisible,
   }) => {
     const position = useRef(new Animated.ValueXY()).current;
 
@@ -84,7 +86,8 @@ const TinderSwipe: React.FC<Props> = memo(
 
               // 通知
               scheduleNotificationAsync();
-              setLikeCheck(true);
+              setLikeCheck(prev => !prev);
+              setIsAnimationVisible(true);
 
               // // 端末にデータを保存する
               // await storage.save({

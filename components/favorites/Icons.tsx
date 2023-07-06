@@ -78,6 +78,7 @@ const styles = StyleSheet.create({
     flexWrap: "wrap", // 要素を自動的に折り返す
     paddingHorizontal: 20,
     paddingBottom: 100,
+    zIndex: 1,
   },
   number: {
     zIndex: 1,
@@ -117,6 +118,15 @@ const styles = StyleSheet.create({
   },
   name: {
     marginBottom: 25,
+    color: "rgba(240, 240, 240, 1)",
+    fontWeight: "900",
+    fontSize: 18,
+    shadowColor: "rgba(100, 100, 100, 1)",
+    shadowOpacity: 1,
+    shadowOffset: {
+      height: 1,
+      width: 0,
+    },
   },
 });
 

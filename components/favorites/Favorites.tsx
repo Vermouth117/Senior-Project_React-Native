@@ -10,6 +10,8 @@ import {
 import Icons from "./Icons";
 import { Prefecture } from "../../data/globals";
 import { MyContext } from "../../App";
+import LottieView from "lottie-react-native";
+
 
 const SERVER_URL =
   "https://o49zrrdot8.execute-api.us-east-1.amazonaws.com/tokitabi";
@@ -34,6 +36,11 @@ const Favorites = memo(() => {
         style={styles.container}
         resizeMode="cover" // 画像をコンテナに合わせて拡大/縮小する
       >
+        <LottieView
+          source={require("../../assets/lottie/42070-travel-is-fun.json")}
+          autoPlay={true}
+          style={{ position: "absolute", width: "90%", alignItems: "center", bottom: 25 }}
+        />
         <SafeAreaView style={{ flex: 1 }}>
           <ScrollView>
             <Text style={styles.good}>お気に入り</Text>
@@ -67,8 +74,11 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   zanteitaisaku: {
-    top: 330,
+    top: 230,
     left: 110,
+    fontSize: 15,
+    fontWeight: "900",
+    color: "white",
     // color: "white",
     // fontSize: 15,
   },

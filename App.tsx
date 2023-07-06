@@ -42,6 +42,8 @@ import Modal from "react-native-modal";
 import GenreIcon from "react-native-vector-icons/MaterialCommunityIcons";
 import GenreIcon2 from "react-native-vector-icons/MaterialIcons";
 import { prefectureListData } from "./data/prefectureList";
+import LottieView from "lottie-react-native";
+
 
 Auth.configure(awsconfig);
 Amplify.configure(awsconfig);
@@ -313,13 +315,13 @@ const App = memo(() => {
       },
     ],
   }));
-  //いいねアニメーション
-  useEffect(() => {
-    if (likeCheck) {
-      goodAnimation();
-      setLikeCheck(false); // `goodAnimation`を実行する処理を記述
-    }
-  }, [likeCheck]);
+  // //いいねアニメーション
+  // useEffect(() => {
+  //   if (likeCheck) {
+  //     goodAnimation();
+  //     setLikeCheck(false); // `goodAnimation`を実行する処理を記述
+  //   }
+  // }, [likeCheck]);
 
   const goodAnimation = () => {
     animation.setValue(0);
@@ -344,6 +346,16 @@ const App = memo(() => {
     outputRange: [0, -500],
   });
 
+  const [isAnimationVisible, setIsAnimationVisible] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsAnimationVisible(false);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [likeCheck]);
+
   return (
     <Authenticator.Provider>
       <Authenticator
@@ -354,11 +366,16 @@ const App = memo(() => {
               <Text
                 style={{
                   fontSize: tokens.fontSizes.xxl,
-                  padding: tokens.space.large,
+                  paddingHorizontal: tokens.space.large,
                 }}
               >
                 とき旅
               </Text>
+              <LottieView
+                source={require("./assets/lottie/82445-travelers-walking-using-travelrmap-application.json")}
+                autoPlay={true}
+                style={{ position: "absolute", height: 100, left: 70 }}
+              />
             </View>
           );
         }}
@@ -608,6 +625,18 @@ const App = memo(() => {
                     style={styles.container}
                     resizeMode="cover" // 画像をコンテナに合わせて拡大/縮小する
                   >
+                    {isAnimationVisible && (
+                      <LottieView
+                        source={require("./assets/lottie/58909-like.json")}
+                        autoPlay={true}
+                        loop={false}
+                        style={{ zIndex: 9999, backgroundColor: "rgba(255, 255, 255, 0.2)" }}
+                      />
+                    )}
+                    <LottieView
+                      source={require("./assets/lottie/148558-walking-steps.json")}
+                      autoPlay={true}
+                    />
                     <Text style={styles.mainText}>おすすめ終了！</Text>
                     {/* {cards.map((card, index) => ( */}
                     {ramdomCards[0] !== undefined &&
@@ -622,6 +651,7 @@ const App = memo(() => {
                           ramdomCards={ramdomCards}
                           setSliceCards={setSliceCards}
                           setLikeCheck={setLikeCheck}
+                          setIsAnimationVisible={setIsAnimationVisible}
                         />
                       ))}
                   </ImageBackground>
@@ -754,10 +784,11 @@ const styles = StyleSheet.create({
   },
   mainText: {
     position: "absolute",
-    marginTop: Dimensions.get("window").height / 2,
-    marginHorizontal: 140,
+    marginTop: 350,
+    marginHorizontal: 130,
     color: "white",
-    fontSize: 15,
+    fontSize: 20,
+    fontWeight: "bold",
   },
   text: {
     fontSize: 13,

@@ -4,6 +4,7 @@ import { Image, SafeAreaView, Text, TouchableOpacity, View } from 'react-native'
 import { StyleSheet } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
+import LottieView from "lottie-react-native";
 
 import { cards } from '../../data/cards';
 import { TouchCards } from "../../data/globals";
@@ -94,7 +95,14 @@ const Map: React.FC<Props> = memo(({ setPage, setIndex, appToSpot }) => {
               latitude: latitude,
               longitude: longitude,
             }}
-          />
+          >
+            <LottieView
+              source={require("../../assets/lottie/31371-location-pin.json")}
+              autoPlay={true}
+              // loop={false}
+              style={{ zIndex: 1, width: 80, shadowColor: "white" }}
+            />
+          </Marker>
           {markers.map((marker, index) => (
             <Marker
               key={`location-${index}`}
