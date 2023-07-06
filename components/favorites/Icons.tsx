@@ -1,8 +1,7 @@
+import React, { Dispatch, SetStateAction, memo } from "react";
+import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
 
-import React, { Dispatch, SetStateAction, memo } from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
-
-import { Prefecture } from '../../data/globals';
+import { Prefecture } from "../../data/globals";
 
 type Props = {
   favoriteData: Array<Prefecture>;
@@ -10,37 +9,43 @@ type Props = {
   setPrefecture: Dispatch<SetStateAction<string>>;
 };
 
-const Icons: React.FC<Props> = memo(({ favoriteData, setPage, setPrefecture }) => {
-
-  return (
-    <View style={styles.scrollView}>
-      {favoriteData.map((dataObj, index) =>
-        <TouchableOpacity
-          key={index}
-          onPress={() => {
-            setPrefecture(dataObj.name);
-            setPage("spots");
-          }}
-        >
-          <Text style={styles.number}>{ dataObj.number }</Text>
-          <View style={styles.spotContainer}>
-            <View style={styles.imageWrapper}>
-              <Image style={styles.photo} source={{uri: dataObj.imgSrc}} alt={`${dataObj.name}の写真`} />
+const Icons: React.FC<Props> = memo(
+  ({ favoriteData, setPage, setPrefecture }) => {
+    return (
+      <View style={styles.scrollView}>
+        {favoriteData.map((dataObj, index) => (
+          <TouchableOpacity
+            key={index}
+            onPress={() => {
+              setPrefecture(dataObj.name);
+              setPage("spots");
+              console.log(dataObj);
+            }}
+          >
+            <Text style={styles.number}>{dataObj.number}</Text>
+            <View style={styles.spotContainer}>
+              <View style={styles.imageWrapper}>
+                <Image
+                  style={styles.photo}
+                  source={{ uri: dataObj.imgSrc }}
+                  alt={`${dataObj.name}の写真`}
+                />
+              </View>
+              <Text style={styles.name}>{dataObj.name}</Text>
             </View>
-            <Text style={styles.name}>{ dataObj.name }</Text>
-          </View>
-        </TouchableOpacity>
-      )}
-    </View>
-  );
-});
+          </TouchableOpacity>
+        ))}
+      </View>
+    );
+  }
+);
 
 const styles = StyleSheet.create({
   scrollView: {
     justifyContent: "space-between",
     top: 50,
     flexDirection: "row",
-    flexWrap: "wrap",   // 要素を自動的に折り返す
+    flexWrap: "wrap", // 要素を自動的に折り返す
     paddingHorizontal: 20,
     paddingBottom: 100,
   },
