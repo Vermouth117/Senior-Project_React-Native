@@ -6,6 +6,8 @@ import * as Font from "expo-font";
  *  description UI reactNativeコンポーネント
  */
 import { useAuthenticator } from "@aws-amplify/ui-react-native";
+const SERVER_URL =
+  "https://o49zrrdot8.execute-api.us-east-1.amazonaws.com/tokitabi";
 
 /**
  * サインアウトボタンコンポーネント
@@ -53,7 +55,7 @@ const User: React.FC<Props> = ({ userName, noticeSet, appToUser }) => {
             }}
             style={styles.input}
             value={String(inputvalue)}
-            maxLength={2}
+            maxLength={3}
           />
           <View>
             <TouchableOpacity
