@@ -19,7 +19,7 @@ export default function Notice() {
   return (
     <View style={styles.container}>
       <ImageBackground
-        source={require("/Users/user/dig_develop/Senior-Project_React-Native/assets/homeBackImg.png")}
+        source={require("/Users/user/Desktop/Senior-Project_React-Native/assets/homeBackImg.png")}
         style={styles.container}
         resizeMode="cover" // 画像をコンテナに合わせて拡大/縮小する
       >
