@@ -1,4 +1,10 @@
-import React, { Dispatch, SetStateAction, memo } from "react";
+import React, {
+  Dispatch,
+  SetStateAction,
+  memo,
+  useState,
+  useEffect,
+} from "react";
 import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
 
 import { Prefecture } from "../../data/globals";
@@ -8,33 +14,57 @@ type Props = {
   setPage: Dispatch<SetStateAction<string>>;
   setPrefecture: Dispatch<SetStateAction<string>>;
 };
+type Has = {
+  hasVisitedNumber: number;
+};
+const SERVER_URL =
+  "https://o49zrrdot8.execute-api.us-east-1.amazonaws.com/tokitabi";
 
 const Icons: React.FC<Props> = memo(
   ({ favoriteData, setPage, setPrefecture }) => {
+    const [hasCount, setHasCount] = useState<Has[] | null>(null);
+    useEffect(() => {
+      const fetchData = async () => {
+        const response = await fetch(`${SERVER_URL}/api/favorites`).then(
+          (data) => data.json()
+        );
+
+        console.log(response, "count1");
+        setHasCount(response);
+      };
+      fetchData();
+    }, []);
+    if (!hasCount) {
+      return null;
+    }
+    // データが取得されるまでローディングなどの表示を行う
     return (
       <View style={styles.scrollView}>
-        {favoriteData.map((dataObj, index) => (
-          <TouchableOpacity
-            key={index}
-            onPress={() => {
-              setPrefecture(dataObj.name);
-              setPage("spots");
-              console.log(dataObj);
-            }}
-          >
-            <Text style={styles.number}>{dataObj.number}</Text>
-            <View style={styles.spotContainer}>
-              <View style={styles.imageWrapper}>
-                <Image
-                  style={styles.photo}
-                  source={{ uri: dataObj.imgSrc }}
-                  alt={`${dataObj.name}の写真`}
-                />
+        {favoriteData.map((dataObj, index) => {
+          return (
+            <TouchableOpacity
+              key={index}
+              onPress={() => {
+                setPrefecture(dataObj.name);
+                setPage("spots");
+              }}
+            >
+              <Text style={styles.number}>
+                {dataObj.number - hasCount[index].hasVisitedNumber}
+              </Text>
+              <View style={styles.spotContainer}>
+                <View style={styles.imageWrapper}>
+                  <Image
+                    style={styles.photo}
+                    source={{ uri: dataObj.imgSrc }}
+                    alt={`${dataObj.name}の写真`}
+                  />
+                </View>
+                <Text style={styles.name}>{dataObj.name}</Text>
               </View>
-              <Text style={styles.name}>{dataObj.name}</Text>
-            </View>
-          </TouchableOpacity>
-        ))}
+            </TouchableOpacity>
+          );
+        })}
       </View>
     );
   }
