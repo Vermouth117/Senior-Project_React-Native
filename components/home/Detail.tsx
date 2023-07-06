@@ -1,5 +1,5 @@
 
-import { Dispatch, SetStateAction, memo, useState } from "react";
+import { Dispatch, SetStateAction, memo, useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View, Image, Dimensions, ScrollView, TextInput } from "react-native";
 import { Svg, Polygon } from "react-native-svg";
 import Swiper from "react-native-swiper";
@@ -10,15 +10,15 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import Icon from "react-native-vector-icons/Ionicons";
 
 import { cards } from "../../data/cards";   // ダミーデータ (YOLP API使用予定)
-import { RandomCards } from "../../data/globals";
+import { RandomCards, TouchCards } from "../../data/globals";
 
 type Props = {
   page: string;
   setPage: Dispatch<SetStateAction<string>>;
   index: number;
   hasVisited: boolean | null;
-  ramdomCards: RandomCards[] | null;
   touchId: number;
+  ramdomCards: RandomCards[] | null;
 };
 
 const ScreenWidth = Dimensions.get("window").width;
@@ -33,7 +33,11 @@ const Detail: React.FC<Props> = memo(({ page, setPage, index, hasVisited, touchI
     const [inputText, setInputElement] = useState("");
     const [isEditing, setIsEditing] = useState(false);
     const [text, setText] = useState("");
+    const [touchData, setTouchData] = useState<TouchCards>();
     // const [pressedTime, setPressedTime] = useState<string | null>(null);
+
+    console.log(touchData);
+    
 
     const handleButtonPress = () => {
       setShowText((prevShowText) => !prevShowText);
@@ -53,6 +57,13 @@ const Detail: React.FC<Props> = memo(({ page, setPage, index, hasVisited, touchI
       const currentTime = new Date().toLocaleString();
       // setPressedTime(currentTime);
     };
+
+    useEffect(() => {
+      (async () => {
+        const getFavoriteAllData = await fetch(`${SERVER_URL}/api/favorites/all/test`).then(data => data.json());
+        getFavoriteAllData.forEach((data: TouchCards) => data.id === touchId && setTouchData(data));
+      })()
+    }, []);
 
   return (
     <View>
@@ -86,6 +97,7 @@ const Detail: React.FC<Props> = memo(({ page, setPage, index, hasVisited, touchI
         </>
       )}
       <ScrollView>
+      { page === "detail" &&
         <View style={ page !== "detail" && { paddingBottom: 80 } }>
           {/* 行ったよラベルを表示させる */}
           {showText === true && (
@@ -229,8 +241,153 @@ const Detail: React.FC<Props> = memo(({ page, setPage, index, hasVisited, touchI
             </View>
           </View>
         </View>
+      }
+      { page !== "detail" && touchData &&
+        <View style={ page !== "detail" && { paddingBottom: 80 } }>
+          {/* 行ったよラベルを表示させる */}
+          {showText === true && (
+            <View style={styles.window}>
+              <Svg width={500} height={500}>
+                <Polygon points="0,150 150,0 150,150" fill="rgb(158, 27, 27)" />
+                <View style={styles.visitedTextContainer}>
+                  <Text style={styles.visitedText}>行ったよ！ </Text>
+                </View>
+              </Svg>
+            </View>
+          )}
+          <View style={styles.cardPhoto}>
+            <Swiper
+              // showsButtons={cards[index].images.length !== 1 && true}
+              showsButtons={touchData.images.length !== 1 && true}
+              autoplay={true}
+              activeDotColor={"rgb(158, 27, 27)"}
+              nextButton={
+                <Text style={{ color: 'rgba(255,255,255,0.9)', fontSize: 50 }}>›</Text>
+              }
+              prevButton={
+                <Text style={{ color: 'rgba(255,255,255,0.9)', fontSize: 50 }}>‹</Text>
+              }
+            >
+              {/* {cards[index].images.map((item, index) => ( */}
+              {touchData.images.map((item, index) => (
+                <View key={index}>
+                  <Image
+                    style={{ width: ScreenWidth, height: 350 }}
+                    source={{ uri: item }}
+                  />
+                </View>
+              ))}
+            </Swiper>
+          </View>
+
+          <View style={styles.description}>
+            <Text style={styles.title}>{touchData.name}</Text>
+            {/* <Text style={styles.title}>{cards[index].name}</Text> */}
+
+            <View style={styles.addressContainer}>
+              <Text style={styles.descriptionTitle}>
+                <Icon name="location-outline" style={styles.icon} />
+                所在地
+              </Text>
+              <Text
+                style={styles.descriptionPostCode}
+              >{`〒${touchData.zip_code}`}</Text>
+              {/* >{`〒${cards[index].zip_code}`}</Text> */}
+              <Text style={styles.descriptionText}>{touchData.address}</Text>
+              {/* <Text style={styles.descriptionText}>{cards[index].address}</Text> */}
+            </View>
+            <View style={styles.descriptionContainer}>
+              <Text style={styles.descriptionTitle}>
+                <Icon name="cash-outline" style={styles.icon} /> 料金
+              </Text>
+              <Text
+                style={styles.descriptionText}
+              >{`${touchData.price}円`}</Text>
+              {/* >{`${cards[index].price}円`}</Text> */}
+            </View>
+
+            <View style={styles.descriptionContainer}>
+              <Text style={styles.descriptionTitle}>
+                <Icon name="time-outline" style={styles.icon} /> 営業日･時間
+              </Text>
+              <Text style={styles.descriptionText}>
+                {touchData.business}
+                {/* {cards[index].business} */}
+              </Text>
+            </View>
+            <View style={styles.descriptionContainer}>
+              <Text style={styles.descriptionTitle}>
+                <Icon name="call-outline" style={styles.icon} /> 電話番号
+              </Text>
+              <Text style={styles.descriptionText}>
+                {touchData.phone_number}
+                {/* {cards[index].phone_number} */}
+              </Text>
+            </View>
+
+            <View style={styles.descriptionContainer}>
+              <Text style={styles.descriptionTitle}>
+                <MaterialCommunityIcons
+                  name="alpha-p-circle-outline"
+                  style={styles.icon}
+                />{" "}
+                駐車場
+              </Text>
+              <Text style={styles.descriptionTextParking}>
+                {touchData.parking}
+                {/* {cards[index].parking} */}
+              </Text>
+            </View>
+
+            <View style={styles.descriptionContainer}>
+              <Text style={styles.descriptionTitle}>
+                <MaterialCommunityIcons
+                  name="human-male-female"
+                  style={styles.icon}
+                />
+                トイレ
+              </Text>
+              <Text style={styles.descriptionText}>{touchData.toilet}</Text>
+              {/* <Text style={styles.descriptionText}>{cards[index].toilet}</Text> */}
+            </View>
+
+            <View style={styles.descriptionContainer}>
+              <Text style={styles.descriptionTitle}>
+                <Icon name="information-circle-outline" style={styles.icon} />{" "}
+                定休日
+              </Text>
+              <Text style={styles.descriptionText}>{touchData.closed}</Text>
+              {/* <Text style={styles.descriptionText}>{cards[index].closed}</Text> */}
+            </View>
+
+            <View style={styles.descriptionContainer}>
+              <Text style={styles.descriptionTitle}>
+                <Icon name="subway-outline" style={styles.icon} />{" "}
+                公共交通機関でのアクセス
+              </Text>
+              {/* {cards[index].public_transport.map((item, itemIndex) => ( */}
+              {touchData.public_transport.map((item, itemIndex) => (
+                <Text key={itemIndex} style={styles.descriptionTextList}>
+                  {item}
+                </Text>
+              ))}
+            </View>
+
+            <View style={styles.descriptionContainer}>
+              <Text style={styles.descriptionTitle}>
+                <Icon name="car-outline" style={styles.icon} /> 車でのアクセス
+              </Text>
+              {/* {cards[index].car.map((item, itemIndex) => ( */}
+              {touchData.car.map((item, itemIndex) => (
+                <Text key={itemIndex} style={styles.descriptionTextList}>
+                  {item}
+                </Text>
+              ))}
+            </View>
+          </View>
+        </View>
+      }
       </ScrollView>
-        {/* visitedの場合のみフッターを表示 */}
         {page !== "detail" && (
           <>
             <View style={styles.container}>
@@ -239,8 +396,6 @@ const Detail: React.FC<Props> = memo(({ page, setPage, index, hasVisited, touchI
                 <TouchableOpacity onPress={toggleModal}>
                   <FontAwesome name="pencil" style={styles.penIcon} />
                 </TouchableOpacity>
-
-
                 <Modal isVisible={isModalVisible}>
                   {/* Modalの配置設定 */}
                   <TouchableOpacity activeOpacity={1} onPressOut={toggleModal}>
@@ -289,7 +444,6 @@ const Detail: React.FC<Props> = memo(({ page, setPage, index, hasVisited, touchI
                           <TextInput
                             value={inputText}
                             onChangeText={setInputElement}
-                            // placeholder="入力してボタンを押してください。"
                             style={styles.commentTextContainer}
                           />
                         )}

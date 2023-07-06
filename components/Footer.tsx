@@ -6,13 +6,17 @@ import Icon from "react-native-vector-icons/Ionicons";
 type Props = {
   page: string;
   setPage: Dispatch<SetStateAction<string>>;
+  setRamdomCardsChange: Dispatch<SetStateAction<boolean>>;
 };
 
-const Footer: React.FC<Props> = memo(({ page, setPage }) => {
+const Footer: React.FC<Props> = memo(({ page, setPage, setRamdomCardsChange }) => {
   return (
     <View style={styles.footer}>
 
-      <TouchableOpacity onPress={() => setPage("home")} style={styles.iconContainer}>
+      <TouchableOpacity onPress={() => {
+        setPage("home");
+        setRamdomCardsChange(prev => !prev);
+      }} style={styles.iconContainer}>
         <Icon
           name="home-outline"
           style={[

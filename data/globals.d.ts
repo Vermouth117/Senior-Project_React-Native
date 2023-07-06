@@ -52,3 +52,24 @@ export interface RandomCards {
   latitude: number;
   longitude: number;
 }
+
+export interface TouchCards {
+  id: number;
+  name: string;
+  prefecture: string;
+  images: string[];
+  price: number;
+  access: string;
+  zip_code: string;
+  address: string;
+  business: string;
+  phone_number: string;
+  parking: string;
+  toilet: string;
+  closed: string;
+  public_transport: string[];
+  car: string[];
+  has_visited: boolean;
+  latitude: number;
+  longitude: number;
+}

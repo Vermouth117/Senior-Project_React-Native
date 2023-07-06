@@ -6,8 +6,11 @@ import MapView, { Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
 
 import { cards } from '../../data/cards';
+import { TouchCards } from "../../data/globals";
+
 
 type MapInfo = {
+  id: number,
   title: string,
   discription: string,
   latlng: {
@@ -20,12 +23,24 @@ type MapInfo = {
 type Props = {
   setPage: Dispatch<SetStateAction<string>>;
   setIndex: Dispatch<SetStateAction<number>>;
+  appToSpot: Function;
 }
 
-const Map: React.FC<Props> = memo(({ setPage, setIndex }) => {
+const SERVER_URL = "https://o49zrrdot8.execute-api.us-east-1.amazonaws.com/tokitabi";
+
+
+const Map: React.FC<Props> = memo(({ setPage, setIndex, appToSpot }) => {
 
   const [latitude, setLatitude] = useState(0);
   const [longitude, setLongitude] = useState(0);
+  const [favoriteAllData, setFavoriteAllData] = useState<TouchCards[]>([]);
+
+  useEffect(() => {
+    (async () => {
+      const getFavoriteAllData = await fetch(`${SERVER_URL}/api/favorites/all/test`).then(data => data.json());
+      setFavoriteAllData(getFavoriteAllData);
+    })()
+  }, []);
 
   useEffect(() => {
     (async () => {
@@ -48,7 +63,9 @@ const Map: React.FC<Props> = memo(({ setPage, setIndex }) => {
     })();
   }, []);
 
-  const markers: MapInfo[] = cards.map(card => ({
+  // const markers: MapInfo[] = cards.map(card => ({
+  const markers: MapInfo[] = favoriteAllData.map(card => ({
+    id: card.id,
     title: card.name,
     discription: ` ${card.prefecture}`,
     latlng: {
@@ -89,7 +106,8 @@ const Map: React.FC<Props> = memo(({ setPage, setIndex }) => {
                 style={{ zIndex: 1 }}
                 onPress={() => {
                   setPage("fromMap");
-                  setIndex(index);
+                  // setIndex(index);
+                  appToSpot(Number(marker.id));
                 }}
               >
                 <Image
@@ -134,12 +152,12 @@ const styles = StyleSheet.create({
     borderTopColor: "rgb(158, 27, 27)",
     borderLeftColor: 'transparent',
     borderRightColor: 'transparent',
-    shadowColor: 'rgb(255, 255, 255)',
+    shadowColor: 'rgba(255, 255, 255, 0.8)',
     shadowOffset: {
       width: 0,
       height: 8,
     },
-    shadowOpacity: 1,
+    shadowOpacity: 0.1,
   },
 });
 

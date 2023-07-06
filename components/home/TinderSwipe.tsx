@@ -18,11 +18,12 @@ type Props = {
   setIndex: Dispatch<SetStateAction<number>>;
   scheduleNotificationAsync: Function;
   ramdomCards: Cards[];
+  setSliceCards: Dispatch<SetStateAction<boolean>>
 };
 
 const SERVER_URL = "https://o49zrrdot8.execute-api.us-east-1.amazonaws.com/tokitabi";
 
-const TinderSwipe: React.FC<Props> = memo(({ index, card, setPage, setIndex, scheduleNotificationAsync, ramdomCards }) => {
+const TinderSwipe: React.FC<Props> = memo(({ index, card, setPage, setIndex, scheduleNotificationAsync, ramdomCards, setSliceCards }) => {
 
   const position = useRef(new Animated.ValueXY()).current;
 
@@ -40,9 +41,11 @@ const TinderSwipe: React.FC<Props> = memo(({ index, card, setPage, setIndex, sch
           }).start(async () => {
 
             console.log("LIKE", index);
+            // console.log("LIKE", ramdomCards);
 
             const postObj: Cards = {
-              ...ramdomCards[index],
+              // ...ramdomCards[index],
+              ...card,
               // ...cards[index],
             };
             postObj.images = JSON.stringify(postObj.images);
@@ -86,7 +89,9 @@ const TinderSwipe: React.FC<Props> = memo(({ index, card, setPage, setIndex, sch
           Animated.spring(position, {
             toValue: { x: -SCREEN_WIDTH - 100, y: gestureState.dy },
             useNativeDriver: true,
-          }).start(() => {});
+          }).start(() => {
+            setSliceCards(prev => !prev);
+          });
         } else {
           Animated.spring(position, {
             toValue: { x: 0, y: 0 },

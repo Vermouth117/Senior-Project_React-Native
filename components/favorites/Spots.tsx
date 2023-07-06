@@ -91,10 +91,10 @@ const Spots: React.FC<Props> = memo(
                   style={[styles.spotWrapper]}
                   onPress={() => {
                     setPage("visited");
-                    const selectIndex = cards.findIndex(
-                      (spotObj) => spotObj.name === item.name
-                    );
-                    setIndex(selectIndex);
+                    // const selectIndex = cards.findIndex(
+                    //   (spotObj) => spotObj.name === item.name
+                    // );
+                    // setIndex(selectIndex);
                     setHasVisited(item.hasVisited);
                     // fetchで GET したデータをstate管理でAppへ（idをパスパラで渡す）
                     appToSpot(Number(item.id));
@@ -151,7 +151,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     borderColor: "white",
     padding: 0,
-    paddingLeft: 80,
+    paddingLeft: 50,
   },
   main: {
     marginTop: 100,

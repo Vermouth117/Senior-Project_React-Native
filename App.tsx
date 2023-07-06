@@ -73,13 +73,19 @@ const App = memo(() => {
   const [hasVisited, setHasVisited] = useState(false);
   const [ramdomCards, setRamdomCards] = useState([]);
   const [ramdomCardsChange, setRamdomCardsChange] = useState(false);
+  const [sliceCards, setSliceCards] = useState(false);
 
   useEffect(() => {
+    setRamdomCards([]);
     (async () => {
       const ramdomCardsData = await fetch(`${SERVER_URL}/api/cards/test`).then(data => data.json());
       setRamdomCards(ramdomCardsData);
     })()
   }, [ramdomCardsChange]);
+
+  useEffect(() => {
+    setRamdomCards(prev => prev.slice(0, prev.length - 1));
+  }, [sliceCards]);
 
   useEffect(() => {
     requestPermissionsAsync();
@@ -211,7 +217,7 @@ const App = memo(() => {
                 <View style={styles.main}>
                   <Text style={styles.mainText}>おすすめ終了！</Text>
                   {/* {cards.map((card, index) => ( */}
-                  {ramdomCards && ramdomCards.map((card, index) => (
+                  {ramdomCards[0] !== undefined && ramdomCards.map((card, index) => (
                     <TinderSwipe
                       key={index}
                       index={index}
@@ -220,6 +226,7 @@ const App = memo(() => {
                       setIndex={setIndex}
                       scheduleNotificationAsync={scheduleNotificationAsync}
                       ramdomCards={ramdomCards}
+                      setSliceCards={setSliceCards}
                     />
                   ))}
                 </View>
@@ -235,7 +242,7 @@ const App = memo(() => {
             }
 
             {page === "map" &&
-              <Map setPage={setPage} setIndex={setIndex} />
+              <Map setPage={setPage} setIndex={setIndex} appToSpot={spotToApp} />
             }
 
             {page === "fromMap" &&
@@ -259,7 +266,7 @@ const App = memo(() => {
             }
 
             {page !== "detail" && page !== "visited" && page !== "fromMap" &&
-              <Footer page={page} setPage={setPage} />
+              <Footer page={page} setPage={setPage} setRamdomCardsChange={setRamdomCardsChange} />
             }
           </MyContext.Provider>
         </View>
