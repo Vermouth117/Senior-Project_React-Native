@@ -5,6 +5,7 @@ import {
   memo,
   useEffect,
   useState,
+  useRef,
 } from "react";
 import {
   Dimensions,
@@ -13,10 +14,12 @@ import {
   TextInput,
   View,
   Button,
+  TouchableOpacity,
+  Animated,
 } from "react-native";
 import { Authenticator, useTheme } from "@aws-amplify/ui-react-native";
 import { Amplify, Auth } from "aws-amplify";
-import awsconfig from "./src/aws-exports";
+import awsconfig from "./src/aws-exports.js";
 import * as Notifications from "expo-notifications";
 import Icon from "react-native-vector-icons/Ionicons";
 // import Storage from "react-native-storage";
@@ -33,6 +36,9 @@ import Favorites from "./components/favorites/Favorites";
 import Spots from "./components/favorites/Spots";
 import User from "./components/user/User";
 import Footer from "./components/Footer";
+import Modal from "react-native-modal";
+import GenreIcon from "react-native-vector-icons/MaterialCommunityIcons";
+import GenreIcon2 from "react-native-vector-icons/MaterialIcons";
 
 Auth.configure(awsconfig);
 Amplify.configure(awsconfig);
@@ -95,6 +101,7 @@ const App = memo(() => {
   const [hasCount, setHasCount] = useState(0);
   const [ramdomCards, setRamdomCards] = useState([]);
   const [ramdomCardsChange, setRamdomCardsChange] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -191,6 +198,96 @@ const App = memo(() => {
   // フィルターに使う予定
   console.log(inputRef);
 
+  //フィルター画面の設定
+  const toggleModal = () => {
+    setIsModalVisible((prevState) => !prevState);
+    // setInputElement(text);
+  };
+
+  //文字を一気に大きくして徐々に小さくしたい
+  const [isAnimating, setIsAnimating] = useState(false);
+  const animations = useRef([
+    new Animated.Value(1), // テキスト1のアニメーション
+    new Animated.Value(1), // テキスト2のアニメーション
+    new Animated.Value(1), // テキスト3のアニメーション
+  ]).current;
+
+  const startAnimation = () => {
+    setIsAnimating(true);
+
+    const animationSequences = [
+      Animated.sequence([
+        Animated.delay(400),
+        Animated.timing(animations[0], {
+          toValue: 3.5,
+          duration: 300,
+          useNativeDriver: true,
+        }),
+        Animated.timing(animations[0], {
+          toValue: 1,
+          duration: 300,
+          useNativeDriver: true,
+        }),
+      ]),
+      Animated.sequence([
+        Animated.delay(700),
+        Animated.timing(animations[1], {
+          toValue: 3.5,
+          duration: 300,
+          useNativeDriver: true,
+        }),
+        Animated.timing(animations[1], {
+          toValue: 1,
+          duration: 300,
+          useNativeDriver: true,
+        }),
+      ]),
+      Animated.sequence([
+        Animated.delay(1000),
+        Animated.timing(animations[2], {
+          toValue: 3.5,
+          duration: 300,
+          useNativeDriver: true,
+        }),
+        Animated.timing(animations[2], {
+          toValue: 1,
+          duration: 300,
+          useNativeDriver: true,
+        }),
+      ]),
+    ];
+
+    Animated.parallel(animationSequences).start(() => {
+      setIsAnimating(false);
+    });
+  };
+
+  useEffect(() => {
+    if (isAnimating) {
+      startAnimation();
+    }
+  }, [isAnimating]);
+
+  const handlePress = () => {
+    toggleModal();
+    setIsAnimating(!isAnimating);
+  };
+
+  const textStyles = animations.map((animation) => ({
+    opacity: animation.interpolate({
+      inputRange: [0, 1],
+      outputRange: [0, 1],
+    }),
+    transform: [
+      {
+        scale: animation.interpolate({
+          inputRange: [0, 1],
+          outputRange: [1, 1.1],
+        }),
+      },
+    ],
+  }));
+
   return (
     <Authenticator.Provider>
       <Authenticator
@@ -265,7 +362,158 @@ const App = memo(() => {
                     value={inputRef}
                     onChangeText={(text) => setInputRef(text)}
                   />
-                  <Icon name="menu-outline" style={styles.headerIcon} />
+
+                  <TouchableOpacity onPress={toggleModal}>
+                    <Icon
+                      name="options-outline"
+                      style={styles.headerIcon}
+                      onPress={handlePress}
+                    />
+                  </TouchableOpacity>
+                  <Modal isVisible={isModalVisible}>
+                    {/* Modalの配置設定 */}
+                    <TouchableOpacity
+                      activeOpacity={1}
+                      onPressOut={toggleModal}
+                    >
+                      <View
+                        style={{
+                          // flex: 1,
+                          alignItems: "center",
+                          backgroundColor: "rgba( 0, 0, 0)",
+                        }}
+                      >
+                        <View
+                          style={[styles.allGenreContainer, { width: "80%" }]}
+                        >
+                          {/* <TouchableOpacity
+                      style={styles.friend}
+                      // onPress={}
+                    > */}
+                          <Animated.View style={textStyles[0]}>
+                            <Text style={styles.genreText}>相手でえらぶ</Text>
+                          </Animated.View>
+                          <View style={styles.human}>
+                            <TouchableOpacity
+                              // onPress={}
+                              style={styles.genreContainer}
+                            >
+                              <GenreIcon
+                                name="human-male-female-child"
+                                style={styles.genreIcon}
+                              />
+                              <Text style={styles.miniGenre}>家族と</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                              // onPress={}
+                              style={styles.genreContainer}
+                            >
+                              <GenreIcon
+                                name="account-child"
+                                style={styles.genreIcon}
+                              />
+                              <Text style={styles.miniGenre}>子供と</Text>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity
+                              // onPress={}
+                              style={styles.genreContainer}
+                            >
+                              <GenreIcon
+                                name="kabaddi"
+                                style={styles.genreIcon}
+                              />
+                              <Text style={styles.miniGenre}>友達と</Text>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity
+                              // onPress={}
+                              style={styles.genreContainer}
+                            >
+                              <GenreIcon
+                                name="account-heart"
+                                style={styles.genreIcon}
+                              />
+                              <Text style={styles.miniGenre}>恋人と</Text>
+                            </TouchableOpacity>
+                          </View>
+                          <Animated.View style={textStyles[1]}>
+                            <Text style={styles.genreText}>目的でえらぶ</Text>
+                          </Animated.View>
+                          <View style={styles.human}>
+                            <TouchableOpacity
+                              // onPress={}
+                              style={styles.genreContainer}
+                            >
+                              <GenreIcon
+                                name="ferris-wheel"
+                                style={styles.genreIcon}
+                              />
+                              <Text style={styles.miniGenre}>遊園地</Text>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity
+                              // onPress={}
+                              style={styles.genreContainer}
+                            >
+                              <GenreIcon
+                                name="kayaking"
+                                style={styles.genreIcon}
+                              />
+                              <Text style={styles.miniGenre}>趣味</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                              // onPress={}
+                              style={styles.genreContainer}
+                            >
+                              <GenreIcon
+                                name="forest"
+                                style={styles.genreIcon}
+                              />
+                              <Text style={styles.miniGenre}>景色</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                              // onPress={}
+                              style={styles.genreContainer}
+                            >
+                              <GenreIcon2
+                                name="museum"
+                                style={styles.genreIcon}
+                              />
+                              <Text style={styles.miniGenre}>博物館</Text>
+                            </TouchableOpacity>
+                          </View>
+                          <Animated.View style={textStyles[2]}>
+                            <Text style={styles.genreText}>手段でえらぶ</Text>
+                          </Animated.View>
+                          <View style={styles.human}>
+                            <TouchableOpacity
+                              // onPress={}
+                              style={styles.genreContainer}
+                            >
+                              <GenreIcon
+                                name="car-hatchback"
+                                style={styles.genreIcon}
+                              />
+                              <Text style={styles.miniGenre}>車</Text>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity
+                              // onPress={}
+                              style={styles.genreContainer}
+                            >
+                              <GenreIcon
+                                name="train"
+                                style={styles.genreIcon}
+                              />
+                              <Text style={styles.miniGenre}>電車</Text>
+                            </TouchableOpacity>
+                          </View>
+                          {/* </TouchableOpacity> */}
+                        </View>
+                      </View>
+                    </TouchableOpacity>
+                  </Modal>
                 </View>
                 <View style={styles.main}>
                   <Text style={styles.mainText}>おすすめ終了！</Text>
@@ -391,6 +639,47 @@ const styles = StyleSheet.create({
     marginTop: Dimensions.get("window").height / 2,
     marginHorizontal: 140,
   },
+  text: {
+    fontSize: 13,
+    color: "black",
+    fontWeight: "bold",
+  },
+
+  genreText: {
+    fontSize: 18,
+    color: "white",
+    fontWeight: "bold",
+  },
+
+  allGenreContainer: {
+    flexDirection: "column",
+    height: 600,
+    width: 250,
+  },
+  genreContainer: {
+    flexDirection: "column",
+    justifyContent: "space-between",
+    paddingVertical: 10,
+    alignItems: "center",
+    height: 100,
+    marginRight: 20,
+    fontSize: 10,
+  },
+  human: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingVertical: 20,
+
+    height: 200,
+    width: 100,
+  },
+
+  genreIcon: {
+    justifyContent: "space-between",
+    fontSize: 60,
+    color: "white",
+  },
+  miniGenre: { color: "white", fontSize: 12 },
 });
 
 export default App;
