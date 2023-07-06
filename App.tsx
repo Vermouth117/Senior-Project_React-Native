@@ -1,6 +1,19 @@
-
-import { Dispatch, SetStateAction, createContext, memo, useEffect, useState } from "react";
-import { Dimensions, StyleSheet, Text, TextInput, View, Button } from "react-native";
+import {
+  Dispatch,
+  SetStateAction,
+  createContext,
+  memo,
+  useEffect,
+  useState,
+} from "react";
+import {
+  Dimensions,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+  Button,
+} from "react-native";
 import { Authenticator, useTheme } from "@aws-amplify/ui-react-native";
 import { Amplify, Auth } from "aws-amplify";
 import awsconfig from "./src/aws-exports";
@@ -32,7 +45,8 @@ Notifications.setNotificationHandler({
   }),
 });
 
-const SERVER_URL = "https://o49zrrdot8.execute-api.us-east-1.amazonaws.com/tokitabi";
+const SERVER_URL =
+  "https://o49zrrdot8.execute-api.us-east-1.amazonaws.com/tokitabi";
 const SCREEN_HEIGHT = Dimensions.get("window").height;
 const SCREEN_WIDTH = Dimensions.get("window").width;
 
@@ -45,7 +59,14 @@ type Props = [
   setHasVisited: Dispatch<SetStateAction<boolean>>
 ];
 
-export const MyContext = createContext<Props>([ "", () => {}, "", () => {}, false, () => {} ]);
+export const MyContext = createContext<Props>([
+  "",
+  () => {},
+  "",
+  () => {},
+  false,
+  () => {},
+]);
 
 // // ストレージの作成
 // export const storage: Storage = new Storage({
@@ -62,7 +83,7 @@ export const MyContext = createContext<Props>([ "", () => {}, "", () => {}, fals
 // });
 
 const App = memo(() => {
-  const [noticeCount, setNoticeCount] = useState(3);   // 通知カウント設定
+  const [noticeCount, setNoticeCount] = useState(3); // 通知カウント設定
   const [touchId, setTouchId] = useState(0);
   const [favoriteData, setFavoriteData] = useState<Prefecture[]>([]);
   const [username, setUsername] = useState("");
@@ -76,9 +97,11 @@ const App = memo(() => {
 
   useEffect(() => {
     (async () => {
-      const ramdomCardsData = await fetch(`${SERVER_URL}/api/cards/test`).then(data => data.json());
+      const ramdomCardsData = await fetch(`${SERVER_URL}/api/cards/test`).then(
+        (data) => data.json()
+      );
       setRamdomCards(ramdomCardsData);
-    })()
+    })();
   }, [ramdomCardsChange]);
 
   useEffect(() => {
@@ -92,7 +115,8 @@ const App = memo(() => {
   }, []);
 
   // description 通知数設定用
-  const userToApp = (userdata: SetStateAction<number>) => setNoticeCount(userdata);
+  const userToApp = (userdata: SetStateAction<number>) =>
+    setNoticeCount(userdata);
 
   //description ID取得用
   const spotToApp = (id: SetStateAction<number>) => setTouchId(id);
@@ -105,13 +129,14 @@ const App = memo(() => {
       } catch (error) {
         console.log("Error getting username:", error);
       }
-    })()
+    })();
   }, []);
 
   useEffect(() => {
     (async () => {
       favoriteData.length !== 0 &&
         favoriteData.forEach(async (obj) => {
+          console.log("notice", prefecture);
           obj.number >= noticeCount &&
             // プッシュ通知を実際に送信する
             (await Notifications.scheduleNotificationAsync({
@@ -132,7 +157,9 @@ const App = memo(() => {
   }, [favoriteData]);
 
   const scheduleNotificationAsync = async () => {
-    const res = await fetch(`${SERVER_URL}/api/favorites`).then(data => data.json());
+    const res = await fetch(`${SERVER_URL}/api/favorites`).then((data) =>
+      data.json()
+    );
     setFavoriteData(res);
   };
 
@@ -155,25 +182,31 @@ const App = memo(() => {
           const { tokens } = useTheme();
           return (
             <View>
-              <Text style={{ fontSize: tokens.fontSizes.xxl, padding: tokens.space.large }}>
+              <Text
+                style={{
+                  fontSize: tokens.fontSizes.xxl,
+                  padding: tokens.space.large,
+                }}
+              >
                 とき旅
               </Text>
             </View>
-          )
+          );
         }}
-        Container={props =>
+        Container={(props) => (
           <Authenticator.Container
             {...props}
             style={{ backgroundColor: "white" }}
           />
-        }
+        )}
         initialState="signIn"
         components={{
           // サインアップフィールド
-          SignUp: ({ fields, ...props }) =>
-            <Authenticator.SignUp {...props} fields={AuthenticatorFormFields} />,
+          SignUp: ({ fields, ...props }) => (
+            <Authenticator.SignUp {...props} fields={AuthenticatorFormFields} />
+          ),
           // サインインフィールド
-          SignIn: ({ fields, ...props }) =>
+          SignIn: ({ fields, ...props }) => (
             <Authenticator.SignIn
               {...props}
               fields={[
@@ -191,11 +224,21 @@ const App = memo(() => {
                   secureTextEntry: true,
                 },
               ]}
-            />,
+            />
+          ),
         }}
       >
         <View style={styles.container}>
-          <MyContext.Provider value={[ page, setPage, prefecture, setPrefecture, hasVisited, setHasVisited ]}>
+          <MyContext.Provider
+            value={[
+              page,
+              setPage,
+              prefecture,
+              setPrefecture,
+              hasVisited,
+              setHasVisited,
+            ]}
+          >
             {page === "home" && (
               <View>
                 <View style={styles.header}>
@@ -211,7 +254,7 @@ const App = memo(() => {
                 <View style={styles.main}>
                   <Text style={styles.mainText}>おすすめ終了！</Text>
                   {cards.map((card, index) => (
-                  // {ramdomCards && ramdomCards.map((card, index) => (
+                    // {ramdomCards && ramdomCards.map((card, index) => (
                     <TinderSwipe
                       key={index}
                       index={index}
@@ -226,41 +269,66 @@ const App = memo(() => {
               </View>
             )}
 
-            {page === "detail" &&
-              <Detail page={page} setPage={setPage} index={index} hasVisited={null} touchId={touchId} ramdomCards={ramdomCards} />
-            }
+            {page === "detail" && (
+              <Detail
+                page={page}
+                setPage={setPage}
+                index={index}
+                hasVisited={null}
+                touchId={touchId}
+                ramdomCards={ramdomCards}
+              />
+            )}
 
-            {page === "notice" &&
-              <Notice />
-            }
+            {page === "notice" && <Notice />}
 
-            {page === "map" &&
-              <Map setPage={setPage} setIndex={setIndex} />
-            }
+            {page === "map" && <Map setPage={setPage} setIndex={setIndex} />}
 
-            {page === "fromMap" &&
-              <Detail page={page} setPage={setPage} index={index} hasVisited={null} touchId={touchId} ramdomCards={null} />
-            }
+            {page === "fromMap" && (
+              <Detail
+                page={page}
+                setPage={setPage}
+                index={index}
+                hasVisited={null}
+                touchId={touchId}
+                ramdomCards={null}
+              />
+            )}
 
-            {page === "favorites" &&
-              <Favorites />
-            }
+            {page === "favorites" && <Favorites />}
 
-            {page === "spots" &&
-              <Spots setPage={setPage} prefecture={prefecture} setIndex={setIndex} setHasVisited={setHasVisited} appToSpot={spotToApp} />
-            }
+            {page === "spots" && (
+              <Spots
+                setPage={setPage}
+                prefecture={prefecture}
+                setIndex={setIndex}
+                setHasVisited={setHasVisited}
+                appToSpot={spotToApp}
+              />
+            )}
 
-            {page === "visited" &&
-              <Detail page={page} setPage={setPage} index={index} hasVisited={hasVisited} touchId={touchId} ramdomCards={null} />
-            }
+            {page === "visited" && (
+              <Detail
+                page={page}
+                setPage={setPage}
+                index={index}
+                hasVisited={hasVisited}
+                touchId={touchId}
+                ramdomCards={null}
+              />
+            )}
 
-            {page === "user" &&
-              <User userName={username} noticeSet={noticeCount} appToUser={userToApp} />
-            }
+            {page === "user" && (
+              <User
+                userName={username}
+                noticeSet={noticeCount}
+                appToUser={userToApp}
+              />
+            )}
 
-            {page !== "detail" && page !== "visited" && page !== "fromMap" &&
+            {page !== "detail" && page !== "visited" && page !== "fromMap" && (
               <Footer page={page} setPage={setPage} />
-            }
+            )}
           </MyContext.Provider>
         </View>
       </Authenticator>
