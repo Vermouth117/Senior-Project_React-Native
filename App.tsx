@@ -15,18 +15,19 @@ import {
   View,
   TouchableOpacity,
   Animated,
+  ImageBackground,
 } from "react-native";
 import { Authenticator, useTheme } from "@aws-amplify/ui-react-native";
 import { Amplify, Auth } from "aws-amplify";
 import awsconfig from "./src/aws-exports.js";
 import * as Notifications from "expo-notifications";
 import Icon from "react-native-vector-icons/Ionicons";
-import {useForm, Controller} from 'react-hook-form';
+import { useForm, Controller } from "react-hook-form";
 import DropDownPicker from "react-native-dropdown-picker";
 // import Storage from "react-native-storage";
 // import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import { cards } from "./data/cards";   // ダミーデータ (YOLP API使用予定)
+import { cards } from "./data/cards"; // ダミーデータ (YOLP API使用予定)
 import { Prefecture } from "./data/globals";
 import AuthenticatorFormFields from "./components/login/AuthenticatorFormFields";
 import TinderSwipe from "./components/home/TinderSwipe";
@@ -109,18 +110,20 @@ const App = memo(() => {
   const [prefectureOpen, setPrefectureOpen] = useState(false);
   const [prefectureValue, setPrefectureValue] = useState(null);
   const [prefectureList, setPrefectureList] = useState(prefectureListData);
+  const [animation] = useState(new Animated.Value(0));
+  const [likeCheck, setLikeCheck] = useState(false);
 
   const filterPrefecture = () => {
     console.log(prefectureValue);
     setRamdomCards([]);
     (async () => {
-      const ramdomCardsData = await fetch(`${SERVER_URL}/api/cards/test?prefecture=${prefectureValue}`).then(
-        (data) => data.json()
-      );
+      const ramdomCardsData = await fetch(
+        `${SERVER_URL}/api/cards/test?prefecture=${prefectureValue}`
+      ).then((data) => data.json());
       console.log(ramdomCardsData);
       setRamdomCards(ramdomCardsData);
     })();
-  }
+  };
 
   useEffect(() => {
     setRamdomCards([]);
@@ -133,7 +136,7 @@ const App = memo(() => {
   }, [ramdomCardsChange]);
 
   useEffect(() => {
-    setRamdomCards(prev => prev.slice(0, prev.length - 1));
+    setRamdomCards((prev) => prev.slice(0, prev.length - 1));
   }, [sliceCards]);
 
   useEffect(() => {
@@ -226,7 +229,7 @@ const App = memo(() => {
     setIsModalVisible((prevState) => !prevState);
     // setInputElement(text);
   };
-
+  //フィルター画面のアニメーション
   //文字を一気に大きくして徐々に小さくしたい
   const [isAnimating, setIsAnimating] = useState(false);
   const animations = useRef([
@@ -310,6 +313,36 @@ const App = memo(() => {
       },
     ],
   }));
+  //いいねアニメーション
+  useEffect(() => {
+    if (likeCheck) {
+      goodAnimation();
+      setLikeCheck(false); // `goodAnimation`を実行する処理を記述
+    }
+  }, [likeCheck]);
+
+  const goodAnimation = () => {
+    animation.setValue(0);
+    Animated.timing(animation, {
+      toValue: 1,
+      duration: 800,
+      useNativeDriver: true,
+    }).start(() => {
+      slideOutAnimation();
+    });
+  };
+  const slideOutAnimation = () => {
+    Animated.timing(animation, {
+      toValue: 100,
+      duration: 3000,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const translateY = animation.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, -500],
+  });
 
   return (
     <Authenticator.Provider>
@@ -562,20 +595,36 @@ const App = memo(() => {
                   </Modal>
                 </View>
                 <View style={styles.main}>
-                  <Text style={styles.mainText}>おすすめ終了！</Text>
-                  {/* {cards.map((card, index) => ( */}
-                  {ramdomCards[0] !== undefined && ramdomCards.map((card, index) => (
-                    <TinderSwipe
-                      key={index}
-                      index={index}
-                      card={card}
-                      setPage={setPage}
-                      setIndex={setIndex}
-                      scheduleNotificationAsync={scheduleNotificationAsync}
-                      ramdomCards={ramdomCards}
-                      setSliceCards={setSliceCards}
-                    />
-                  ))}
+                  <Animated.View
+                    style={[
+                      styles.iconContainer,
+                      { transform: [{ translateY }] },
+                    ]}
+                  >
+                    <Icon name="thumbs-up" size={150} color="#FFDB5F" />
+                  </Animated.View>
+                  <ImageBackground
+                    source={require("./assets/homeBackImg.png")}
+                    style={styles.container}
+                    resizeMode="cover" // 画像をコンテナに合わせて拡大/縮小する
+                  >
+                    <Text style={styles.mainText}>おすすめ終了！</Text>
+                    {/* {cards.map((card, index) => ( */}
+                    {ramdomCards[0] !== undefined &&
+                      ramdomCards.map((card, index) => (
+                        <TinderSwipe
+                          key={index}
+                          index={index}
+                          card={card}
+                          setPage={setPage}
+                          setIndex={setIndex}
+                          scheduleNotificationAsync={scheduleNotificationAsync}
+                          ramdomCards={ramdomCards}
+                          setSliceCards={setSliceCards}
+                          setLikeCheck={setLikeCheck}
+                        />
+                      ))}
+                  </ImageBackground>
                 </View>
               </View>
             )}
@@ -593,9 +642,13 @@ const App = memo(() => {
 
             {page === "notice" && <Notice />}
 
-            {page === "map" &&
-              <Map setPage={setPage} setIndex={setIndex} appToSpot={spotToApp} />
-            }
+            {page === "map" && (
+              <Map
+                setPage={setPage}
+                setIndex={setIndex}
+                appToSpot={spotToApp}
+              />
+            )}
 
             {page === "fromMap" && (
               <Detail
@@ -639,9 +692,14 @@ const App = memo(() => {
               />
             )}
 
-            {page !== "detail" && page !== "visited" && page !== "fromMap" &&
-              <Footer page={page} setPage={setPage} setRamdomCardsChange={setRamdomCardsChange} setPrefectureValue={setPrefectureValue} />
-            }
+            {page !== "detail" && page !== "visited" && page !== "fromMap" && (
+              <Footer
+                page={page}
+                setPage={setPage}
+                setRamdomCardsChange={setRamdomCardsChange}
+                setPrefectureValue={setPrefectureValue}
+              />
+            )}
           </MyContext.Provider>
         </View>
       </Authenticator>
@@ -692,12 +750,14 @@ const styles = StyleSheet.create({
     position: "absolute",
     height: SCREEN_HEIGHT,
     width: SCREEN_WIDTH,
-    paddingBottom: 100,
+    // paddingBottom: 100,
   },
   mainText: {
     position: "absolute",
     marginTop: Dimensions.get("window").height / 2,
     marginHorizontal: 140,
+    color: "white",
+    fontSize: 15,
   },
   text: {
     fontSize: 13,
@@ -740,6 +800,12 @@ const styles = StyleSheet.create({
     color: "white",
   },
   miniGenre: { color: "white", fontSize: 12 },
+  iconContainer: {
+    position: "absolute",
+    bottom: -150,
+    alignSelf: "center",
+    zIndex: 99,
+  },
 });
 
 export default App;
