@@ -1,9 +1,25 @@
-
-import { Dispatch, SetStateAction, createContext, memo, useEffect, useState } from "react";
-import { Dimensions, StyleSheet, Text, TextInput, View, Button } from "react-native";
+import {
+  Dispatch,
+  SetStateAction,
+  createContext,
+  memo,
+  useEffect,
+  useState,
+  useRef,
+} from "react";
+import {
+  Dimensions,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+  Button,
+  TouchableOpacity,
+  Animated,
+} from "react-native";
 import { Authenticator, useTheme } from "@aws-amplify/ui-react-native";
 import { Amplify, Auth } from "aws-amplify";
-import awsconfig from "./src/aws-exports";
+import awsconfig from "./src/aws-exports.js";
 import * as Notifications from "expo-notifications";
 import Icon from "react-native-vector-icons/Ionicons";
 // import Storage from "react-native-storage";
@@ -20,6 +36,9 @@ import Favorites from "./components/favorites/Favorites";
 import Spots from "./components/favorites/Spots";
 import User from "./components/user/User";
 import Footer from "./components/Footer";
+import Modal from "react-native-modal";
+import GenreIcon from "react-native-vector-icons/MaterialCommunityIcons";
+import GenreIcon2 from "react-native-vector-icons/MaterialIcons";
 
 Auth.configure(awsconfig);
 Amplify.configure(awsconfig);
@@ -32,7 +51,8 @@ Notifications.setNotificationHandler({
   }),
 });
 
-const SERVER_URL = "https://o49zrrdot8.execute-api.us-east-1.amazonaws.com/tokitabi";
+const SERVER_URL =
+  "https://o49zrrdot8.execute-api.us-east-1.amazonaws.com/tokitabi";
 const SCREEN_HEIGHT = Dimensions.get("window").height;
 const SCREEN_WIDTH = Dimensions.get("window").width;
 
@@ -45,7 +65,14 @@ type Props = [
   setHasVisited: Dispatch<SetStateAction<boolean>>
 ];
 
-export const MyContext = createContext<Props>([ "", () => {}, "", () => {}, false, () => {} ]);
+export const MyContext = createContext<Props>([
+  "",
+  () => {},
+  "",
+  () => {},
+  false,
+  () => {},
+]);
 
 // // ストレージの作成
 // export const storage: Storage = new Storage({
@@ -62,7 +89,7 @@ export const MyContext = createContext<Props>([ "", () => {}, "", () => {}, fals
 // });
 
 const App = memo(() => {
-  const [noticeCount, setNoticeCount] = useState(3);   // 通知カウント設定
+  const [noticeCount, setNoticeCount] = useState(3); // 通知カウント設定
   const [touchId, setTouchId] = useState(0);
   const [favoriteData, setFavoriteData] = useState<Prefecture[]>([]);
   const [username, setUsername] = useState("");
@@ -73,12 +100,15 @@ const App = memo(() => {
   const [hasVisited, setHasVisited] = useState(false);
   const [ramdomCards, setRamdomCards] = useState([]);
   const [ramdomCardsChange, setRamdomCardsChange] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   useEffect(() => {
     (async () => {
-      const ramdomCardsData = await fetch(`${SERVER_URL}/api/cards/test`).then(data => data.json());
+      const ramdomCardsData = await fetch(`${SERVER_URL}/api/cards/test`).then(
+        (data) => data.json()
+      );
       setRamdomCards(ramdomCardsData);
-    })()
+    })();
   }, [ramdomCardsChange]);
 
   useEffect(() => {
@@ -92,7 +122,8 @@ const App = memo(() => {
   }, []);
 
   // description 通知数設定用
-  const userToApp = (userdata: SetStateAction<number>) => setNoticeCount(userdata);
+  const userToApp = (userdata: SetStateAction<number>) =>
+    setNoticeCount(userdata);
 
   //description ID取得用
   const spotToApp = (id: SetStateAction<number>) => setTouchId(id);
@@ -105,7 +136,7 @@ const App = memo(() => {
       } catch (error) {
         console.log("Error getting username:", error);
       }
-    })()
+    })();
   }, []);
 
   useEffect(() => {
@@ -132,7 +163,9 @@ const App = memo(() => {
   }, [favoriteData]);
 
   const scheduleNotificationAsync = async () => {
-    const res = await fetch(`${SERVER_URL}/api/favorites`).then(data => data.json());
+    const res = await fetch(`${SERVER_URL}/api/favorites`).then((data) =>
+      data.json()
+    );
     setFavoriteData(res);
   };
 
@@ -148,6 +181,96 @@ const App = memo(() => {
   // フィルターに使う予定
   console.log(inputRef);
 
+  //フィルター画面の設定
+  const toggleModal = () => {
+    setIsModalVisible((prevState) => !prevState);
+    // setInputElement(text);
+  };
+
+  //文字を一気に大きくして徐々に小さくしたい
+  const [isAnimating, setIsAnimating] = useState(false);
+  const animations = useRef([
+    new Animated.Value(1), // テキスト1のアニメーション
+    new Animated.Value(1), // テキスト2のアニメーション
+    new Animated.Value(1), // テキスト3のアニメーション
+  ]).current;
+
+  const startAnimation = () => {
+    setIsAnimating(true);
+
+    const animationSequences = [
+      Animated.sequence([
+        Animated.delay(400),
+        Animated.timing(animations[0], {
+          toValue: 3.5,
+          duration: 300,
+          useNativeDriver: true,
+        }),
+        Animated.timing(animations[0], {
+          toValue: 1,
+          duration: 300,
+          useNativeDriver: true,
+        }),
+      ]),
+      Animated.sequence([
+        Animated.delay(700),
+        Animated.timing(animations[1], {
+          toValue: 3.5,
+          duration: 300,
+          useNativeDriver: true,
+        }),
+        Animated.timing(animations[1], {
+          toValue: 1,
+          duration: 300,
+          useNativeDriver: true,
+        }),
+      ]),
+      Animated.sequence([
+        Animated.delay(1000),
+        Animated.timing(animations[2], {
+          toValue: 3.5,
+          duration: 300,
+          useNativeDriver: true,
+        }),
+        Animated.timing(animations[2], {
+          toValue: 1,
+          duration: 300,
+          useNativeDriver: true,
+        }),
+      ]),
+    ];
+
+    Animated.parallel(animationSequences).start(() => {
+      setIsAnimating(false);
+    });
+  };
+
+  useEffect(() => {
+    if (isAnimating) {
+      startAnimation();
+    }
+  }, [isAnimating]);
+
+  const handlePress = () => {
+    toggleModal();
+    setIsAnimating(!isAnimating);
+  };
+
+  const textStyles = animations.map((animation) => ({
+    opacity: animation.interpolate({
+      inputRange: [0, 1],
+      outputRange: [0, 1],
+    }),
+    transform: [
+      {
+        scale: animation.interpolate({
+          inputRange: [0, 1],
+          outputRange: [1, 1.1],
+        }),
+      },
+    ],
+  }));
+
   return (
     <Authenticator.Provider>
       <Authenticator
@@ -155,25 +278,31 @@ const App = memo(() => {
           const { tokens } = useTheme();
           return (
             <View>
-              <Text style={{ fontSize: tokens.fontSizes.xxl, padding: tokens.space.large }}>
+              <Text
+                style={{
+                  fontSize: tokens.fontSizes.xxl,
+                  padding: tokens.space.large,
+                }}
+              >
                 とき旅
               </Text>
             </View>
-          )
+          );
         }}
-        Container={props =>
+        Container={(props) => (
           <Authenticator.Container
             {...props}
             style={{ backgroundColor: "white" }}
           />
-        }
+        )}
         initialState="signIn"
         components={{
           // サインアップフィールド
-          SignUp: ({ fields, ...props }) =>
-            <Authenticator.SignUp {...props} fields={AuthenticatorFormFields} />,
+          SignUp: ({ fields, ...props }) => (
+            <Authenticator.SignUp {...props} fields={AuthenticatorFormFields} />
+          ),
           // サインインフィールド
-          SignIn: ({ fields, ...props }) =>
+          SignIn: ({ fields, ...props }) => (
             <Authenticator.SignIn
               {...props}
               fields={[
@@ -191,11 +320,21 @@ const App = memo(() => {
                   secureTextEntry: true,
                 },
               ]}
-            />,
+            />
+          ),
         }}
       >
         <View style={styles.container}>
-          <MyContext.Provider value={[ page, setPage, prefecture, setPrefecture, hasVisited, setHasVisited ]}>
+          <MyContext.Provider
+            value={[
+              page,
+              setPage,
+              prefecture,
+              setPrefecture,
+              hasVisited,
+              setHasVisited,
+            ]}
+          >
             {page === "home" && (
               <View>
                 <View style={styles.header}>
@@ -206,12 +345,163 @@ const App = memo(() => {
                     value={inputRef}
                     onChangeText={(text) => setInputRef(text)}
                   />
-                  <Icon name="menu-outline" style={styles.headerIcon} />
+
+                  <TouchableOpacity onPress={toggleModal}>
+                    <Icon
+                      name="options-outline"
+                      style={styles.headerIcon}
+                      onPress={handlePress}
+                    />
+                  </TouchableOpacity>
+                  <Modal isVisible={isModalVisible}>
+                    {/* Modalの配置設定 */}
+                    <TouchableOpacity
+                      activeOpacity={1}
+                      onPressOut={toggleModal}
+                    >
+                      <View
+                        style={{
+                          // flex: 1,
+                          alignItems: "center",
+                          backgroundColor: "rgba( 0, 0, 0)",
+                        }}
+                      >
+                        <View
+                          style={[styles.allGenreContainer, { width: "80%" }]}
+                        >
+                          {/* <TouchableOpacity
+                      style={styles.friend}
+                      // onPress={}
+                    > */}
+                          <Animated.View style={textStyles[0]}>
+                            <Text style={styles.genreText}>相手でえらぶ</Text>
+                          </Animated.View>
+                          <View style={styles.human}>
+                            <TouchableOpacity
+                              // onPress={}
+                              style={styles.genreContainer}
+                            >
+                              <GenreIcon
+                                name="human-male-female-child"
+                                style={styles.genreIcon}
+                              />
+                              <Text style={styles.miniGenre}>家族と</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                              // onPress={}
+                              style={styles.genreContainer}
+                            >
+                              <GenreIcon
+                                name="account-child"
+                                style={styles.genreIcon}
+                              />
+                              <Text style={styles.miniGenre}>子供と</Text>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity
+                              // onPress={}
+                              style={styles.genreContainer}
+                            >
+                              <GenreIcon
+                                name="kabaddi"
+                                style={styles.genreIcon}
+                              />
+                              <Text style={styles.miniGenre}>友達と</Text>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity
+                              // onPress={}
+                              style={styles.genreContainer}
+                            >
+                              <GenreIcon
+                                name="account-heart"
+                                style={styles.genreIcon}
+                              />
+                              <Text style={styles.miniGenre}>恋人と</Text>
+                            </TouchableOpacity>
+                          </View>
+                          <Animated.View style={textStyles[1]}>
+                            <Text style={styles.genreText}>目的でえらぶ</Text>
+                          </Animated.View>
+                          <View style={styles.human}>
+                            <TouchableOpacity
+                              // onPress={}
+                              style={styles.genreContainer}
+                            >
+                              <GenreIcon
+                                name="ferris-wheel"
+                                style={styles.genreIcon}
+                              />
+                              <Text style={styles.miniGenre}>遊園地</Text>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity
+                              // onPress={}
+                              style={styles.genreContainer}
+                            >
+                              <GenreIcon
+                                name="kayaking"
+                                style={styles.genreIcon}
+                              />
+                              <Text style={styles.miniGenre}>趣味</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                              // onPress={}
+                              style={styles.genreContainer}
+                            >
+                              <GenreIcon
+                                name="forest"
+                                style={styles.genreIcon}
+                              />
+                              <Text style={styles.miniGenre}>景色</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                              // onPress={}
+                              style={styles.genreContainer}
+                            >
+                              <GenreIcon2
+                                name="museum"
+                                style={styles.genreIcon}
+                              />
+                              <Text style={styles.miniGenre}>博物館</Text>
+                            </TouchableOpacity>
+                          </View>
+                          <Animated.View style={textStyles[2]}>
+                            <Text style={styles.genreText}>手段でえらぶ</Text>
+                          </Animated.View>
+                          <View style={styles.human}>
+                            <TouchableOpacity
+                              // onPress={}
+                              style={styles.genreContainer}
+                            >
+                              <GenreIcon
+                                name="car-hatchback"
+                                style={styles.genreIcon}
+                              />
+                              <Text style={styles.miniGenre}>車</Text>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity
+                              // onPress={}
+                              style={styles.genreContainer}
+                            >
+                              <GenreIcon
+                                name="train"
+                                style={styles.genreIcon}
+                              />
+                              <Text style={styles.miniGenre}>電車</Text>
+                            </TouchableOpacity>
+                          </View>
+                          {/* </TouchableOpacity> */}
+                        </View>
+                      </View>
+                    </TouchableOpacity>
+                  </Modal>
                 </View>
                 <View style={styles.main}>
                   <Text style={styles.mainText}>おすすめ終了！</Text>
                   {cards.map((card, index) => (
-                  // {ramdomCards && ramdomCards.map((card, index) => (
+                    // {ramdomCards && ramdomCards.map((card, index) => (
                     <TinderSwipe
                       key={index}
                       index={index}
@@ -226,41 +516,66 @@ const App = memo(() => {
               </View>
             )}
 
-            {page === "detail" &&
-              <Detail page={page} setPage={setPage} index={index} hasVisited={null} touchId={touchId} ramdomCards={ramdomCards} />
-            }
+            {page === "detail" && (
+              <Detail
+                page={page}
+                setPage={setPage}
+                index={index}
+                hasVisited={null}
+                touchId={touchId}
+                ramdomCards={ramdomCards}
+              />
+            )}
 
-            {page === "notice" &&
-              <Notice />
-            }
+            {page === "notice" && <Notice />}
 
-            {page === "map" &&
-              <Map setPage={setPage} setIndex={setIndex} />
-            }
+            {page === "map" && <Map setPage={setPage} setIndex={setIndex} />}
 
-            {page === "fromMap" &&
-              <Detail page={page} setPage={setPage} index={index} hasVisited={null} touchId={touchId} ramdomCards={null} />
-            }
+            {page === "fromMap" && (
+              <Detail
+                page={page}
+                setPage={setPage}
+                index={index}
+                hasVisited={null}
+                touchId={touchId}
+                ramdomCards={null}
+              />
+            )}
 
-            {page === "favorites" &&
-              <Favorites />
-            }
+            {page === "favorites" && <Favorites />}
 
-            {page === "spots" &&
-              <Spots setPage={setPage} prefecture={prefecture} setIndex={setIndex} setHasVisited={setHasVisited} appToSpot={spotToApp} />
-            }
+            {page === "spots" && (
+              <Spots
+                setPage={setPage}
+                prefecture={prefecture}
+                setIndex={setIndex}
+                setHasVisited={setHasVisited}
+                appToSpot={spotToApp}
+              />
+            )}
 
-            {page === "visited" &&
-              <Detail page={page} setPage={setPage} index={index} hasVisited={hasVisited} touchId={touchId} ramdomCards={null} />
-            }
+            {page === "visited" && (
+              <Detail
+                page={page}
+                setPage={setPage}
+                index={index}
+                hasVisited={hasVisited}
+                touchId={touchId}
+                ramdomCards={null}
+              />
+            )}
 
-            {page === "user" &&
-              <User userName={username} noticeSet={noticeCount} appToUser={userToApp} />
-            }
+            {page === "user" && (
+              <User
+                userName={username}
+                noticeSet={noticeCount}
+                appToUser={userToApp}
+              />
+            )}
 
-            {page !== "detail" && page !== "visited" && page !== "fromMap" &&
+            {page !== "detail" && page !== "visited" && page !== "fromMap" && (
               <Footer page={page} setPage={setPage} />
-            }
+            )}
           </MyContext.Provider>
         </View>
       </Authenticator>
@@ -307,6 +622,47 @@ const styles = StyleSheet.create({
     marginTop: Dimensions.get("window").height / 2,
     marginHorizontal: 140,
   },
+  text: {
+    fontSize: 13,
+    color: "black",
+    fontWeight: "bold",
+  },
+
+  genreText: {
+    fontSize: 18,
+    color: "white",
+    fontWeight: "bold",
+  },
+
+  allGenreContainer: {
+    flexDirection: "column",
+    height: 600,
+    width: 250,
+  },
+  genreContainer: {
+    flexDirection: "column",
+    justifyContent: "space-between",
+    paddingVertical: 10,
+    alignItems: "center",
+    height: 100,
+    marginRight: 20,
+    fontSize: 10,
+  },
+  human: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingVertical: 20,
+
+    height: 200,
+    width: 100,
+  },
+
+  genreIcon: {
+    justifyContent: "space-between",
+    fontSize: 60,
+    color: "white",
+  },
+  miniGenre: { color: "white", fontSize: 12 },
 });
 
 export default App;
