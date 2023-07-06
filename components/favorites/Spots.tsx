@@ -52,6 +52,7 @@ const Spots: React.FC<Props> = memo(
         getPrefectureFavoriteData.forEach((spot: { hasVisited: boolean }) =>
           console.log("visited", spot.hasVisited)
         );
+
         setSpotsData(getPrefectureFavoriteData);
       })();
     }, []);
@@ -88,6 +89,7 @@ const Spots: React.FC<Props> = memo(
               if (checked && item.hasVisited) {
                 return null; // フィルタリングされたアイテムは表示しない
               }
+              console.log(spotsData);
               return (
                 <TouchableOpacity
                   key={item.id}
@@ -101,7 +103,6 @@ const Spots: React.FC<Props> = memo(
                     setHasVisited(item.hasVisited);
                     // fetchで GET したデータをstate管理でAppへ（idをパスパラで渡す）
                     appToSpot(Number(item.id));
-                    console.log(item.id);
                   }}
                 >
                   <View style={styles.imageWrapper}>
