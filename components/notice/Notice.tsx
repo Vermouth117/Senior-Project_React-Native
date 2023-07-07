@@ -8,23 +8,23 @@ export default function Notice() {
 
   const [isAnimationVisible, setIsAnimationVisible] = useState(true);
 
-  // useEffect(() => {
-  //   const timer = setTimeout(() => {
-  //     setIsAnimationVisible(false);
-  //   }, 1100);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsAnimationVisible(false);
+    }, 2500);
 
-  //   return () => clearTimeout(timer);
-  // }, []);
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <View style={styles.container}>
 
       {isAnimationVisible && (
         <LottieView
-          source={require("../../assets/lottie/82445-travelers-walking-using-travelrmap-application.json")}
+          source={require("../../assets/lottie/26287-fireworks.json")}
           autoPlay={true}
           // loop={false}
-          style={{ position: "absolute", zIndex: 1, width: "90%" }}
+          style={{ zIndex: 1, backgroundColor: "rgba(0, 0, 0, 0.3)" }}
         />
       )}
 

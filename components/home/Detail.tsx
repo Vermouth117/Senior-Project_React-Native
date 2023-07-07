@@ -8,6 +8,8 @@ import FontAwesome from "react-native-vector-icons/FontAwesome";
 import EvilIcon from "react-native-vector-icons/EvilIcons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import Icon from "react-native-vector-icons/Ionicons";
+import LottieView from "lottie-react-native";
+
 
 import { cards } from "../../data/cards";   // ダミーデータ (YOLP API使用予定)
 import { RandomCards, TouchCards } from "../../data/globals";
@@ -65,7 +67,18 @@ const Detail: React.FC<Props> = memo(({ page, setPage, index, hasVisited, touchI
       })()
     }, []);
 
+    const [isAnimationVisible, setIsAnimationVisible] = useState(false);
+
+    useEffect(() => {
+      const timer = setTimeout(() => {
+        setIsAnimationVisible(false);
+      }, 2500);
+  
+      return () => clearTimeout(timer);
+    }, [showText]);
+
   return (
+    <>
     <View>
       <TouchableOpacity
         style={styles.backButton}
@@ -471,6 +484,7 @@ const Detail: React.FC<Props> = memo(({ page, setPage, index, hasVisited, touchI
                   onPress={async () => {
                     console.log("patched", touchId);
                     handleButtonPress();
+                    setIsAnimationVisible(true);
                     await fetch(`${SERVER_URL}/api/favorites/${touchId}`, {
                       method: "PATCH",
                       headers: {
@@ -489,6 +503,15 @@ const Detail: React.FC<Props> = memo(({ page, setPage, index, hasVisited, touchI
           </>
         )}
       </View>
+      {isAnimationVisible && showText && (
+        <LottieView
+          source={require("../../assets/lottie/26287-fireworks.json")}
+          autoPlay={true}
+          loop={false}
+          style={{ backgroundColor: "rgba(0, 0, 0, 0.3)" }}
+        />
+      )}
+      </>
     );
   }
 );
@@ -638,7 +661,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 200,
     left: 250,
-    zIndex: 999,
+    zIndex: 9,
   },
   commentTextContainer: {
     marginTop: "15%",
