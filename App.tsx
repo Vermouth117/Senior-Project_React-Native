@@ -357,63 +357,63 @@ const App = memo(() => {
   }, [likeCheck]);
 
   return (
-    <Authenticator.Provider>
-      <Authenticator
-        Header={() => {
-          const { tokens } = useTheme();
-          return (
-            <View>
-              <Text
-                style={{
-                  fontSize: tokens.fontSizes.xxl,
-                  paddingHorizontal: tokens.space.large,
-                }}
-              >
-                とき旅
-              </Text>
-              <LottieView
-                source={require("./assets/lottie/82445-travelers-walking-using-travelrmap-application.json")}
-                autoPlay={true}
-                style={{ position: "absolute", height: 100, left: 70 }}
-              />
-            </View>
-          );
-        }}
-        Container={(props) => (
-          <Authenticator.Container
-            {...props}
-            style={{ backgroundColor: "white" }}
-          />
-        )}
-        initialState="signIn"
-        components={{
-          // サインアップフィールド
-          SignUp: ({ fields, ...props }) => (
-            <Authenticator.SignUp {...props} fields={AuthenticatorFormFields} />
-          ),
-          // サインインフィールド
-          SignIn: ({ fields, ...props }) => (
-            <Authenticator.SignIn
-              {...props}
-              fields={[
-                {
-                  name: "username",
-                  label: "ユーザーネーム",
-                  type: "default",
-                  placeholder: "ユーザーネーム",
-                },
-                {
-                  name: "password",
-                  label: "パスワード",
-                  type: "default",
-                  placeholder: "パスワード",
-                  secureTextEntry: true,
-                },
-              ]}
-            />
-          ),
-        }}
-      >
+    // <Authenticator.Provider>
+    //   <Authenticator
+    //     Header={() => {
+    //       const { tokens } = useTheme();
+    //       return (
+    //         <View>
+    //           <Text
+    //             style={{
+    //               fontSize: tokens.fontSizes.xxl,
+    //               paddingHorizontal: tokens.space.large,
+    //             }}
+    //           >
+    //             とき旅
+    //           </Text>
+    //           <LottieView
+    //             source={require("./assets/lottie/82445-travelers-walking-using-travelrmap-application.json")}
+    //             autoPlay={true}
+    //             style={{ position: "absolute", height: 100, left: 70 }}
+    //           />
+    //         </View>
+    //       );
+    //     }}
+    //     Container={(props) => (
+    //       <Authenticator.Container
+    //         {...props}
+    //         style={{ backgroundColor: "white" }}
+    //       />
+    //     )}
+    //     initialState="signIn"
+    //     components={{
+    //       // サインアップフィールド
+    //       SignUp: ({ fields, ...props }) => (
+    //         <Authenticator.SignUp {...props} fields={AuthenticatorFormFields} />
+    //       ),
+    //       // サインインフィールド
+    //       SignIn: ({ fields, ...props }) => (
+    //         <Authenticator.SignIn
+    //           {...props}
+    //           fields={[
+    //             {
+    //               name: "username",
+    //               label: "ユーザーネーム",
+    //               type: "default",
+    //               placeholder: "ユーザーネーム",
+    //             },
+    //             {
+    //               name: "password",
+    //               label: "パスワード",
+    //               type: "default",
+    //               placeholder: "パスワード",
+    //               secureTextEntry: true,
+    //             },
+    //           ]}
+    //         />
+    //       ),
+    //     }}
+    //   >
         <View style={styles.container}>
           <MyContext.Provider
             value={[
@@ -732,8 +732,8 @@ const App = memo(() => {
             )}
           </MyContext.Provider>
         </View>
-      </Authenticator>
-    </Authenticator.Provider>
+    //   {/* </Authenticator>
+    // </Authenticator.Provider> */}
   );
 });
 
