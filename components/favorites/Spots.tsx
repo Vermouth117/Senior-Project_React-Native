@@ -1,17 +1,10 @@
+
 import { Dispatch, SetStateAction, memo, useEffect, useState } from "react";
-import {
-  StyleSheet,
-  View,
-  Text,
-  Image,
-  FlatList,
-  SafeAreaView,
-  TouchableOpacity,
-} from "react-native";
+import { StyleSheet, View, Text, Image, FlatList, SafeAreaView, TouchableOpacity } from "react-native";
 import { Svg, Polygon } from "react-native-svg";
 import EvilIcons from "react-native-vector-icons/EvilIcons";
 
-import { cards } from "../../data/cards"; // ダミーデータ (YOLP API使用予定)
+import { cards } from "../../data/cards";   // ダミーデータ (YOLP API使用予定)
 import { CheckBox } from "react-native-elements";
 
 type Props = {
@@ -22,111 +15,98 @@ type Props = {
   appToSpot: Function;
 };
 
-const SERVER_URL = "https://o49zrrdot8.execute-api.us-east-1.amazonaws.com/tokitabi";
+// const SERVER_URL = "https://o49zrrdot8.execute-api.us-east-1.amazonaws.com/tokitabi";
 
-/**
- * お気に入り一覧表示用コンポーネント
- * @return {JSXElement}
- */
-const Spots: React.FC<Props> = memo(
-  ({ setPage, prefecture, setIndex, setHasVisited, appToSpot }) => {
-    /**
-     * いいねをしたスポットを処理するためのステート
-     */
-    const [spotsData, setSpotsData] = useState<any>([]);
-    /**
-     * 行ったかどうかを判定し、処理をするためのステート
-     */
-    const [checked, setChecked] = useState(false);
+const Spots: React.FC<Props> = memo(({ setPage, prefecture, setIndex, setHasVisited, appToSpot }) => {
 
-    useEffect(() => {
-      (async () => {
-        const getPrefectureFavoriteData = await fetch(
-          `${SERVER_URL}/api/favorites/${prefecture}`
-        ).then((data) => data.json());
+  const [spotsData, setSpotsData] = useState<any>([]);
+  const [checked, setChecked] = useState(false);
 
-        setSpotsData(getPrefectureFavoriteData);
-      })();
-    }, []);
+  useEffect(() => {
+    (async () => {
+      // const getPrefectureFavoriteData = await fetch(`${SERVER_URL}/api/favorites/${prefecture}`)
+      //   .then(data => data.json());
+      setSpotsData(cards);
+    })();
+  }, []);
 
-    return (
-      <View>
-        <View style={styles.header}>
-          <EvilIcons
-            name="chevron-left"
-            size={40}
-            onPress={() => setPage("favorites")}
-          />
-          <Text style={styles.title}>{prefecture}</Text>
-          <CheckBox
-            title={checked ? "行った場所 非表示" : "行った場所 表示"}
-            checked={checked}
-            onPress={() => setChecked(!checked)}
-            containerStyle={styles.checkbox}
-            textStyle={{ fontSize: 15, color: "gray" }}
-            checkedColor="#9e1b1b"
-          />
-        </View>
-        <SafeAreaView style={styles.main}>
-          <FlatList
-            horizontal={false}
-            data={spotsData.filter(
-              (item: any) => !(checked && item.hasVisited)
-            )}
-            keyExtractor={(item) => item.id}
-            numColumns={2}
-            style={styles.wrapper}
-            columnWrapperStyle={styles.columnWrapper}
-            renderItem={({ item }) => {
-              if (checked && item.hasVisited) {
-                return null; // フィルタリングされたアイテムは表示しない
-              }
-              return (
-                <TouchableOpacity
-                  key={item.id}
-                  style={[styles.spotWrapper]}
-                  onPress={() => {
-                    setPage("visited");
-                    // const selectIndex = cards.findIndex(
-                    //   (spotObj) => spotObj.name === item.name
-                    // );
-                    // setIndex(selectIndex);
-                    setHasVisited(item.hasVisited);
-                    // fetchで GET したデータをstate管理でAppへ（idをパスパラで渡す）
-                    appToSpot(Number(item.id));
-                  }}
-                >
-                  <View style={styles.imageWrapper}>
-                    {item.hasVisited && (
-                      <View style={styles.window}>
-                        <Svg width={500} height={500}>
-                          <Polygon
-                            points="0,150 150,0 150,150"
-                            fill="rgb(158, 27, 27)"
-                          />
-                          <View style={styles.visitedTextContainer}>
-                            <Text style={styles.visitedText}>行ったよ！</Text>
-                          </View>
-                        </Svg>
-                      </View>
-                    )}
-                    <Image
-                      source={{ uri: item.imgSrc[0] }}
-                      style={styles.photo}
-                    />
-                  </View>
-                  <Text style={styles.price}>¥{item.price}</Text>
-                  <Text style={styles.name}>{item.name}</Text>
-                  <Text style={styles.access}>{item.access}</Text>
-                </TouchableOpacity>
-              );
-            }}
-          />
-        </SafeAreaView>
+  return (
+    <View>
+      <View style={styles.header}>
+        <EvilIcons
+          name="chevron-left"
+          size={40}
+          onPress={() => setPage("favorites")}
+        />
+        <Text style={styles.title}>{prefecture}</Text>
+        <CheckBox
+          title={checked ? "行った場所 非表示" : "行った場所 表示"}
+          checked={checked}
+          onPress={() => setChecked(!checked)}
+          containerStyle={styles.checkbox}
+          textStyle={{ fontSize: 15, color: "gray" }}
+          checkedColor="#9e1b1b"
+        />
       </View>
-    );
-  }
-);
+      <SafeAreaView style={styles.main}>
+        <FlatList
+          horizontal={false}
+          data={spotsData.filter(
+            (item: any) => !(checked && item.hasVisited)
+          )}
+          keyExtractor={(item) => item.id}
+          numColumns={2}
+          style={styles.wrapper}
+          columnWrapperStyle={styles.columnWrapper}
+          renderItem={({ item }) => {
+            if (checked && item.hasVisited) {
+              return null; // フィルタリングされたアイテムは表示しない
+            }
+            return (
+              <TouchableOpacity
+                key={item.id}
+                style={[styles.spotWrapper]}
+                onPress={() => {
+                  setPage("visited");
+                  const selectIndex = cards.findIndex(
+                    (spotObj) => spotObj.name === item.name
+                  );
+                  setIndex(selectIndex);
+                  setHasVisited(item.hasVisited);
+                  // fetchで GET したデータをstate管理でAppへ（idをパスパラで渡す）
+                  // appToSpot(Number(item.id));
+                }}
+              >
+                <View style={styles.imageWrapper}>
+                  {item.hasVisited && (
+                    <View style={styles.window}>
+                      <Svg width={500} height={500}>
+                        <Polygon
+                          points="0,150 150,0 150,150"
+                          fill="rgb(158, 27, 27)"
+                        />
+                        <View style={styles.visitedTextContainer}>
+                          <Text style={styles.visitedText}>行ったよ！</Text>
+                        </View>
+                      </Svg>
+                    </View>
+                  )}
+                  <Image
+                    source={{ uri: item.images[0] }}
+                    style={styles.photo}
+                  />
+                </View>
+                <Text style={styles.price}>¥{item.price}</Text>
+                <Text style={styles.name}>{item.name}</Text>
+                <Text style={styles.access}>{item.access}</Text>
+              </TouchableOpacity>
+            );
+          }}
+        />
+      </SafeAreaView>
+    </View>
+  );
+});
 
 const styles = StyleSheet.create({
   header: {

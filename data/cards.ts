@@ -1,6 +1,7 @@
 
 export const cards = [
   {
+    id: 1,
     images: [
       "https://cdn-news.asoview.com/production/note/05a9e06f-f4c9-4632-a1e5-94d55e4ab29a.jpeg",
     ],
@@ -29,6 +30,7 @@ export const cards = [
     longitude: 136.9020574,   // 軽度
   },
   {
+    id: 2,
     images: [
       "https://anniversarys-mag.jp/img/p/pixta_44462056_M.jpg?w=730",
     ],
@@ -57,6 +59,7 @@ export const cards = [
     longitude: 137.0504427,   // 軽度
   },
   {
+    id: 3,
     images: [
       "https://aichinavi.jp/upload/spot_images/a0a09a7407e66f560e2483b27911a820.jpg",
     ],
@@ -86,6 +89,7 @@ export const cards = [
     longitude: 136.9422733,   // 軽度
   },
   {
+    id: 4,
     images: [
       "https://travel.rakuten.co.jp/mytrip/sites/mytrip/files/styles/1cal_image/public/2022-10/News-202210-laguna-01-2.jpg?itok=mHYN0LnN",
     ],
@@ -113,6 +117,7 @@ export const cards = [
     longitude: 137.2730885,   // 軽度
   },
   {
+    id: 5,
     name: "香嵐渓",
     prefecture: "愛知県",
     images: [

@@ -7,8 +7,7 @@ import * as Location from 'expo-location';
 import LottieView from "lottie-react-native";
 
 import { cards } from '../../data/cards';
-import { TouchCards } from "../../data/globals";
-
+// import { TouchCards } from "../../data/globals";
 
 type MapInfo = {
   id: number,
@@ -27,21 +26,21 @@ type Props = {
   appToSpot: Function;
 }
 
-const SERVER_URL = "https://o49zrrdot8.execute-api.us-east-1.amazonaws.com/tokitabi";
+// const SERVER_URL = "https://o49zrrdot8.execute-api.us-east-1.amazonaws.com/tokitabi";
 
 
 const Map: React.FC<Props> = memo(({ setPage, setIndex, appToSpot }) => {
 
   const [latitude, setLatitude] = useState(0);
   const [longitude, setLongitude] = useState(0);
-  const [favoriteAllData, setFavoriteAllData] = useState<TouchCards[]>([]);
+  // const [favoriteAllData, setFavoriteAllData] = useState<TouchCards[]>([]);
 
-  useEffect(() => {
-    (async () => {
-      const getFavoriteAllData = await fetch(`${SERVER_URL}/api/favorites/all/test`).then(data => data.json());
-      setFavoriteAllData(getFavoriteAllData);
-    })()
-  }, []);
+  // useEffect(() => {
+  //   (async () => {
+  //     const getFavoriteAllData = await fetch(`${SERVER_URL}/api/favorites/all/test`).then(data => data.json());
+  //     setFavoriteAllData(getFavoriteAllData);
+  //   })()
+  // }, []);
 
   useEffect(() => {
     (async () => {
@@ -64,8 +63,7 @@ const Map: React.FC<Props> = memo(({ setPage, setIndex, appToSpot }) => {
     })();
   }, []);
 
-  // const markers: MapInfo[] = cards.map(card => ({
-  const markers: MapInfo[] = favoriteAllData.map(card => ({
+  const markers: MapInfo[] = cards.map(card => ({
     id: card.id,
     title: card.name,
     discription: ` ${card.prefecture}`,
@@ -114,8 +112,8 @@ const Map: React.FC<Props> = memo(({ setPage, setIndex, appToSpot }) => {
                 style={{ zIndex: 1 }}
                 onPress={() => {
                   setPage("fromMap");
-                  // setIndex(index);
-                  appToSpot(Number(marker.id));
+                  setIndex(index);
+                  // appToSpot(Number(marker.id));
                 }}
               >
                 <Image

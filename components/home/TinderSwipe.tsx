@@ -1,14 +1,6 @@
+
 import React, { Dispatch, SetStateAction, memo, useRef } from "react";
-import {
-  StyleSheet,
-  Dimensions,
-  Image,
-  Animated,
-  PanResponder,
-  View,
-  TouchableWithoutFeedback,
-  Text,
-} from "react-native";
+import { StyleSheet, Dimensions, Image, Animated, PanResponder, View, TouchableWithoutFeedback, Text } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import Swiper from "react-native-swiper";
 
@@ -24,15 +16,14 @@ type Props = {
   card: Cards;
   setPage: Dispatch<SetStateAction<string>>;
   setIndex: Dispatch<SetStateAction<number>>;
-  scheduleNotificationAsync: Function;
+  // scheduleNotificationAsync: Function;
   ramdomCards: Cards[];
   setSliceCards: Dispatch<SetStateAction<boolean>>;
   setLikeCheck: Dispatch<SetStateAction<boolean>>;
   setIsAnimationVisible: Dispatch<SetStateAction<boolean>>;
 };
 
-const SERVER_URL =
-  "https://o49zrrdot8.execute-api.us-east-1.amazonaws.com/tokitabi";
+// const SERVER_URL = "https://o49zrrdot8.execute-api.us-east-1.amazonaws.com/tokitabi";
 
 const TinderSwipe: React.FC<Props> = memo(
   ({
@@ -40,7 +31,7 @@ const TinderSwipe: React.FC<Props> = memo(
     card,
     setPage,
     setIndex,
-    scheduleNotificationAsync,
+    // scheduleNotificationAsync,
     ramdomCards,
     setSliceCards,
     setLikeCheck,
@@ -76,16 +67,16 @@ const TinderSwipe: React.FC<Props> = memo(
 
               console.log(postObj);
 
-              await fetch(`${SERVER_URL}/api/favorites`, {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ user_id: "test", ...postObj }),
-              });
+              // await fetch(`${SERVER_URL}/api/favorites`, {
+              //   method: "POST",
+              //   headers: {
+              //     "Content-Type": "application/json",
+              //   },
+              //   body: JSON.stringify({ user_id: "test", ...postObj }),
+              // });
 
               // 通知
-              scheduleNotificationAsync();
+              // scheduleNotificationAsync();
               setLikeCheck(prev => !prev);
               setIsAnimationVisible(true);
 
@@ -249,8 +240,6 @@ const TinderSwipe: React.FC<Props> = memo(
                     style={styles.cardTextPostCode}
                   >{`〒${card.zip_code}`}</Text>
                   <Text style={styles.cardTextAddress}>{card.address}</Text>
-                  {/* <Text style={styles.cardTextTokimeki}>駅近、駐車場無料、映えスポット、カップルにおすすめ、食べ歩き、コスパ最強</Text> */}
-                  {/* <Text style={styles.cardTextTokimeki}>大人も子供も楽しめる、駅近、駐車場無料、映えスポット、カップルにおすすめ、ペットOK、〇〇近く、食べ歩き、コスパ最高、贅沢、記念日デート、〇〇が人気、テレビに登場</Text> */}
                 </View>
               </View>
             </TouchableWithoutFeedback>

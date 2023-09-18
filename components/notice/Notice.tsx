@@ -1,6 +1,6 @@
 
-import React, { useEffect, useRef, useState } from "react";
-import { StyleSheet, View, Button, ImageBackground } from "react-native";
+import React, { useEffect, useState } from "react";
+import { StyleSheet, View, ImageBackground } from "react-native";
 
 import LottieView from "lottie-react-native";
 
@@ -29,7 +29,7 @@ export default function Notice() {
       )}
 
       <ImageBackground
-        source={require("/Users/user/Desktop/Senior-Project_React-Native/assets/homeBackImg.png")}
+        source={require("/Users/user/Desktop/React-Native-Senior-Project/assets/homeBackImg.png")}
         style={styles.container}
         resizeMode="cover"   // 画像をコンテナに合わせて拡大/縮小する
       >

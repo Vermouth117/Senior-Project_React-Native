@@ -1,25 +1,6 @@
-import {
-  Dispatch,
-  SetStateAction,
-  createContext,
-  memo,
-  useEffect,
-  useState,
-  useRef,
-} from "react";
-import {
-  Dimensions,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-  TouchableOpacity,
-  Animated,
-  ImageBackground,
-} from "react-native";
-import { Authenticator, useTheme } from "@aws-amplify/ui-react-native";
-import { Amplify, Auth } from "aws-amplify";
-import awsconfig from "./src/aws-exports.js";
+
+import { Dispatch, SetStateAction, createContext, memo, useEffect, useState, useRef } from "react";
+import { Dimensions, StyleSheet, Text, View, TouchableOpacity, Animated, ImageBackground } from "react-native";
 import * as Notifications from "expo-notifications";
 import Icon from "react-native-vector-icons/Ionicons";
 import { useForm, Controller } from "react-hook-form";
@@ -27,9 +8,8 @@ import DropDownPicker from "react-native-dropdown-picker";
 // import Storage from "react-native-storage";
 // import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import { cards } from "./data/cards"; // ダミーデータ (YOLP API使用予定)
+import { cards } from "./data/cards";   // ダミーデータ (YOLP API使用予定)
 import { Prefecture } from "./data/globals";
-import AuthenticatorFormFields from "./components/login/AuthenticatorFormFields";
 import TinderSwipe from "./components/home/TinderSwipe";
 import Detail from "./components/home/Detail";
 import Notice from "./components/notice/Notice";
@@ -44,10 +24,6 @@ import GenreIcon2 from "react-native-vector-icons/MaterialIcons";
 import { prefectureListData } from "./data/prefectureList";
 import LottieView from "lottie-react-native";
 
-
-Auth.configure(awsconfig);
-Amplify.configure(awsconfig);
-
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
@@ -56,8 +32,9 @@ Notifications.setNotificationHandler({
   }),
 });
 
-const SERVER_URL =
-  "https://o49zrrdot8.execute-api.us-east-1.amazonaws.com/tokitabi";
+// const SERVER_URL =
+//   // "https://o49zrrdot8.execute-api.us-east-1.amazonaws.com/tokitabi";
+//   "https://cncidui937.execute-api.us-east-1.amazonaws.com/default";
 const SCREEN_HEIGHT = Dimensions.get("window").height;
 const SCREEN_WIDTH = Dimensions.get("window").width;
 
@@ -115,27 +92,27 @@ const App = memo(() => {
   const [animation] = useState(new Animated.Value(0));
   const [likeCheck, setLikeCheck] = useState(false);
 
-  const filterPrefecture = () => {
-    console.log(prefectureValue);
-    setRamdomCards([]);
-    (async () => {
-      const ramdomCardsData = await fetch(
-        `${SERVER_URL}/api/cards/test?prefecture=${prefectureValue}`
-      ).then((data) => data.json());
-      console.log(ramdomCardsData);
-      setRamdomCards(ramdomCardsData);
-    })();
-  };
+  // const filterPrefecture = () => {
+  //   console.log(prefectureValue);
+  //   setRamdomCards([]);
+  //   (async () => {
+  //     const ramdomCardsData = await fetch(
+  //       `${SERVER_URL}/api/cards/test?prefecture=${prefectureValue}`
+  //     ).then((data) => data.json());
+  //     console.log(ramdomCardsData);
+  //     setRamdomCards(ramdomCardsData);
+  //   })();
+  // };
 
-  useEffect(() => {
-    setRamdomCards([]);
-    (async () => {
-      const ramdomCardsData = await fetch(`${SERVER_URL}/api/cards/test`).then(
-        (data) => data.json()
-      );
-      setRamdomCards(ramdomCardsData);
-    })();
-  }, [ramdomCardsChange]);
+  // useEffect(() => {
+  //   setRamdomCards([]);
+  //   (async () => {
+  //     const ramdomCardsData = await fetch(`${SERVER_URL}/api/cards/test`).then(
+  //       (data) => data.json()
+  //     );
+  //     setRamdomCards(ramdomCardsData);
+  //   })();
+  // }, [ramdomCardsChange]);
 
   useEffect(() => {
     setRamdomCards((prev) => prev.slice(0, prev.length - 1));
@@ -158,61 +135,51 @@ const App = memo(() => {
   //description ID取得用
   const spotToApp = (id: SetStateAction<number>) => setTouchId(id);
 
-  useEffect(() => {
-    (async () => {
-      try {
-        const user = await Auth.currentAuthenticatedUser();
-        setUsername(user.attributes.nickname);
-      } catch (error) {
-        console.log("Error getting username:", error);
-      }
-    })();
-  }, []);
-
   //通知送信用エフェクト
   useEffect(() => {
     (async () => {
       favoriteData.length !== 0 &&
         //favデータ取得
         favoriteData.forEach(async (obj) => {
-          const getPrefectureFavoriteData = await fetch(
-            `${SERVER_URL}/api/favorites/${obj.name}`
-          ).then((data) => data.json());
-          type props = {
-            hasVisited: boolean;
-          };
+          // const getPrefectureFavoriteData = await fetch(
+          //   `${SERVER_URL}/api/favorites/${obj.name}`
+          // ).then((data) => data.json());
 
-          //行ったよ数セット
-          const hascount =
-            obj.number -
-            (await getPrefectureFavoriteData.filter((data: props) => {
-              return data.hasVisited;
-            }).length);
-          hascount >= noticeCount &&
-            // プッシュ通知を実際に送信する
-            (await Notifications.scheduleNotificationAsync({
-              content: {
-                body: `🧳旅行先が『${hascount}ヶ所』溜まっています!!`,
-                title: `${obj.name}に行ってみませんか？`,
-                sound: "default",
-                // subtitle: 'subtitle',
-                // badge: 1,
-              },
-              trigger: {
-                seconds: 1,
-              },
-            }));
+          // type props = {
+          //   hasVisited: boolean;
+          // };
+
+          // //行ったよ数セット
+          // const hascount =
+          //   obj.number -
+          //   (await getPrefectureFavoriteData.filter((data: props) => {
+          //     return data.hasVisited;
+          //   }).length);
+          // hascount >= noticeCount &&
+          //   // プッシュ通知を実際に送信する
+          //   (await Notifications.scheduleNotificationAsync({
+          //     content: {
+          //       body: `🧳旅行先が『${hascount}ヶ所』溜まっています!!`,
+          //       title: `${obj.name}に行ってみませんか？`,
+          //       sound: "default",
+          //       // subtitle: 'subtitle',
+          //       // badge: 1,
+          //     },
+          //     trigger: {
+          //       seconds: 1,
+          //     },
+          //   }));
           Notifications.setBadgeCountAsync(1);
         });
     })();
   }, [favoriteData]);
 
-  const scheduleNotificationAsync = async () => {
-    const res = await fetch(`${SERVER_URL}/api/favorites`).then((data) =>
-      data.json()
-    );
-    setFavoriteData(res);
-  };
+  // const scheduleNotificationAsync = async () => {
+  //   const res = await fetch(`${SERVER_URL}/api/favorites`).then((data) =>
+  //     data.json()
+  //   );
+  //   setFavoriteData(res);
+  // };
 
   const requestPermissionsAsync = async () => {
     // 現時点の通知権限の情報を取得する
@@ -357,63 +324,6 @@ const App = memo(() => {
   }, [likeCheck]);
 
   return (
-    // <Authenticator.Provider>
-    //   <Authenticator
-    //     Header={() => {
-    //       const { tokens } = useTheme();
-    //       return (
-    //         <View>
-    //           <Text
-    //             style={{
-    //               fontSize: tokens.fontSizes.xxl,
-    //               paddingHorizontal: tokens.space.large,
-    //             }}
-    //           >
-    //             とき旅
-    //           </Text>
-    //           <LottieView
-    //             source={require("./assets/lottie/82445-travelers-walking-using-travelrmap-application.json")}
-    //             autoPlay={true}
-    //             style={{ position: "absolute", height: 100, left: 70 }}
-    //           />
-    //         </View>
-    //       );
-    //     }}
-    //     Container={(props) => (
-    //       <Authenticator.Container
-    //         {...props}
-    //         style={{ backgroundColor: "white" }}
-    //       />
-    //     )}
-    //     initialState="signIn"
-    //     components={{
-    //       // サインアップフィールド
-    //       SignUp: ({ fields, ...props }) => (
-    //         <Authenticator.SignUp {...props} fields={AuthenticatorFormFields} />
-    //       ),
-    //       // サインインフィールド
-    //       SignIn: ({ fields, ...props }) => (
-    //         <Authenticator.SignIn
-    //           {...props}
-    //           fields={[
-    //             {
-    //               name: "username",
-    //               label: "ユーザーネーム",
-    //               type: "default",
-    //               placeholder: "ユーザーネーム",
-    //             },
-    //             {
-    //               name: "password",
-    //               label: "パスワード",
-    //               type: "default",
-    //               placeholder: "パスワード",
-    //               secureTextEntry: true,
-    //             },
-    //           ]}
-    //         />
-    //       ),
-    //     }}
-    //   >
         <View style={styles.container}>
           <MyContext.Provider
             value={[
@@ -429,12 +339,6 @@ const App = memo(() => {
               <View>
                 <View style={styles.header}>
                   <Icon name="search-outline" style={styles.headerIcon} />
-                  {/* <TextInput
-                    placeholder="都道府県を選択"
-                    style={styles.headerTextInput}
-                    value={inputRef}
-                    onChangeText={(text) => setInputRef(text)}
-                  /> */}
                   <Controller
                     name="prefecture"
                     defaultValue=""
@@ -454,7 +358,7 @@ const App = memo(() => {
                           placeholderStyle={styles.placeholderStyles}
                           searchable={true}
                           searchPlaceholder="都道府県を入力"
-                          onChangeValue={filterPrefecture}
+                          // onChangeValue={filterPrefecture}
                         />
                       </View>
                     )}
@@ -638,16 +542,16 @@ const App = memo(() => {
                       autoPlay={true}
                     />
                     <Text style={styles.mainText}>おすすめ終了！</Text>
-                    {/* {cards.map((card, index) => ( */}
-                    {ramdomCards[0] !== undefined &&
-                      ramdomCards.map((card, index) => (
+                    {cards.map((card, index) => (
+                    // {ramdomCards[0] !== undefined &&
+                      // ramdomCards.map((card, index) => (
                         <TinderSwipe
                           key={index}
                           index={index}
                           card={card}
                           setPage={setPage}
                           setIndex={setIndex}
-                          scheduleNotificationAsync={scheduleNotificationAsync}
+                          // scheduleNotificationAsync={scheduleNotificationAsync}
                           ramdomCards={ramdomCards}
                           setSliceCards={setSliceCards}
                           setLikeCheck={setLikeCheck}
@@ -732,8 +636,6 @@ const App = memo(() => {
             )}
           </MyContext.Provider>
         </View>
-    //   {/* </Authenticator>
-    // </Authenticator.Provider> */}
   );
 });
 

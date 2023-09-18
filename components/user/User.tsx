@@ -1,26 +1,8 @@
+
 import React, { useState, useEffect } from "react";
 import { Text, View, TextInput, TouchableOpacity } from "react-native";
 import styles from "./styles";
 import * as Font from "expo-font";
-/**
- *  description UI reactNativeコンポーネント
- */
-import { useAuthenticator } from "@aws-amplify/ui-react-native";
-const SERVER_URL =
-  "https://o49zrrdot8.execute-api.us-east-1.amazonaws.com/tokitabi";
-
-/**
- * サインアウトボタンコンポーネント
- * @returns {JSX}
- */
-function SignOutButton() {
-  const { signOut } = useAuthenticator();
-  return (
-    <TouchableOpacity style={styles.signOut} onPress={signOut}>
-      <Text style={styles.font}>サイン{"\n"}アウト</Text>
-    </TouchableOpacity>
-  );
-}
 
 type Props = {
   userName: string;
@@ -73,7 +55,6 @@ const User: React.FC<Props> = ({ userName, noticeSet, appToUser }) => {
         <Text style={styles.username}>{noticeSet}</Text>
       </View>
       <View style={styles.list}>
-        <SignOutButton />
 
         <View style={styles.listNotify}></View>
       </View>

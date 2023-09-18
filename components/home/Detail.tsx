@@ -26,495 +26,491 @@ type Props = {
 const ScreenWidth = Dimensions.get("window").width;
 const ScreenHeight = Dimensions.get("window").height;
 
-const SERVER_URL = "https://o49zrrdot8.execute-api.us-east-1.amazonaws.com/tokitabi";
+// const SERVER_URL = "https://o49zrrdot8.execute-api.us-east-1.amazonaws.com/tokitabi";
 
 const Detail: React.FC<Props> = memo(({ page, setPage, index, hasVisited, touchId, ramdomCards }) => {
 
-    const [showText, setShowText] = useState(hasVisited);
-    const [isModalVisible, setIsModalVisible] = useState(false);
-    const [inputText, setInputElement] = useState("");
-    const [isEditing, setIsEditing] = useState(false);
-    const [text, setText] = useState("");
-    const [touchData, setTouchData] = useState<TouchCards>();
-    // const [pressedTime, setPressedTime] = useState<string | null>(null);
+  const [showText, setShowText] = useState(hasVisited);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [inputText, setInputElement] = useState("");
+  const [isEditing, setIsEditing] = useState(false);
+  const [text, setText] = useState("");
+  const [touchData, setTouchData] = useState<TouchCards>();
+  // const [pressedTime, setPressedTime] = useState<string | null>(null);
 
-    console.log(touchData);
-    
+  const handleButtonPress = () => {
+    setShowText((prevShowText) => !prevShowText);
+  };
+  const toggleModal = () => {
+    setIsModalVisible((prevState) => !prevState);
+  };
 
-    const handleButtonPress = () => {
-      setShowText((prevShowText) => !prevShowText);
-    };
-    const toggleModal = () => {
-      setIsModalVisible((prevState) => !prevState);
-    };
+  const handleEditButtonClick = () => {
+    setInputElement(text);
+    setIsEditing(true);
+  };
 
-    const handleEditButtonClick = () => {
-      setInputElement(text);
-      setIsEditing(true);
-    };
+  const handleSaveButtonClick = () => {
+    setIsEditing(false);
+    setText(inputText); // テキストを保存する場合はここで値を更新する
+    const currentTime = new Date().toLocaleString();
+    // setPressedTime(currentTime);
+  };
 
-    const handleSaveButtonClick = () => {
-      setIsEditing(false);
-      setText(inputText); // テキストを保存する場合はここで値を更新する
-      const currentTime = new Date().toLocaleString();
-      // setPressedTime(currentTime);
-    };
+  // useEffect(() => {
+  //   (async () => {
+  //     const getFavoriteAllData = await fetch(`${SERVER_URL}/api/favorites/all/test`).then(data => data.json());
+  //     getFavoriteAllData.forEach((data: TouchCards) => data.id === touchId && setTouchData(data));
+  //   })()
+  // }, []);
 
-    useEffect(() => {
-      (async () => {
-        const getFavoriteAllData = await fetch(`${SERVER_URL}/api/favorites/all/test`).then(data => data.json());
-        getFavoriteAllData.forEach((data: TouchCards) => data.id === touchId && setTouchData(data));
-      })()
-    }, []);
+  const [isAnimationVisible, setIsAnimationVisible] = useState(false);
 
-    const [isAnimationVisible, setIsAnimationVisible] = useState(false);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsAnimationVisible(false);
+    }, 2500);
 
-    useEffect(() => {
-      const timer = setTimeout(() => {
-        setIsAnimationVisible(false);
-      }, 2500);
-  
-      return () => clearTimeout(timer);
-    }, [showText]);
+    return () => clearTimeout(timer);
+  }, [showText]);
 
-  return (
-    <>
-    <View>
-      <TouchableOpacity
-        style={styles.backButton}
-        onPress={() => {
-          if (page === "detail") {
-            setPage("home");
-          } else if (page === "visited") {
-            setPage("spots");
-          } else if (page === "fromMap") {
-            setPage("map");
-          }
-        }}
-      >
-        <EvilIcon name="chevron-left" style={styles.backIcon} />
-      </TouchableOpacity>
+return (
+  <>
+  <View>
+    <TouchableOpacity
+      style={styles.backButton}
+      onPress={() => {
+        if (page === "detail") {
+          setPage("home");
+        } else if (page === "visited") {
+          setPage("spots");
+        } else if (page === "fromMap") {
+          setPage("map");
+        }
+      }}
+    >
+      <EvilIcon name="chevron-left" style={styles.backIcon} />
+    </TouchableOpacity>
+    {page !== "detail" && (
+      <>
+        {/* {text === "" && (
+          <Icon name="chatbox-outline" style={styles.noCommentIcon} />
+        )} */}
+        {text !== "" && (
+          <TouchableOpacity onPress={toggleModal} style={styles.checkCommentButton}>
+            <Icon name="chatbox-ellipses" style={styles.checkCommentIcon} />
+            <Text style={{ color: "#9e1b1b", fontSize: 7, textAlign: "center" }}>
+              メモあり
+            </Text>
+          </TouchableOpacity>
+        )}
+      </>
+    )}
+    <ScrollView>
+    { page === "detail" &&
+      <View style={ page !== "detail" && { paddingBottom: 80 } }>
+        {/* 行ったよラベルを表示させる */}
+        {showText === true && (
+          <View style={styles.window}>
+            <Svg width={500} height={500}>
+              <Polygon points="0,150 150,0 150,150" fill="rgb(158, 27, 27)" />
+              <View style={styles.visitedTextContainer}>
+                <Text style={styles.visitedText}>行ったよ！ </Text>
+              </View>
+            </Svg>
+          </View>
+        )}
+        <View style={styles.cardPhoto}>
+          <Swiper
+            showsButtons={cards[index].images.length !== 1 && true}
+            // showsButtons={ramdomCards !== null && ramdomCards[index].images.length !== 1 && true}
+            autoplay={true}
+            activeDotColor={"rgb(158, 27, 27)"}
+            nextButton={
+              <Text style={{ color: 'rgba(255,255,255,0.9)', fontSize: 50 }}>›</Text>
+            }
+            prevButton={
+              <Text style={{ color: 'rgba(255,255,255,0.9)', fontSize: 50 }}>‹</Text>
+            }
+          >
+            {cards[index].images.map((item, index) => (
+            // {ramdomCards && ramdomCards[index].images.map((item, index) => (
+              <View key={index}>
+                <Image
+                  style={{ width: ScreenWidth, height: 350 }}
+                  source={{ uri: item }}
+                />
+              </View>
+            ))}
+          </Swiper>
+        </View>
+
+        <View style={styles.description}>
+          {/* <Text style={styles.title}>{ramdomCards && ramdomCards[index].name}</Text> */}
+          <Text style={styles.title}>{cards[index].name}</Text>
+
+          <View style={styles.addressContainer}>
+            <Text style={styles.descriptionTitle}>
+              <Icon name="location-outline" style={styles.icon} />
+              所在地
+            </Text>
+            <Text
+              style={styles.descriptionPostCode}
+            // >{`〒${ramdomCards && ramdomCards[index].zip_code}`}</Text>
+            >{`〒${cards[index].zip_code}`}</Text>
+            {/* <Text style={styles.descriptionText}>{ramdomCards && ramdomCards[index].address}</Text> */}
+            <Text style={styles.descriptionText}>{cards[index].address}</Text>
+          </View>
+          <View style={styles.descriptionContainer}>
+            <Text style={styles.descriptionTitle}>
+              <Icon name="cash-outline" style={styles.icon} /> 料金
+            </Text>
+            <Text
+              style={styles.descriptionText}
+            // >{`${ramdomCards && ramdomCards[index].price}円`}</Text>
+            >{`${cards[index].price}円`}</Text>
+          </View>
+
+          <View style={styles.descriptionContainer}>
+            <Text style={styles.descriptionTitle}>
+              <Icon name="time-outline" style={styles.icon} /> 営業日･時間
+            </Text>
+            <Text style={styles.descriptionText}>
+              {/* {ramdomCards && ramdomCards[index].business} */}
+              {cards[index].business}
+            </Text>
+          </View>
+          <View style={styles.descriptionContainer}>
+            <Text style={styles.descriptionTitle}>
+              <Icon name="call-outline" style={styles.icon} /> 電話番号
+            </Text>
+            <Text style={styles.descriptionText}>
+              {/* {ramdomCards && ramdomCards[index].phone_number} */}
+              {cards[index].phone_number}
+            </Text>
+          </View>
+
+          <View style={styles.descriptionContainer}>
+            <Text style={styles.descriptionTitle}>
+              <MaterialCommunityIcons
+                name="alpha-p-circle-outline"
+                style={styles.icon}
+              />{" "}
+              駐車場
+            </Text>
+            <Text style={styles.descriptionTextParking}>
+              {/* {ramdomCards && ramdomCards[index].parking} */}
+              {cards[index].parking}
+            </Text>
+          </View>
+
+          <View style={styles.descriptionContainer}>
+            <Text style={styles.descriptionTitle}>
+              <MaterialCommunityIcons
+                name="human-male-female"
+                style={styles.icon}
+              />
+              トイレ
+            </Text>
+            {/* <Text style={styles.descriptionText}>{ramdomCards && ramdomCards[index].toilet}</Text> */}
+            <Text style={styles.descriptionText}>{cards[index].toilet}</Text>
+          </View>
+
+          <View style={styles.descriptionContainer}>
+            <Text style={styles.descriptionTitle}>
+              <Icon name="information-circle-outline" style={styles.icon} />{" "}
+              定休日
+            </Text>
+            {/* <Text style={styles.descriptionText}>{ramdomCards && ramdomCards[index].closed}</Text> */}
+            <Text style={styles.descriptionText}>{cards[index].closed}</Text>
+          </View>
+
+          <View style={styles.descriptionContainer}>
+            <Text style={styles.descriptionTitle}>
+              <Icon name="subway-outline" style={styles.icon} />{" "}
+              公共交通機関でのアクセス
+            </Text>
+            {cards[index].public_transport.map((item, itemIndex) => (
+            // {ramdomCards && ramdomCards[index].public_transport.map((item, itemIndex) => (
+              <Text key={itemIndex} style={styles.descriptionTextList}>
+                {item}
+              </Text>
+            ))}
+          </View>
+
+          <View style={styles.descriptionContainer}>
+            <Text style={styles.descriptionTitle}>
+              <Icon name="car-outline" style={styles.icon} /> 車でのアクセス
+            </Text>
+            {cards[index].car.map((item, itemIndex) => (
+            // {ramdomCards && ramdomCards[index].car.map((item, itemIndex) => (
+              <Text key={itemIndex} style={styles.descriptionTextList}>
+                {item}
+              </Text>
+            ))}
+          </View>
+        </View>
+      </View>
+    }
+    { page !== "detail" &&
+      <View style={ page !== "detail" && { paddingBottom: 80 } }>
+        {/* 行ったよラベルを表示させる */}
+        {showText === true && (
+          <View style={styles.window}>
+            <Svg width={500} height={500}>
+              <Polygon points="0,150 150,0 150,150" fill="rgb(158, 27, 27)" />
+              <View style={styles.visitedTextContainer}>
+                <Text style={styles.visitedText}>行ったよ！ </Text>
+              </View>
+            </Svg>
+          </View>
+        )}
+        <View style={styles.cardPhoto}>
+          <Swiper
+            showsButtons={cards[index].images.length !== 1 && true}
+            // showsButtons={touchData.images.length !== 1 && true}
+            autoplay={true}
+            activeDotColor={"rgb(158, 27, 27)"}
+            nextButton={
+              <Text style={{ color: 'rgba(255,255,255,0.9)', fontSize: 50 }}>›</Text>
+            }
+            prevButton={
+              <Text style={{ color: 'rgba(255,255,255,0.9)', fontSize: 50 }}>‹</Text>
+            }
+          >
+            {cards[index].images.map((item, index) => (
+            // {touchData.images.map((item, index) => (
+              <View key={index}>
+                <Image
+                  style={{ width: ScreenWidth, height: 350 }}
+                  source={{ uri: item }}
+                />
+              </View>
+            ))}
+          </Swiper>
+        </View>
+
+        <View style={styles.description}>
+          {/* <Text style={styles.title}>{touchData.name}</Text> */}
+          <Text style={styles.title}>{cards[index].name}</Text>
+
+          <View style={styles.addressContainer}>
+            <Text style={styles.descriptionTitle}>
+              <Icon name="location-outline" style={styles.icon} />
+              所在地
+            </Text>
+            <Text
+              style={styles.descriptionPostCode}
+            // >{`〒${touchData.zip_code}`}</Text>
+            >{`〒${cards[index].zip_code}`}</Text>
+            {/* <Text style={styles.descriptionText}>{touchData.address}</Text> */}
+            <Text style={styles.descriptionText}>{cards[index].address}</Text>
+          </View>
+          <View style={styles.descriptionContainer}>
+            <Text style={styles.descriptionTitle}>
+              <Icon name="cash-outline" style={styles.icon} /> 料金
+            </Text>
+            <Text
+              style={styles.descriptionText}
+            // >{`${touchData.price}円`}</Text>
+            >{`${cards[index].price}円`}</Text>
+          </View>
+
+          <View style={styles.descriptionContainer}>
+            <Text style={styles.descriptionTitle}>
+              <Icon name="time-outline" style={styles.icon} /> 営業日･時間
+            </Text>
+            <Text style={styles.descriptionText}>
+              {/* {touchData.business} */}
+              {cards[index].business}
+            </Text>
+          </View>
+          <View style={styles.descriptionContainer}>
+            <Text style={styles.descriptionTitle}>
+              <Icon name="call-outline" style={styles.icon} /> 電話番号
+            </Text>
+            <Text style={styles.descriptionText}>
+              {/* {touchData.phone_number} */}
+              {cards[index].phone_number}
+            </Text>
+          </View>
+
+          <View style={styles.descriptionContainer}>
+            <Text style={styles.descriptionTitle}>
+              <MaterialCommunityIcons
+                name="alpha-p-circle-outline"
+                style={styles.icon}
+              />{" "}
+              駐車場
+            </Text>
+            <Text style={styles.descriptionTextParking}>
+              {/* {touchData.parking} */}
+              {cards[index].parking}
+            </Text>
+          </View>
+
+          <View style={styles.descriptionContainer}>
+            <Text style={styles.descriptionTitle}>
+              <MaterialCommunityIcons
+                name="human-male-female"
+                style={styles.icon}
+              />
+              トイレ
+            </Text>
+            {/* <Text style={styles.descriptionText}>{touchData.toilet}</Text> */}
+            <Text style={styles.descriptionText}>{cards[index].toilet}</Text>
+          </View>
+
+          <View style={styles.descriptionContainer}>
+            <Text style={styles.descriptionTitle}>
+              <Icon name="information-circle-outline" style={styles.icon} />{" "}
+              定休日
+            </Text>
+            {/* <Text style={styles.descriptionText}>{touchData.closed}</Text> */}
+            <Text style={styles.descriptionText}>{cards[index].closed}</Text>
+          </View>
+
+          <View style={styles.descriptionContainer}>
+            <Text style={styles.descriptionTitle}>
+              <Icon name="subway-outline" style={styles.icon} />{" "}
+              公共交通機関でのアクセス
+            </Text>
+            {cards[index].public_transport.map((item, itemIndex) => (
+            // {touchData.public_transport.map((item, itemIndex) => (
+              <Text key={itemIndex} style={styles.descriptionTextList}>
+                {item}
+              </Text>
+            ))}
+          </View>
+
+          <View style={styles.descriptionContainer}>
+            <Text style={styles.descriptionTitle}>
+              <Icon name="car-outline" style={styles.icon} /> 車でのアクセス
+            </Text>
+            {cards[index].car.map((item, itemIndex) => (
+            // {touchData.car.map((item, itemIndex) => (
+              <Text key={itemIndex} style={styles.descriptionTextList}>
+                {item}
+              </Text>
+            ))}
+          </View>
+        </View>
+      </View>
+    }
+    </ScrollView>
       {page !== "detail" && (
         <>
-          {/* {text === "" && (
-            <Icon name="chatbox-outline" style={styles.noCommentIcon} />
-          )} */}
-          {text !== "" && (
-            <TouchableOpacity onPress={toggleModal} style={styles.checkCommentButton}>
-              <Icon name="chatbox-ellipses" style={styles.checkCommentIcon} />
-              <Text style={{ color: "#9e1b1b", fontSize: 7, textAlign: "center" }}>
-                メモあり
-              </Text>
-            </TouchableOpacity>
-          )}
-        </>
-      )}
-      <ScrollView>
-      { page === "detail" &&
-        <View style={ page !== "detail" && { paddingBottom: 80 } }>
-          {/* 行ったよラベルを表示させる */}
-          {showText === true && (
-            <View style={styles.window}>
-              <Svg width={500} height={500}>
-                <Polygon points="0,150 150,0 150,150" fill="rgb(158, 27, 27)" />
-                <View style={styles.visitedTextContainer}>
-                  <Text style={styles.visitedText}>行ったよ！ </Text>
-                </View>
-              </Svg>
-            </View>
-          )}
-          <View style={styles.cardPhoto}>
-            <Swiper
-              // showsButtons={cards[index].images.length !== 1 && true}
-              showsButtons={ramdomCards !== null && ramdomCards[index].images.length !== 1 && true}
-              autoplay={true}
-              activeDotColor={"rgb(158, 27, 27)"}
-              nextButton={
-                <Text style={{ color: 'rgba(255,255,255,0.9)', fontSize: 50 }}>›</Text>
-              }
-              prevButton={
-                <Text style={{ color: 'rgba(255,255,255,0.9)', fontSize: 50 }}>‹</Text>
-              }
-            >
-              {/* {cards[index].images.map((item, index) => ( */}
-              {ramdomCards && ramdomCards[index].images.map((item, index) => (
-                <View key={index}>
-                  <Image
-                    style={{ width: ScreenWidth, height: 350 }}
-                    source={{ uri: item }}
-                  />
-                </View>
-              ))}
-            </Swiper>
-          </View>
-
-          <View style={styles.description}>
-            <Text style={styles.title}>{ramdomCards && ramdomCards[index].name}</Text>
-            {/* <Text style={styles.title}>{cards[index].name}</Text> */}
-
-            <View style={styles.addressContainer}>
-              <Text style={styles.descriptionTitle}>
-                <Icon name="location-outline" style={styles.icon} />
-                所在地
-              </Text>
-              <Text
-                style={styles.descriptionPostCode}
-              >{`〒${ramdomCards && ramdomCards[index].zip_code}`}</Text>
-              {/* >{`〒${cards[index].zip_code}`}</Text> */}
-              <Text style={styles.descriptionText}>{ramdomCards && ramdomCards[index].address}</Text>
-              {/* <Text style={styles.descriptionText}>{cards[index].address}</Text> */}
-            </View>
-            <View style={styles.descriptionContainer}>
-              <Text style={styles.descriptionTitle}>
-                <Icon name="cash-outline" style={styles.icon} /> 料金
-              </Text>
-              <Text
-                style={styles.descriptionText}
-              >{`${ramdomCards && ramdomCards[index].price}円`}</Text>
-              {/* >{`${cards[index].price}円`}</Text> */}
-            </View>
-
-            <View style={styles.descriptionContainer}>
-              <Text style={styles.descriptionTitle}>
-                <Icon name="time-outline" style={styles.icon} /> 営業日･時間
-              </Text>
-              <Text style={styles.descriptionText}>
-                {ramdomCards && ramdomCards[index].business}
-                {/* {cards[index].business} */}
-              </Text>
-            </View>
-            <View style={styles.descriptionContainer}>
-              <Text style={styles.descriptionTitle}>
-                <Icon name="call-outline" style={styles.icon} /> 電話番号
-              </Text>
-              <Text style={styles.descriptionText}>
-                {ramdomCards && ramdomCards[index].phone_number}
-                {/* {cards[index].phone_number} */}
-              </Text>
-            </View>
-
-            <View style={styles.descriptionContainer}>
-              <Text style={styles.descriptionTitle}>
-                <MaterialCommunityIcons
-                  name="alpha-p-circle-outline"
-                  style={styles.icon}
-                />{" "}
-                駐車場
-              </Text>
-              <Text style={styles.descriptionTextParking}>
-                {ramdomCards && ramdomCards[index].parking}
-                {/* {cards[index].parking} */}
-              </Text>
-            </View>
-
-            <View style={styles.descriptionContainer}>
-              <Text style={styles.descriptionTitle}>
-                <MaterialCommunityIcons
-                  name="human-male-female"
-                  style={styles.icon}
-                />
-                トイレ
-              </Text>
-              <Text style={styles.descriptionText}>{ramdomCards && ramdomCards[index].toilet}</Text>
-              {/* <Text style={styles.descriptionText}>{cards[index].toilet}</Text> */}
-            </View>
-
-            <View style={styles.descriptionContainer}>
-              <Text style={styles.descriptionTitle}>
-                <Icon name="information-circle-outline" style={styles.icon} />{" "}
-                定休日
-              </Text>
-              <Text style={styles.descriptionText}>{ramdomCards && ramdomCards[index].closed}</Text>
-              {/* <Text style={styles.descriptionText}>{cards[index].closed}</Text> */}
-            </View>
-
-            <View style={styles.descriptionContainer}>
-              <Text style={styles.descriptionTitle}>
-                <Icon name="subway-outline" style={styles.icon} />{" "}
-                公共交通機関でのアクセス
-              </Text>
-              {/* {cards[index].public_transport.map((item, itemIndex) => ( */}
-              {ramdomCards && ramdomCards[index].public_transport.map((item, itemIndex) => (
-                <Text key={itemIndex} style={styles.descriptionTextList}>
-                  {item}
-                </Text>
-              ))}
-            </View>
-
-            <View style={styles.descriptionContainer}>
-              <Text style={styles.descriptionTitle}>
-                <Icon name="car-outline" style={styles.icon} /> 車でのアクセス
-              </Text>
-              {/* {cards[index].car.map((item, itemIndex) => ( */}
-              {ramdomCards && ramdomCards[index].car.map((item, itemIndex) => (
-                <Text key={itemIndex} style={styles.descriptionTextList}>
-                  {item}
-                </Text>
-              ))}
-            </View>
-          </View>
-        </View>
-      }
-      { page !== "detail" && touchData &&
-        <View style={ page !== "detail" && { paddingBottom: 80 } }>
-          {/* 行ったよラベルを表示させる */}
-          {showText === true && (
-            <View style={styles.window}>
-              <Svg width={500} height={500}>
-                <Polygon points="0,150 150,0 150,150" fill="rgb(158, 27, 27)" />
-                <View style={styles.visitedTextContainer}>
-                  <Text style={styles.visitedText}>行ったよ！ </Text>
-                </View>
-              </Svg>
-            </View>
-          )}
-          <View style={styles.cardPhoto}>
-            <Swiper
-              // showsButtons={cards[index].images.length !== 1 && true}
-              showsButtons={touchData.images.length !== 1 && true}
-              autoplay={true}
-              activeDotColor={"rgb(158, 27, 27)"}
-              nextButton={
-                <Text style={{ color: 'rgba(255,255,255,0.9)', fontSize: 50 }}>›</Text>
-              }
-              prevButton={
-                <Text style={{ color: 'rgba(255,255,255,0.9)', fontSize: 50 }}>‹</Text>
-              }
-            >
-              {/* {cards[index].images.map((item, index) => ( */}
-              {touchData.images.map((item, index) => (
-                <View key={index}>
-                  <Image
-                    style={{ width: ScreenWidth, height: 350 }}
-                    source={{ uri: item }}
-                  />
-                </View>
-              ))}
-            </Swiper>
-          </View>
-
-          <View style={styles.description}>
-            <Text style={styles.title}>{touchData.name}</Text>
-            {/* <Text style={styles.title}>{cards[index].name}</Text> */}
-
-            <View style={styles.addressContainer}>
-              <Text style={styles.descriptionTitle}>
-                <Icon name="location-outline" style={styles.icon} />
-                所在地
-              </Text>
-              <Text
-                style={styles.descriptionPostCode}
-              >{`〒${touchData.zip_code}`}</Text>
-              {/* >{`〒${cards[index].zip_code}`}</Text> */}
-              <Text style={styles.descriptionText}>{touchData.address}</Text>
-              {/* <Text style={styles.descriptionText}>{cards[index].address}</Text> */}
-            </View>
-            <View style={styles.descriptionContainer}>
-              <Text style={styles.descriptionTitle}>
-                <Icon name="cash-outline" style={styles.icon} /> 料金
-              </Text>
-              <Text
-                style={styles.descriptionText}
-              >{`${touchData.price}円`}</Text>
-              {/* >{`${cards[index].price}円`}</Text> */}
-            </View>
-
-            <View style={styles.descriptionContainer}>
-              <Text style={styles.descriptionTitle}>
-                <Icon name="time-outline" style={styles.icon} /> 営業日･時間
-              </Text>
-              <Text style={styles.descriptionText}>
-                {touchData.business}
-                {/* {cards[index].business} */}
-              </Text>
-            </View>
-            <View style={styles.descriptionContainer}>
-              <Text style={styles.descriptionTitle}>
-                <Icon name="call-outline" style={styles.icon} /> 電話番号
-              </Text>
-              <Text style={styles.descriptionText}>
-                {touchData.phone_number}
-                {/* {cards[index].phone_number} */}
-              </Text>
-            </View>
-
-            <View style={styles.descriptionContainer}>
-              <Text style={styles.descriptionTitle}>
-                <MaterialCommunityIcons
-                  name="alpha-p-circle-outline"
-                  style={styles.icon}
-                />{" "}
-                駐車場
-              </Text>
-              <Text style={styles.descriptionTextParking}>
-                {touchData.parking}
-                {/* {cards[index].parking} */}
-              </Text>
-            </View>
-
-            <View style={styles.descriptionContainer}>
-              <Text style={styles.descriptionTitle}>
-                <MaterialCommunityIcons
-                  name="human-male-female"
-                  style={styles.icon}
-                />
-                トイレ
-              </Text>
-              <Text style={styles.descriptionText}>{touchData.toilet}</Text>
-              {/* <Text style={styles.descriptionText}>{cards[index].toilet}</Text> */}
-            </View>
-
-            <View style={styles.descriptionContainer}>
-              <Text style={styles.descriptionTitle}>
-                <Icon name="information-circle-outline" style={styles.icon} />{" "}
-                定休日
-              </Text>
-              <Text style={styles.descriptionText}>{touchData.closed}</Text>
-              {/* <Text style={styles.descriptionText}>{cards[index].closed}</Text> */}
-            </View>
-
-            <View style={styles.descriptionContainer}>
-              <Text style={styles.descriptionTitle}>
-                <Icon name="subway-outline" style={styles.icon} />{" "}
-                公共交通機関でのアクセス
-              </Text>
-              {/* {cards[index].public_transport.map((item, itemIndex) => ( */}
-              {touchData.public_transport.map((item, itemIndex) => (
-                <Text key={itemIndex} style={styles.descriptionTextList}>
-                  {item}
-                </Text>
-              ))}
-            </View>
-
-            <View style={styles.descriptionContainer}>
-              <Text style={styles.descriptionTitle}>
-                <Icon name="car-outline" style={styles.icon} /> 車でのアクセス
-              </Text>
-              {/* {cards[index].car.map((item, itemIndex) => ( */}
-              {touchData.car.map((item, itemIndex) => (
-                <Text key={itemIndex} style={styles.descriptionTextList}>
-                  {item}
-                </Text>
-              ))}
-            </View>
-          </View>
-        </View>
-      }
-      </ScrollView>
-        {page !== "detail" && (
-          <>
-            <View style={styles.container}>
-              <View style={styles.footer}>
-                {/* コメント編集画面 */}
-                <TouchableOpacity onPress={toggleModal}>
-                  <FontAwesome name="pencil" style={styles.penIcon} />
-                </TouchableOpacity>
-                <Modal isVisible={isModalVisible}>
-                  {/* Modalの配置設定 */}
-                  <TouchableOpacity activeOpacity={1} onPressOut={toggleModal}>
-                    <View
-                      style={{
-                        flex: 1,
-                        marginBottom: "100%",
-                        alignItems: "center",
-                        backgroundColor: "#fff",
-                      }}
-                    >
-                      <View style={{ alignItems: "center" }}>
+          <View style={styles.container}>
+            <View style={styles.footer}>
+              {/* コメント編集画面 */}
+              <TouchableOpacity onPress={toggleModal}>
+                <FontAwesome name="pencil" style={styles.penIcon} />
+              </TouchableOpacity>
+              <Modal isVisible={isModalVisible}>
+                {/* Modalの配置設定 */}
+                <TouchableOpacity activeOpacity={1} onPressOut={toggleModal}>
+                  <View
+                    style={{
+                      flex: 1,
+                      marginBottom: "100%",
+                      alignItems: "center",
+                      backgroundColor: "#fff",
+                    }}
+                  >
+                    <View style={{ alignItems: "center" }}>
+                      <TouchableOpacity
+                        style={styles.backCommentButton}
+                        onPress={toggleModal}
+                      >
+                        <EvilIcon
+                          name="chevron-left"
+                          style={styles.backIcon}
+                        />
+                      </TouchableOpacity>
+                      {/* 初期画面 */}
+                      {isEditing === false && text === "" && (
+                        <TextInput
+                          value={inputText}
+                          onChangeText={setInputElement}
+                          placeholder="📝メモがあれば記入してね！"
+                          style={styles.commentTextContainer}
+                        />
+                      )}
+                      {/* 登録後の画面 */}
+                      {isEditing === false && text !== "" && (
+                        <>
+                          <View style={styles.savedCommentTextContainer}>
+                            <Text style={styles.savedCommentText}>
+                              {text}
+                            </Text>
+                          </View>
+                          {/* {pressedTime && (
+                          <Text>メモ登録日：{pressedTime}</Text>
+                        )} */}
+                        </>
+                      )}
+                      {/* 編集中の画面 */}
+                      {isEditing === true && (
+                        <TextInput
+                          value={inputText}
+                          onChangeText={setInputElement}
+                          style={styles.commentTextContainer}
+                        />
+                      )}
+                      <View style={styles.buttonContainer}>
                         <TouchableOpacity
-                          style={styles.backCommentButton}
-                          onPress={toggleModal}
+                          style={styles.editButton}
+                          onPress={handleEditButtonClick}
                         >
-                          <EvilIcon
-                            name="chevron-left"
-                            style={styles.backIcon}
-                          />
+                          <Text style={styles.editButtonText}>編集</Text>
                         </TouchableOpacity>
-                        {/* 初期画面 */}
-                        {isEditing === false && text === "" && (
-                          <TextInput
-                            value={inputText}
-                            onChangeText={setInputElement}
-                            placeholder="📝メモがあれば記入してね！"
-                            style={styles.commentTextContainer}
-                          />
-                        )}
-                        {/* 登録後の画面 */}
-                        {isEditing === false && text !== "" && (
-                          <>
-                            <View style={styles.savedCommentTextContainer}>
-                              <Text style={styles.savedCommentText}>
-                                {text}
-                              </Text>
-                            </View>
-                            {/* {pressedTime && (
-                            <Text>メモ登録日：{pressedTime}</Text>
-                          )} */}
-                          </>
-                        )}
-                        {/* 編集中の画面 */}
-                        {isEditing === true && (
-                          <TextInput
-                            value={inputText}
-                            onChangeText={setInputElement}
-                            style={styles.commentTextContainer}
-                          />
-                        )}
-                        <View style={styles.buttonContainer}>
-                          <TouchableOpacity
-                            style={styles.editButton}
-                            onPress={handleEditButtonClick}
-                          >
-                            <Text style={styles.editButtonText}>編集</Text>
-                          </TouchableOpacity>
-                          <TouchableOpacity
-                            style={styles.savedButton}
-                            onPress={handleSaveButtonClick}
-                          >
-                            <Text style={styles.text}>登録</Text>
-                          </TouchableOpacity>
-                        </View>
+                        <TouchableOpacity
+                          style={styles.savedButton}
+                          onPress={handleSaveButtonClick}
+                        >
+                          <Text style={styles.text}>登録</Text>
+                        </TouchableOpacity>
                       </View>
                     </View>
-                  </TouchableOpacity>
-                </Modal>
-                {/* 行ったよボタン */}
-                <TouchableOpacity
-                  style={[styles.button, showText && styles.buttonPressed]}
-                  onPress={async () => {
-                    console.log("patched", touchId);
-                    handleButtonPress();
-                    setIsAnimationVisible(true);
-                    await fetch(`${SERVER_URL}/api/favorites/${touchId}`, {
-                      method: "PATCH",
-                      headers: {
-                        "Content-Type": "application/json",
-                      },
-                      body: JSON.stringify(touchId),
-                    });
-                  }}
-                >
-                  <Text style={[styles.text, showText && styles.textPressed]}>
-                    行ったよ！
-                  </Text>
+                  </View>
                 </TouchableOpacity>
-              </View>
+              </Modal>
+              {/* 行ったよボタン */}
+              <TouchableOpacity
+                style={[styles.button, showText && styles.buttonPressed]}
+                onPress={async () => {
+                  console.log("patched", touchId);
+                  handleButtonPress();
+                  setIsAnimationVisible(true);
+                  // await fetch(`${SERVER_URL}/api/favorites/${touchId}`, {
+                  //   method: "PATCH",
+                  //   headers: {
+                  //     "Content-Type": "application/json",
+                  //   },
+                  //   body: JSON.stringify(touchId),
+                  // });
+                }}
+              >
+                <Text style={[styles.text, showText && styles.textPressed]}>
+                  行ったよ！
+                </Text>
+              </TouchableOpacity>
             </View>
-          </>
-        )}
-      </View>
-      {isAnimationVisible && showText && (
-        <LottieView
-          source={require("../../assets/lottie/26287-fireworks.json")}
-          autoPlay={true}
-          loop={false}
-          style={{ backgroundColor: "rgba(0, 0, 0, 0.3)" }}
-        />
+          </View>
+        </>
       )}
-      </>
-    );
-  }
-);
+    </View>
+    {isAnimationVisible && showText && (
+      <LottieView
+        source={require("../../assets/lottie/26287-fireworks.json")}
+        autoPlay={true}
+        loop={false}
+        style={{ backgroundColor: "rgba(0, 0, 0, 0.3)" }}
+      />
+    )}
+    </>
+  );
+});
 
 const styles = StyleSheet.create({
   backButton: {

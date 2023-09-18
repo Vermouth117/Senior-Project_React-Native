@@ -1,3 +1,4 @@
+
 import { Dispatch, SetStateAction, memo } from "react";
 import { StyleSheet, View, TouchableOpacity, Text } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
@@ -9,17 +10,7 @@ type Props = {
   setPrefectureValue: Dispatch<SetStateAction<null>>;
 };
 
-const Footer: React.FC<Props> = memo(
-  ({ page, setPage, setRamdomCardsChange, setPrefectureValue }) => {
-    const getFooterBack = () => {
-      if (page === "home") {
-        return "rgba(255, 255, 255,0.5)";
-      } else {
-        return "rgba(255, 255, 255,1)";
-      }
-    };
-    const footerBack = getFooterBack();
-
+const Footer: React.FC<Props> = memo(({ page, setPage, setRamdomCardsChange, setPrefectureValue }) => {
     return (
       <View style={styles.footer}>
         <TouchableOpacity
